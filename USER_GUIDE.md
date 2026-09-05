@@ -13,6 +13,8 @@ Full documentation is available on the [GitHub Wiki](https://github.com/lancebra
 
 The dashboard's **Total savings** uses all historical income and spending. Monthly report figures use the selected month. Data is saved locally as you edit it, so refreshing the page does not remove income, expenses, recurring schedules, targets, or Den data. Existing cloud-sync profiles remain compatible.
 
+Amounts are stored to two decimal places. Income, spending, savings, and target calculations use cents internally, so values such as `0.10 + 0.20` remain exactly `0.30`.
+
 ## Quick links
 
 - [Getting Started](https://github.com/lancebramsay/hedgie/wiki/Getting-Started)

@@ -26,6 +26,7 @@ The current interface is intentionally compact: record income and purchases, tra
 - Savings overview shows cumulative income, cumulative spending, and total savings across all history
 - Set a monthly savings target and track actual savings with a bounded progress bar
 - Core data is saved immediately in the browser's local storage and restored on reload
+- Monetary records are stored with exactly two decimal places; balance arithmetic uses integer cents without rounding
 
 ### Reports
 - Monthly income, actual spending, monthly savings, and monthly savings target progress

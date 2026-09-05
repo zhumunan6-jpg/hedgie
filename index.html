@@ -595,17 +595,54 @@ let autosaveTimer=null;
 let knownUsers={};
 
 // ── HELPERS ──────────────────────────────────
-const fmt=n=>'¥'+Math.round(Math.abs(n)).toLocaleString();
-const fmtDec=n=>'¥'+Math.abs(n).toFixed(2);
-const moAmt=r=>{const a=parseFloat(r.a)||0;if(r.f==='Y')return a/12;if(r.f==='C')return a/Math.max(1,parseInt(r.every)||1);return a;};
-const totalIncome=()=>income.reduce((s,r)=>s+(parseFloat(r.a)||0),0);
+// Monetary values are stored as fixed two-decimal strings. Calculations that add
+// or subtract money use integer cents so binary floating-point errors cannot leak
+// into balances, reports, or sync payloads.
+const moneyString=value=>{
+  let raw=String(value??'').trim().replace(/,/g,'');
+  if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw)){
+    const numeric=Number(value);
+    if(!Number.isFinite(numeric))return'0.00';
+    raw=numeric.toLocaleString('en-US',{useGrouping:false,maximumFractionDigits:20});
+  }
+  let negative=raw.startsWith('-');
+  raw=raw.replace(/^[+-]/,'');
+  let[whole,fraction='']=raw.split('.');
+  whole=(whole.replace(/^0+(?=\d)/,'')||'0');
+  fraction=(fraction+'00').slice(0,2);
+  if(whole==='0'&&fraction==='00')negative=false;
+  return`${negative?'-':''}${whole}.${fraction}`;
+};
+const moneyCents=value=>{
+  const normalized=moneyString(value),negative=normalized.startsWith('-');
+  const unsigned=normalized.replace('-',''),[whole,fraction]=unsigned.split('.');
+  const cents=(parseInt(whole,10)||0)*100+(parseInt(fraction,10)||0);
+  return negative?-cents:cents;
+};
+const moneyFromCents=cents=>{
+  const value=Math.trunc(Number(cents)||0),negative=value<0,absolute=Math.abs(value);
+  return`${negative?'-':''}${Math.floor(absolute/100)}.${String(absolute%100).padStart(2,'0')}`;
+};
+const fmtCents=cents=>{
+  const value=Math.trunc(Number(cents)||0),negative=value<0,absolute=Math.abs(value);
+  const whole=Math.floor(absolute/100).toLocaleString('en-US');
+  return`${negative?'-':''}¥${whole}.${String(absolute%100).padStart(2,'0')}`;
+};
+const fmt=n=>fmtCents(moneyCents(n));
+const fmtDec=fmt;
+const signedAmount=cents=>fmtCents(cents);
+const moAmtCents=r=>{const cents=moneyCents(r.a);if(r.f==='Y')return cents/12;if(r.f==='C')return cents/Math.max(1,parseInt(r.every)||1);return cents;};
+const moAmt=r=>moAmtCents(r)/100;
+const totalIncome=()=>income.reduce((s,r)=>s+moneyCents(r.a),0);
 const allHistoricalReceipts=()=>{const seen=new Set();const all=[];[...receipts,...Object.values(archives||{}).flatMap(items=>Array.isArray(items)?items:[])].forEach(r=>{if(r&&r.id&&!seen.has(r.id)){seen.add(r.id);all.push(r);}});return all;};
-const totalExpenses=()=>allHistoricalReceipts().reduce((s,r)=>s+(parseFloat(r.amt)||0),0);
+const totalExpenses=()=>allHistoricalReceipts().reduce((s,r)=>s+moneyCents(r.amt),0);
 const incomeForMonth=ym=>income.filter(r=>monthKey(r.date)===ym);
-const incomeAmountForMonth=ym=>incomeForMonth(ym).reduce((s,r)=>s+(parseFloat(r.a)||0),0);
-const savingsForMonth=ym=>incomeAmountForMonth(ym)-receiptsForMonth(ym).reduce((s,r)=>s+(parseFloat(r.amt)||0),0);
-const totalExpMo=()=>{let t=0;CATS().forEach(c=>expenses[c].forEach(r=>t+=moAmt(r)));return t;};
-const catMo=c=>expenses[c].reduce((s,r)=>s+moAmt(r),0);
+const incomeAmountForMonth=ym=>incomeForMonth(ym).reduce((s,r)=>s+moneyCents(r.a),0);
+const savingsForMonth=ym=>incomeAmountForMonth(ym)-receiptsForMonth(ym).reduce((s,r)=>s+moneyCents(r.amt),0);
+const totalExpMoCents=()=>CATS().reduce((sum,c)=>sum+expenses[c].reduce((s,r)=>s+moAmtCents(r),0),0);
+const totalExpMo=()=>totalExpMoCents()/100;
+const catMoCents=c=>(expenses[c]||[]).reduce((s,r)=>s+moAmtCents(r),0);
+const catMo=c=>catMoCents(c)/100;
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
@@ -775,7 +812,7 @@ function normalizeIncomeRecords(records){
   if(!Array.isArray(records))return [];
   return records.map((record)=>{
     if(!record||typeof record!=='object')return null;
-    const amount=Number(record.a??record.amount??0);
+    const amount=moneyCents(record.a??record.amount??0);
     if(!Number.isFinite(amount)||amount<=0)return null;
     const rawFrequency=record.frequency??record.freq??record.recurring??record.f??'none';
     const frequency=rawFrequency===true?'monthly':String(rawFrequency).toLowerCase();
@@ -785,7 +822,7 @@ function normalizeIncomeRecords(records){
     return {...legacy,
       id:record.id||uid(),
       n:String(record.n??record.source??record.name??'').trim(),
-      a:amount,
+      a:moneyFromCents(amount),
       date:/^\d{4}-\d{2}-\d{2}$/.test(record.date||'')?record.date:today,
       note:String(record.note??record.memo??'').trim(),
       frequency:normalizedFrequency,
@@ -799,9 +836,9 @@ function normalizeReceiptRecords(records){
   if(!Array.isArray(records))return [];
   return records.map(record=>{
     if(!record||typeof record!=='object'||record.cat==='Savings')return null;
-    const amount=Number(record.amt??record.amount??0);
+    const amount=moneyCents(record.amt??record.amount??0);
     if(!Number.isFinite(amount))return null;
-    return {...record,id:record.id||uid(),amt:amount};
+    return {...record,id:record.id||uid(),amt:moneyFromCents(amount)};
   }).filter(Boolean);
 }
 
@@ -810,17 +847,24 @@ function normalizeSavingsTargets(targets){
   if(Array.isArray(targets)){
     targets.forEach(target=>{
       const month=target?.month||target?.ym;
-      const amount=Number(target?.amount??target?.targetAmt??target?.a);
-      if(/^\d{4}-\d{2}$/.test(month||'')&&Number.isFinite(amount)&&amount>=0)normalized[month]=amount;
+      const amount=moneyCents(target?.amount??target?.targetAmt??target?.a);
+      if(/^\d{4}-\d{2}$/.test(month||'')&&Number.isFinite(amount)&&amount>=0)normalized[month]=moneyFromCents(amount);
     });
   }else if(targets&&typeof targets==='object'){
     Object.entries(targets).forEach(([month,amount])=>{
-      const value=Number(amount);
-      if(/^\d{4}-\d{2}$/.test(month)&&Number.isFinite(value)&&value>=0)normalized[month]=value;
+      const value=moneyCents(amount);
+      if(/^\d{4}-\d{2}$/.test(month)&&Number.isFinite(value)&&value>=0)normalized[month]=moneyFromCents(value);
     });
   }
   return normalized;
 }
+
+const normalizeMoneyFields=(record,fields)=>{
+  if(!record||typeof record!=='object')return record;
+  const normalized={...record};
+  fields.forEach(field=>{normalized[field]=moneyFromCents(moneyCents(record[field]));});
+  return normalized;
+};
 
 function normalizeDataState(){
   const before=JSON.stringify(buildDataSnapshot());
@@ -835,13 +879,16 @@ function normalizeDataState(){
   const oldExpenses=expenses&&typeof expenses==='object'?expenses:{};
   const cleanedExpenses={};
   Object.entries(oldExpenses).forEach(([name,lines])=>{
-    if(name!=='Savings')cleanedExpenses[name]=Array.isArray(lines)?lines:[];
+    if(name!=='Savings')cleanedExpenses[name]=Array.isArray(lines)?lines.map(line=>({...line,a:moneyFromCents(moneyCents(line?.a))})):[];
   });
-  CATS().forEach(name=>{if(!cleanedExpenses[name])cleanedExpenses[name]=DEF[name]?JSON.parse(JSON.stringify(DEF[name])):[];});
+  CATS().forEach(name=>{
+    if(!cleanedExpenses[name])cleanedExpenses[name]=DEF[name]?JSON.parse(JSON.stringify(DEF[name])):[];
+    cleanedExpenses[name]=cleanedExpenses[name].map(line=>({...line,a:moneyFromCents(moneyCents(line?.a))}));
+  });
   expenses=cleanedExpenses;
 
   income=normalizeIncomeRecords(income);
-  recurringIncome=Array.isArray(recurringIncome)?recurringIncome.filter(template=>template&&template.id&&Number(template.amt)>0&&['monthly','yearly','interval'].includes(template.freq)).map(template=>({...template,amt:Number(template.amt),freq:String(template.freq),every:template.freq==='interval'?Math.max(2,parseInt(template.every,10)||3):undefined})):[];
+  recurringIncome=Array.isArray(recurringIncome)?recurringIncome.filter(template=>template&&template.id&&moneyCents(template.amt)>0&&['monthly','yearly','interval'].includes(template.freq)).map(template=>({...template,amt:moneyFromCents(moneyCents(template.amt)),freq:String(template.freq),every:template.freq==='interval'?Math.max(2,parseInt(template.every,10)||3):undefined})):[];
   receipts=normalizeReceiptRecords(receipts);
   const cleanedArchives={};
   Object.entries(archives&&typeof archives==='object'?archives:{}).forEach(([year,items])=>{
@@ -849,9 +896,12 @@ function normalizeDataState(){
     if(kept.length)cleanedArchives[year]=kept;
   });
   archives=cleanedArchives;
-  recurringBills=Array.isArray(recurringBills)?recurringBills.filter(bill=>bill&&bill.cat!=='Savings'):[];
-  financing=Array.isArray(financing)?financing.map(account=>account?.linkedExpenseKey?.startsWith('Savings|')?{...account,linkedExpenseKey:''}:account):[];
-  savingsGoals=Array.isArray(savingsGoals)?savingsGoals.map(goal=>goal?.linkedExpenseKey?.startsWith('Savings|')?{...goal,linkedExpenseKey:''}:goal):[];
+  recurringBills=Array.isArray(recurringBills)?recurringBills.filter(bill=>bill&&bill.cat!=='Savings').map(bill=>({...bill,amt:moneyFromCents(moneyCents(bill.amt))})):[];
+  financing=Array.isArray(financing)?financing.map(account=>normalizeMoneyFields(account,['originalBalance','currentBalance','assetValue'])).map(account=>account?.linkedExpenseKey?.startsWith('Savings|')?{...account,linkedExpenseKey:''}:account):[];
+  savingsGoals=Array.isArray(savingsGoals)?savingsGoals.map(goal=>normalizeMoneyFields(goal,['targetAmt','currentAmt'])).map(goal=>goal?.linkedExpenseKey?.startsWith('Savings|')?{...goal,linkedExpenseKey:''}:goal):[];
+  investments=Array.isArray(investments)?investments.map(position=>normalizeMoneyFields(position,['costBasis','currentPrice'])):[];
+  walletAssets=Array.isArray(walletAssets)?walletAssets.map(asset=>({...asset,fiat:moneyFromCents(moneyCents(asset.fiat))})):[];
+  walletPendingTxs=Array.isArray(walletPendingTxs)?walletPendingTxs.map(tx=>({...tx,usdEst:moneyFromCents(moneyCents(tx.usdEst)),gasUsdEst:moneyFromCents(moneyCents(tx.gasUsdEst))})):[];
   savingsTargets=normalizeSavingsTargets(savingsTargets);
   return before!==JSON.stringify(buildDataSnapshot());
 }
@@ -884,14 +934,15 @@ function loadLocalData(){
 }
 
 function getSavingsTarget(month=currentMonth()){
-  const target=Number(savingsTargets[month]);
+  if(savingsTargets[month]===undefined||savingsTargets[month]===null)return null;
+  const target=moneyCents(savingsTargets[month]);
   return Number.isFinite(target)&&target>=0?target:null;
 }
 
 function setSavingsTarget(month,amount){
-  const value=Number(amount);
+  const value=moneyCents(amount);
   if(!/^\d{4}-\d{2}$/.test(month)||!Number.isFinite(value)||value<0)return;
-  savingsTargets[month]=value;
+  savingsTargets[month]=moneyFromCents(value);
   triggerAutosave('savings-target');
 }
 
@@ -1226,8 +1277,8 @@ function budgetWeight(){
   // Numeric measure of how populated the local session is across all data collections.
   // Income/expense lines (intentional setup) carry the most weight; receipts and Den
   // features are secondary signals. Used by localLooksBlank and the startup auto-pull.
-  const incomeItems=income.filter(i=>(i.a||0)>0).length;
-  const expItems=Object.values(expenses).reduce((s,arr)=>s+arr.filter(e=>(e.a||0)>0).length,0);
+  const incomeItems=income.filter(i=>moneyCents(i.a)>0).length;
+  const expItems=Object.values(expenses).reduce((s,arr)=>s+arr.filter(e=>moneyCents(e.a)>0).length,0);
   return(
     incomeItems*20+
     expItems*5+
@@ -1557,21 +1608,21 @@ function getUserColor(name){
 
 function renderUserBreakdown(recs){
   const byUser={};
-  recs.forEach(r=>{const u=r.by||'Unknown';if(!byUser[u])byUser[u]=0;byUser[u]+=r.amt;});
+  recs.forEach(r=>{const u=r.by||'Unknown';if(!byUser[u])byUser[u]=0;byUser[u]+=moneyCents(r.amt);});
   if(Object.keys(byUser).length<2)return'';
-  return`<div class="user-breakdown">${Object.entries(byUser).sort((a,b)=>b[1]-a[1]).map(([u,a])=>`<div class="user-chip"><div class="user-chip-dot" style="background:${getUserColor(u)}"></div><span class="user-chip-name">${esc(u)}</span><span class="user-chip-amt">${fmt(a)}</span></div>`).join('')}</div>`;
+  return`<div class="user-breakdown">${Object.entries(byUser).sort((a,b)=>b[1]-a[1]).map(([u,a])=>`<div class="user-chip"><div class="user-chip-dot" style="background:${getUserColor(u)}"></div><span class="user-chip-name">${esc(u)}</span><span class="user-chip-amt">${fmtCents(a)}</span></div>`).join('')}</div>`;
 }
 
 // ── MONTHLY REPORT ────────────────────────────
 function renderMonthlyReport(){
   const ym=document.getElementById('rpt-month-sel')?.value||currentMonth();
   const recs=historicalReceiptsForMonth(ym);
-  const spent=recs.reduce((s,r)=>s+r.amt,0);
+  const spent=recs.reduce((s,r)=>s+moneyCents(r.amt),0);
   const inc=incomeAmountForMonth(ym);
   const savings=inc-spent;
   const target=getSavingsTarget(ym);
   const hasTarget=target!==null&&target>0;
-  const pct=hasTarget?Math.round(savings/target*100):null;
+  const pct=hasTarget?Math.trunc(savings/target*100):null;
   const barPct=hasTarget?Math.max(0,Math.min(100,pct)):0;
   const savingsStatus=savings<0?'neg':hasTarget&&pct>=100?'pos':'';
   const targetProgress=hasTarget
@@ -1580,21 +1631,21 @@ function renderMonthlyReport(){
   const body=document.getElementById('report-body');
   body.innerHTML=`
     <div class="metrics-row report-metrics">
-      <div class="metric"><div class="metric-label">Monthly income</div><div class="metric-val">${fmt(inc)}</div></div>
-      <div class="metric"><div class="metric-label">Actually spent</div><div class="metric-val">${fmt(spent)}</div></div>
+      <div class="metric"><div class="metric-label">Monthly income</div><div class="metric-val">${fmtCents(inc)}</div></div>
+      <div class="metric"><div class="metric-label">Actually spent</div><div class="metric-val">${fmtCents(spent)}</div></div>
       <div class="metric"><div class="metric-label">Monthly savings</div><div class="metric-val ${savings>=0?'pos':'neg'}">${signedAmount(savings)}</div></div>
-      <div class="metric report-target-metric"><div class="metric-label">Monthly savings target</div><div class="metric-val">${target===null?'—':fmt(target)}</div>${targetProgress}</div>
+      <div class="metric report-target-metric"><div class="metric-label">Monthly savings target</div><div class="metric-val">${target===null?'—':fmtCents(target)}</div>${targetProgress}</div>
     </div>
     <div class="card">
-      <div class="card-hdr"><span class="card-title">Spending by category</span><span class="card-sub">${fmt(spent)}</span></div>
+      <div class="card-hdr"><span class="card-title">Spending by category</span><span class="card-sub">${fmtCents(spent)}</span></div>
       ${CATS().map(c=>{
-        const actual=recs.filter(r=>r.cat===c).reduce((s,r)=>s+r.amt,0);
-        const cpct=spent>0?Math.round(actual/spent*100):0;
+        const actual=recs.filter(r=>r.cat===c).reduce((s,r)=>s+moneyCents(r.amt),0);
+        const cpct=spent>0?Math.trunc(actual/spent*100):0;
         const catRecs=recs.filter(r=>r.cat===c);
         return`<div class="rpt-cat-row">
           <div class="rpt-cat-hdr">
             <span class="rpt-cat-name" style="color:${catColor(c)}">${c}</span>
-            <span class="rpt-cat-nums"><span>${fmt(actual)}</span> <span style="color:var(--text-faint)">(${cpct}% of spending)</span></span>
+            <span class="rpt-cat-nums"><span>${fmtCents(actual)}</span> <span style="color:var(--text-faint)">(${cpct}% of spending)</span></span>
           </div>
           <div class="progress-wrap"><div class="progress-fill" style="width:${Math.min(100,cpct)}%"></div></div>
           ${renderUserBreakdown(catRecs)}
@@ -1609,17 +1660,17 @@ function renderYearlyReport(){
   const archiveRecs=(archives[yr]||[]);
   const activeIds=new Set(receipts.map(r=>r.id));
   const recs=[...receiptsForYear(yr),...archiveRecs.filter(a=>!activeIds.has(a.id))];
-  const totalSpent=recs.reduce((s,r)=>s+r.amt,0);
-  const annualBudget=totalExpMo()*12;
-  const inc=income.filter(r=>r.date&&r.date.startsWith(yr)).reduce((s,r)=>s+(parseFloat(r.a)||0),0);
+  const totalSpent=recs.reduce((s,r)=>s+moneyCents(r.amt),0);
+  const annualBudget=totalExpMoCents()*12;
+  const inc=income.filter(r=>r.date&&r.date.startsWith(yr)).reduce((s,r)=>s+moneyCents(r.a),0);
   const rem=inc-totalSpent;
   const nowYr=new Date().getFullYear().toString();
   const nowMo=new Date().getMonth();
   const isCurrentYear=(yr===nowYr);
-  const monthlyBudget=totalExpMo();
+  const monthlyBudget=totalExpMoCents();
   const monthTotals=Array.from({length:12},(_,i)=>{
     const ym=yr+'-'+String(i+1).padStart(2,'0');
-    return recs.filter(r=>monthKey(r.date)===ym).reduce((s,r)=>s+r.amt,0);
+    return recs.filter(r=>monthKey(r.date)===ym).reduce((s,r)=>s+moneyCents(r.amt),0);
   });
   const maxMonth=Math.max(...monthTotals,monthlyBudget,1);
   const stars=Array.from({length:20},()=>`<circle cx="${Math.random()*100}%" cy="${Math.random()*100}%" r="${Math.random()*1.2+0.3}" fill="white" opacity="${Math.random()*0.5+0.2}"/>`).join('');
@@ -1629,7 +1680,7 @@ function renderYearlyReport(){
     <div class="hiber-header">
       <svg class="hiber-stars" viewBox="0 0 100 100" preserveAspectRatio="none">${stars}</svg>
       <div class="hiber-title">&#128564; Hibernation View — ${yr}</div>
-      <div class="hiber-sub">Bars show monthly spending. Dashed line = monthly budget (${fmt(monthlyBudget)}). Shaded bars = future months.</div>
+      <div class="hiber-sub">Bars show monthly spending. Dashed line = monthly budget (${fmtCents(monthlyBudget)}). Shaded bars = future months.</div>
       <div style="position:relative;margin-top:12px;padding-bottom:4px">
         <div class="month-bars" style="position:relative;z-index:1;padding-top:16px">
           ${monthTotals.map((v,i)=>{
@@ -1651,13 +1702,13 @@ function renderYearlyReport(){
         <span style="color:#4a7c59">&#9632; Under budget</span>
         <span style="color:#b87820">&#9632; Near limit</span>
         <span style="color:#b94040">&#9632; Over budget</span>
-        <span>&#x2504; Monthly budget (${fmt(monthlyBudget)})</span>
+        <span>&#x2504; Monthly budget (${fmtCents(monthlyBudget)})</span>
       </div>
     </div>
     <div class="metrics-row">
-      <div class="metric"><div class="metric-label">Annual income</div><div class="metric-val">${fmt(inc)}</div></div>
-      <div class="metric"><div class="metric-label">Annual budget</div><div class="metric-val">${fmt(annualBudget)}</div></div>
-      <div class="metric"><div class="metric-label">Total spent ${yr}</div><div class="metric-val ${totalSpent>annualBudget?'neg':''}">${fmt(totalSpent)}</div></div>
+      <div class="metric"><div class="metric-label">Annual income</div><div class="metric-val">${fmtCents(inc)}</div></div>
+      <div class="metric"><div class="metric-label">Annual budget</div><div class="metric-val">${fmtCents(annualBudget)}</div></div>
+      <div class="metric"><div class="metric-label">Total spent ${yr}</div><div class="metric-val ${totalSpent>annualBudget?'neg':''}">${fmtCents(totalSpent)}</div></div>
       <div class="metric"><div class="metric-label">Annual savings</div><div class="metric-val ${rem>=0?'pos':'neg'}">${signedAmount(rem)}</div></div>
     </div>
     ${renderUserBreakdown(recs)}
@@ -1669,26 +1720,26 @@ function renderYearlyReport(){
         <span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:8px;height:8px;outline:1.5px dashed #b94040;outline-offset:1px"></span>Over budget</span>
       </div>
       ${CATS().map(c=>{
-        const annBudget=catMo(c)*12;
+        const annBudget=catMoCents(c)*12;
         const catRecs=recs.filter(r=>r.cat===c);
-        const actual=catRecs.reduce((s,r)=>s+r.amt,0);
+        const actual=catRecs.reduce((s,r)=>s+moneyCents(r.amt),0);
         const monthlyTotals=Array.from({length:12},(_,i)=>{
           const ym=yr+'-'+String(i+1).padStart(2,'0');
-          return catRecs.filter(r=>monthKey(r.date)===ym).reduce((s,r)=>s+r.amt,0);
+          return catRecs.filter(r=>monthKey(r.date)===ym).reduce((s,r)=>s+moneyCents(r.amt),0);
         });
-        const maxCat=Math.max(...monthlyTotals,catMo(c),1);
-        const cpct=annBudget>0?Math.min(200,Math.round(actual/annBudget*100)):0;
+        const maxCat=Math.max(...monthlyTotals,catMoCents(c),100);
+        const cpct=annBudget>0?Math.min(200,Math.trunc(actual/annBudget*100)):0;
         const expCat=isExpenseCat(c);
         const over=expCat&&actual>annBudget&&annBudget>0,warn=expCat&&cpct>80&&cpct<=100;
         const cls=over?'over':warn?'warn':'',ncls=over?'rpt-over':warn?'rpt-warn':'rpt-under';
         return`<div class="hiber-cat-section">
           <div class="hiber-cat-title" style="color:${catColor(c)}">
             <span>${c}</span>
-            <span class="hiber-cat-annual"><span class="${ncls}">${fmt(actual)}</span> / ${fmt(annBudget)} yr</span>
+            <span class="hiber-cat-annual"><span class="${ncls}">${fmtCents(actual)}</span> / ${fmtCents(annBudget)} yr</span>
           </div>
           <div class="month-bars" style="height:44px;margin-bottom:2px">
             ${monthlyTotals.map((v,i)=>`<div class="month-bar-wrap">
-              <div class="month-bar" style="height:${v>0?Math.round((v/maxCat)*38)+3:2}px;background:${catColor(c)};opacity:0.75;border-radius:2px 2px 0 0;${v>0&&expCat?(v>catMo(c)?'outline:1.5px dashed #b94040;outline-offset:1px':v>=catMo(c)*0.80?'outline:1.5px dashed #b87820;outline-offset:1px':'outline:1.5px dashed #4a7c59;outline-offset:1px'):''}"></div>
+              <div class="month-bar" style="height:${v>0?Math.round((v/maxCat)*38)+3:2}px;background:${catColor(c)};opacity:0.75;border-radius:2px 2px 0 0;${v>0&&expCat?(v>catMoCents(c)?'outline:1.5px dashed #b94040;outline-offset:1px':v>=catMoCents(c)*0.80?'outline:1.5px dashed #b87820;outline-offset:1px':'outline:1.5px dashed #4a7c59;outline-offset:1px'):''}"></div>
               <div class="month-bar-lbl">${MONTH_NAMES[i].slice(0,1)}</div>
             </div>`).join('')}
           </div>
@@ -1781,7 +1832,7 @@ function processRecurringIncome(){
   const ym=currentMonth();
   let added=0;
   recurringIncome.forEach(template=>{
-    const base={n:template.source||'Other income',a:Number(template.amt)||0,note:template.note||'',by:settings.username||'',recurring:true,recurId:template.id,frequency:template.freq,f:template.freq==='monthly'?'M':template.freq==='yearly'?'Y':'C'};
+    const base={n:template.source||'Other income',a:moneyString(template.amt),note:template.note||'',by:settings.username||'',recurring:true,recurId:template.id,frequency:template.freq,f:template.freq==='monthly'?'M':template.freq==='yearly'?'Y':'C'};
     if(template.freq==='monthly'){
       if(todayDay<(parseInt(template.day,10)||1))return;
       if(income.some(record=>record.recurId===template.id&&monthKey(record.date)===ym))return;
@@ -1836,11 +1887,11 @@ function updateDateLabel(){
 
 function addReceipt(){
   const cat=document.getElementById('log-cat').value;
-  const amt=parseFloat(document.getElementById('log-amt').value)||0;
+  const amt=moneyString(document.getElementById('log-amt').value);
   const vendor=document.getElementById('log-vendor').value.trim();
   const note=document.getElementById('log-note').value.trim();
   const date=document.getElementById('log-date').value||todayStr();
-  if(amt<=0){document.getElementById('log-amt').focus();return;}
+  if(moneyCents(amt)<=0){document.getElementById('log-amt').focus();return;}
   saveVendor(vendor,cat);
   const financeId=settings.denPreview?(document.getElementById('log-finance-id')?.value||''):'';
   const investmentId=settings.denPreview?(document.getElementById('log-investment-id')?.value||''):'';
@@ -1896,11 +1947,11 @@ function setIncomeRecurring(mode){
 
 function addIncome(){
   const source=document.getElementById('income-source').value.trim();
-  const amt=parseFloat(document.getElementById('income-amt').value)||0;
+  const amt=moneyString(document.getElementById('income-amt').value);
   const note=document.getElementById('income-note').value.trim();
   const date=document.getElementById('income-date').value||todayStr();
   if(!source){document.getElementById('income-source').focus();return;}
-  if(amt<=0){document.getElementById('income-amt').focus();return;}
+  if(moneyCents(amt)<=0){document.getElementById('income-amt').focus();return;}
   const record={id:uid(),n:source,a:amt,date,note,frequency:currentIncomeRecurring,f:currentIncomeRecurring==='monthly'?'M':currentIncomeRecurring==='yearly'?'Y':currentIncomeRecurring==='interval'?'C':'O',by:settings.username||''};
   if(currentIncomeRecurring!=='none'){
     const template={id:uid(),source,amt,note,freq:currentIncomeRecurring,startDate:date,by:settings.username||''};
@@ -1928,7 +1979,7 @@ function incomeBadge(record){
 function renderIncomeEditForm(record){
   return`<div class="income-edit-form" id="ief-${record.id}">
     <div class="full"><label>Source name</label><input type="text" id="ie-source-${record.id}" value="${esc(record.n||'')}"></div>
-    <div><label>Amount (¥)</label><input type="number" id="ie-amt-${record.id}" value="${Number(record.a)||0}" min="0" step="0.01"></div>
+    <div><label>Amount (¥)</label><input type="number" id="ie-amt-${record.id}" value="${moneyString(record.a)}" min="0" step="0.01"></div>
     <div><label>Date</label><input type="date" id="ie-date-${record.id}" value="${esc(record.date||'')}"></div>
     <div class="full"><label>Note</label><input type="text" id="ie-note-${record.id}" value="${esc(record.note||'')}"></div>
     <div class="full" style="display:flex;gap:8px;margin-top:2px"><button class="btn primary" style="font-size:12px;padding:5px 12px" onclick="saveIncomeEdit('${record.id}')">Save</button>${record.recurId?`<button class="btn danger" style="font-size:12px;padding:5px 12px" onclick="deleteRecurringIncome('${record.recurId}')">Delete recurring income</button>`:''}<button class="btn" style="font-size:12px;padding:5px 12px" onclick="cancelIncomeEdit()">Cancel</button></div>
@@ -1940,14 +1991,14 @@ function renderIncomeList(){
   const el=document.getElementById('income-list-card');if(!el)return;
   const ym=document.getElementById('log-month-sel')?.value||currentMonth();
   const records=income.filter(record=>monthKey(record.date)===ym).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  el.innerHTML=`<div class="card-hdr"><span class="card-title">Income entries</span><span class="card-sub">${monthLabel(ym)}</span></div>${records.length?records.map(record=>editingIncomeId===record.id?renderIncomeEditForm(record):`<div class="receipt-row income-row"><div class="cat-dot" style="background:var(--green)"></div><div class="receipt-info"><div class="receipt-store" style="display:flex;align-items:center;gap:5px">${esc(record.n||'Income')}${incomeBadge(record)}</div><div class="receipt-meta">${fmtDate(record.date)}</div>${record.note?`<div class="receipt-note">${esc(record.note)}</div>`:''}</div><div class="receipt-amt">${fmtDec(record.a)}</div><button class="receipt-edit" onclick="startEditIncome('${record.id}')" title="Edit">&#9998;</button><button class="receipt-del" onclick="deleteIncome('${record.id}')" title="Delete">&#215;</button></div>`).join('')+`<div class="receipt-total"><span>${records.length} item${records.length!==1?'s':''}</span><span>${fmtDec(records.reduce((sum,record)=>sum+(parseFloat(record.a)||0),0))}</span></div>`:`<div class="empty-state"><div style="font-size:24px;margin-bottom:6px">&#8593;</div><div>No income entries for ${monthLabel(ym)}</div><div style="font-size:12px;margin-top:4px;color:var(--text-faint)">Use the form above to add income</div></div>`}`;
+  el.innerHTML=`<div class="card-hdr"><span class="card-title">Income entries</span><span class="card-sub">${monthLabel(ym)}</span></div>${records.length?records.map(record=>editingIncomeId===record.id?renderIncomeEditForm(record):`<div class="receipt-row income-row"><div class="cat-dot" style="background:var(--green)"></div><div class="receipt-info"><div class="receipt-store" style="display:flex;align-items:center;gap:5px">${esc(record.n||'Income')}${incomeBadge(record)}</div><div class="receipt-meta">${fmtDate(record.date)}</div>${record.note?`<div class="receipt-note">${esc(record.note)}</div>`:''}</div><div class="receipt-amt">${fmtDec(record.a)}</div><button class="receipt-edit" onclick="startEditIncome('${record.id}')" title="Edit">&#9998;</button><button class="receipt-del" onclick="deleteIncome('${record.id}')" title="Delete">&#215;</button></div>`).join('')+`<div class="receipt-total"><span>${records.length} item${records.length!==1?'s':''}</span><span>${fmtCents(records.reduce((sum,record)=>sum+moneyCents(record.a),0))}</span></div>`:`<div class="empty-state"><div style="font-size:24px;margin-bottom:6px">&#8593;</div><div>No income entries for ${monthLabel(ym)}</div><div style="font-size:12px;margin-top:4px;color:var(--text-faint)">Use the form above to add income</div></div>`}`;
 }
 function startEditIncome(id){editingIncomeId=id;renderIncomeList();setTimeout(()=>document.getElementById('ief-'+id)?.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
 function cancelIncomeEdit(){editingIncomeId=null;renderIncomeList();}
 function saveIncomeEdit(id){
   const record=income.find(item=>item.id===id);if(!record)return;
-  const source=document.getElementById('ie-source-'+id)?.value.trim();const amt=parseFloat(document.getElementById('ie-amt-'+id)?.value)||0;
-  if(!source||amt<=0)return;
+  const source=document.getElementById('ie-source-'+id)?.value.trim();const amt=moneyString(document.getElementById('ie-amt-'+id)?.value);
+  if(!source||moneyCents(amt)<=0)return;
   record.n=source;record.a=amt;record.date=document.getElementById('ie-date-'+id)?.value||record.date;record.note=document.getElementById('ie-note-'+id)?.value.trim()||'';
   const template=record.recurId?recurringIncome.find(item=>item.id===record.recurId):null;
   if(template){template.source=source;template.amt=amt;template.note=record.note;}
@@ -1969,22 +2020,21 @@ function setRcptFilter(cat,btn){rcptFilterCat=cat;document.querySelectorAll('#rc
 function renderLogMetrics(){
   const el=document.getElementById('log-metrics');if(!el)return;
   const totalInc=totalIncome(),totalSpent=totalExpenses(),totalSaved=totalInc-totalSpent;
-  el.innerHTML=`<div class="metric"><div class="metric-label">Total income</div><div class="metric-val">${fmt(totalInc)}</div></div><div class="metric"><div class="metric-label">Total spending</div><div class="metric-val">${fmt(totalSpent)}</div></div><div class="metric"><div class="metric-label">Total savings</div><div class="metric-val ${totalSaved>=0?'pos':'neg'}">${totalSaved<0?'-':''}${fmt(Math.abs(totalSaved))}</div></div>`;
+  el.innerHTML=`<div class="metric"><div class="metric-label">Total income</div><div class="metric-val">${fmtCents(totalInc)}</div></div><div class="metric"><div class="metric-label">Total spending</div><div class="metric-val">${fmtCents(totalSpent)}</div></div><div class="metric"><div class="metric-label">Total savings</div><div class="metric-val ${totalSaved>=0?'pos':'neg'}">${signedAmount(totalSaved)}</div></div>`;
   renderSavingsTarget();
   renderSavingsProgress();
 }
 
-function signedAmount(amount){return`${amount<0?'-':''}${fmt(Math.abs(amount))}`;}
 function saveCurrentSavingsTarget(){
-  const amount=Number(document.getElementById('savings-target-input')?.value);
-  if(!Number.isFinite(amount)||amount<0)return;
+  const amount=moneyString(document.getElementById('savings-target-input')?.value);
+  if(moneyCents(amount)<0)return;
   setSavingsTarget(currentMonth(),amount);renderSavingsTarget();renderSavingsProgress();
 }
 function renderSavingsTarget(){
   const card=document.getElementById('savings-target-card');if(!card)return;
   const ym=currentMonth(),target=getSavingsTarget(ym);
   const label=document.getElementById('target-month-label');if(label)label.textContent=monthLabel(ym);
-  card.innerHTML=`<div class="target-form"><div><label for="savings-target-input">Target amount (¥)</label><input type="number" id="savings-target-input" min="0" step="0.01" placeholder="Set a target" value="${target===null?'':target}"></div><button class="btn primary" onclick="saveCurrentSavingsTarget()">Save</button></div>${target===null?'<div class="target-empty">Set a target for this month to track progress.</div>':''}`;
+  card.innerHTML=`<div class="target-form"><div><label for="savings-target-input">Target amount (¥)</label><input type="number" id="savings-target-input" min="0" step="0.01" placeholder="Set a target" value="${target===null?'':moneyFromCents(target)}"></div><button class="btn primary" onclick="saveCurrentSavingsTarget()">Save</button></div>${target===null?'<div class="target-empty">Set a target for this month to track progress.</div>':''}`;
 }
 function renderSavingsProgress(){
   const card=document.getElementById('savings-progress-card');if(!card)return;
@@ -1993,8 +2043,8 @@ function renderSavingsProgress(){
     card.innerHTML=`<div class="summary-card-title"><span class="card-title">Monthly savings progress</span><span class="card-sub">${monthLabel(ym)}</span></div><div class="target-empty">No savings target set for this month.</div>`;
     return;
   }
-  const pct=Math.round(actual/target*100),barPct=Math.max(0,Math.min(100,pct)),status=actual<0?'neg':pct>=100?'pos':'';
-  card.innerHTML=`<div class="summary-card-title"><span class="card-title">Monthly savings progress</span><span class="card-sub">${monthLabel(ym)}</span></div><div class="savings-progress-copy"><span>Actual savings</span><strong class="${status}">${signedAmount(actual)}</strong></div><div class="progress-wrap" aria-label="${pct}% savings target progress"><div class="progress-fill ${actual<0?'over':''}" style="width:${barPct}%"></div></div><div class="savings-progress-copy" style="margin-top:5px"><span>Target ${fmt(target)}</span><span class="${status}">${pct}%${pct>=100?' · achieved':''}</span></div>`;
+  const pct=Math.trunc(actual/target*100),barPct=Math.max(0,Math.min(100,pct)),status=actual<0?'neg':pct>=100?'pos':'';
+  card.innerHTML=`<div class="summary-card-title"><span class="card-title">Monthly savings progress</span><span class="card-sub">${monthLabel(ym)}</span></div><div class="savings-progress-copy"><span>Actual savings</span><strong class="${status}">${signedAmount(actual)}</strong></div><div class="progress-wrap" aria-label="${pct}% savings target progress"><div class="progress-fill ${actual<0?'over':''}" style="width:${barPct}%"></div></div><div class="savings-progress-copy" style="margin-top:5px"><span>Target ${fmtCents(target)}</span><span class="${status}">${pct}%${pct>=100?' · achieved':''}</span></div>`;
 }
 
 let editingReceiptId=null;
@@ -2005,11 +2055,11 @@ function renderReceiptList(){
   if(rcptFilterCat!=='all')recs=recs.filter(r=>r.cat===rcptFilterCat);
   const el=document.getElementById('receipt-list');
   if(!recs.length){el.innerHTML=`<div class="empty-state"><div style="font-size:28px;margin-bottom:8px">&#128467;</div><div>No receipts logged${rcptFilterCat!=='all'?' for '+rcptFilterCat:' yet'}</div><div style="font-size:12px;margin-top:4px;color:var(--text-faint)">Use the form above to log your first purchase</div></div>`;return;}
-  const logTotal=recs.reduce((s,r)=>s+r.amt,0);
+  const logTotal=recs.reduce((s,r)=>s+moneyCents(r.amt),0);
   el.innerHTML=recs.map(r=>{
     if(editingReceiptId===r.id) return renderReceiptEditForm(r);
     return `<div class="receipt-row"><div class="cat-dot" style="background:${catColor(r.cat)}"></div><div class="receipt-info"><div class="receipt-store" style="display:flex;align-items:center;gap:5px">${esc(r.vendor||r.cat)}${recurBadge(r)}</div><div class="receipt-meta">${esc(r.cat)} &middot; ${fmtDate(r.date)}</div>${r.note?`<div class="receipt-note" onclick="toggleNoteExpand(event,this)" title="Tap to expand">${esc(r.note)}</div>`:``}${r.financeId&&getFinancingName(r.financeId)?`<div class="receipt-note" style="color:var(--text-soft)">&#9670; ${esc(getFinancingName(r.financeId))}</div>`:''}${r.investmentId&&getInvestmentName(r.investmentId)?`<div class="receipt-note" style="color:var(--text-soft)">&#9670; ${esc(getInvestmentName(r.investmentId))}${r.investmentUnits?' · '+r.investmentUnits+' units':''}</div>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><div class="receipt-amt">${fmtDec(r.amt)}</div>${r.by?`<div class="receipt-by" style="color:${getUserColor(r.by)}">${esc(r.by)}</div>`:''}</div><button class="receipt-edit" onclick="startEditReceipt('${r.id}')" title="Edit">&#9998;</button><button class="receipt-del" onclick="deleteReceipt('${r.id}')">&#215;</button></div>`;
-  }).join('')+`<div class="receipt-total"><span>${recs.length} item${recs.length!==1?'s':''}</span><span>${fmtDec(logTotal)}</span></div>`;
+  }).join('')+`<div class="receipt-total"><span>${recs.length} item${recs.length!==1?'s':''}</span><span>${fmtCents(logTotal)}</span></div>`;
 }
 
 function renderReceiptEditForm(r){
@@ -2073,7 +2123,9 @@ function saveReceiptEdit(id){
   const r=receipts.find(x=>x.id===id);
   if(!r)return;
   r.cat=document.getElementById('re-cat-'+id)?.value||r.cat;
-  r.amt=parseFloat(document.getElementById('re-amt-'+id)?.value)||r.amt;
+  const editedAmount=moneyString(document.getElementById('re-amt-'+id)?.value);
+  if(moneyCents(editedAmount)<=0)return;
+  r.amt=editedAmount;
   r.vendor=document.getElementById('re-vendor-'+id)?.value.trim()||r.vendor;
   r.note=document.getElementById('re-note-'+id)?.value.trim()||'';
   r.date=document.getElementById('re-date-'+id)?.value||r.date;
@@ -2254,7 +2306,7 @@ function populateDenLogFields(){
 }
 
 function addFinancingAcct(){
-  financing.push({id:uid(),name:'New account',type:'loan',originalBalance:0,currentBalance:0,interestRate:0,termMonths:0,startDate:'',linkedExpenseKey:'',assetValue:0});
+  financing.push({id:uid(),name:'New account',type:'loan',originalBalance:'0.00',currentBalance:'0.00',interestRate:0,termMonths:0,startDate:'',linkedExpenseKey:'',assetValue:'0.00'});
   triggerAutosave('den');renderDen();
 }
 function deleteFinancingAcct(id){
@@ -2265,7 +2317,7 @@ function deleteFinancingAcct(id){
 }
 function updateFinancingAcct(id,field,value){
   const f=financing.find(f=>f.id===id);if(!f)return;
-  f[field]=value;
+  f[field]=['originalBalance','currentBalance','assetValue'].includes(field)?moneyString(value):value;
   triggerAutosave('den');
   if(field==='name')populateDenLogFields();
 }
@@ -2332,14 +2384,14 @@ function renderDenNetWorth(){
   const stockVal=byType('stock'),etfVal=byType('etf'),cryptoVal=byType('crypto'),otherVal=byType('other'),cdVal=byType('cd');
   const savingsAmt=savingsGoals.reduce((s,g)=>s+(parseFloat(g.currentAmt)||0),0);
   // Wallet balances
-  const walletCryptoAmt=walletAssets.filter(a=>!WALLET_STABLES.includes(a.symbol)).reduce((s,a)=>s+a.fiat,0);
-  const walletStablesAmt=walletAssets.filter(a=>WALLET_STABLES.includes(a.symbol)).reduce((s,a)=>s+a.fiat,0);
+  const walletCryptoAmt=walletAssets.filter(a=>!WALLET_STABLES.includes(a.symbol)).reduce((s,a)=>s+moneyCents(a.fiat),0)/100;
+  const walletStablesAmt=walletAssets.filter(a=>WALLET_STABLES.includes(a.symbol)).reduce((s,a)=>s+moneyCents(a.fiat),0)/100;
   // Balance sheet: assets = all asset values + portfolio + savings + wallet; liabilities = all loan balances
   const totalAssets=totalAssetValues+stockVal+etfVal+cryptoVal+otherVal+cdVal+savingsAmt+walletCryptoAmt+walletStablesAmt;
   const totalLiabilities=financing.reduce((s,f)=>s+(parseFloat(f.currentBalance)||0),0);
   const netWorth=totalAssets-totalLiabilities;
   const portVal=stockVal+etfVal+cryptoVal+otherVal+cdVal;
-  const costBasis=investments.filter(v=>v.type!=='cd'&&!v.walletTracked).reduce((s,v)=>{const linked=lbp[v.id]||[];const autoBasis=linked.reduce((b,r)=>b+(parseFloat(r.amt)||0),0);return s+autoBasis+(parseFloat(v.costBasis)||0);},0);
+  const costBasis=investments.filter(v=>v.type!=='cd'&&!v.walletTracked).reduce((s,v)=>{const linked=lbp[v.id]||[];const autoBasis=linked.reduce((b,r)=>b+moneyCents(r.amt),0)/100;return s+autoBasis+(parseFloat(v.costBasis)||0);},0);
   const gl=portVal-cdVal-costBasis;
   if(!totalAssets&&!totalLiabilities){el.innerHTML='';return;}
   // Pie shows equity (net of debt) + investments + savings + wallet — i.e. what you own free and clear
@@ -2408,21 +2460,22 @@ function renderDenLiabilities(){
   const el=document.getElementById('den-liabilities');if(!el)return;
   if(!financing.length){el.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:12px 0">No accounts yet. Add a loan, credit line, or lease.</div>';return;}
   el.innerHTML=financing.map(f=>{
-    const orig=parseFloat(f.originalBalance)||0;
-    const curr=parseFloat(f.currentBalance)||0;
-    const assetVal=parseFloat(f.assetValue)||0;
+    const orig=moneyCents(f.originalBalance);
+    const curr=moneyCents(f.currentBalance);
+    const assetVal=moneyCents(f.assetValue);
     const hasAsset=assetVal>0;
     const equity=hasAsset?Math.max(0,assetVal-curr):0;
     const paid=Math.max(0,orig-curr);
     const pct=hasAsset?(assetVal>0?Math.min(100,equity/assetVal*100):0):(orig>0?Math.min(100,paid/orig*100):0);
     const rate=parseFloat(f.interestRate)||0;
     const linkedExp=findExpByKey(f.linkedExpenseKey);
-    const pmt=linkedExp?moAmt(linkedExp):0;
+    const pmt=linkedExp?moAmtCents(linkedExp):0;
     let payoff='';
     if(curr>0&&pmt>0){
       let mo;
-      if(rate>0){const r=rate/100/12;const n=Math.log(1-r*curr/pmt)/Math.log(1+r);if(n<0)mo=Math.ceil(-n);}
-      else{mo=Math.ceil(curr/pmt);}
+      const currValue=curr/100,pmtValue=pmt/100;
+      if(rate>0){const r=rate/100/12;const n=Math.log(1-r*currValue/pmtValue)/Math.log(1+r);if(n<0)mo=Math.ceil(-n);}
+      else{mo=Math.ceil(currValue/pmtValue);}
       if(mo&&mo>0&&mo<1200){const d=new Date();d.setMonth(d.getMonth()+mo);payoff=`约${mo}个月 · ${d.toLocaleDateString('zh-CN',{month:'short',year:'numeric'})}`;}
     }
     const pmtCount=receipts.filter(r=>r.financeId===f.id).length;
@@ -2431,28 +2484,28 @@ function renderDenLiabilities(){
     const bid='den-fi-body-'+f.id;
     const typeCap=(f.type||'other').charAt(0).toUpperCase()+(f.type||'other').slice(1);
     const progressLabel=hasAsset
-      ?`<span style="color:var(--green)">${fmt(equity)} equity</span><span>${fmt(assetVal)} value</span>`
-      :`<span>${paid>0?fmt(paid)+' paid':'No payments recorded'}</span><span>${orig?fmt(orig)+' original':''}</span>`;
+      ?`<span style="color:var(--green)">${fmtCents(equity)} equity</span><span>${fmtCents(assetVal)} value</span>`
+      :`<span>${paid>0?fmtCents(paid)+' paid':'No payments recorded'}</span><span>${orig?fmtCents(orig)+' original':''}</span>`;
     return`<div class="den-item">
       <div class="den-item-hdr" onclick="toggleDenItem('${bid}')">
         <input class="den-inp den-inp-nm" type="text" value="${esc(f.name)}" onblur="updateFinancingAcct('${f.id}','name',this.value);renderDen()" onclick="event.stopPropagation()">
         <span class="den-badge-${f.type||'other'}">${typeCap}</span>
-        <span style="font-size:14px;font-weight:600;color:var(--red);white-space:nowrap">${fmt(curr)}</span>
+        <span style="font-size:14px;font-weight:600;color:var(--red);white-space:nowrap">${fmtCents(curr)}</span>
         <span class="den-expand-arrow" id="den-arr-${bid}">&#9656;</span>
         <button class="receipt-del" onclick="event.stopPropagation();deleteFinancingAcct('${f.id}')" title="Delete">&#215;</button>
       </div>
       <div class="progress-wrap" style="margin-top:8px"><div class="progress-fill ${pc}" style="width:${pct.toFixed(1)}%"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-soft);margin-top:3px">${progressLabel}</div>
       <div class="den-item-body" id="${bid}">
-        <div class="den-field-row"><span class="den-field-lbl">Asset value</span><input class="den-inp den-inp-amt" type="number" min="0" step="0.01" value="${assetVal||''}" placeholder="Home, vehicle, etc." onblur="updateFinancingAcct('${f.id}','assetValue',this.value);renderDen()"></div>
+        <div class="den-field-row"><span class="den-field-lbl">Asset value</span><input class="den-inp den-inp-amt" type="number" min="0" step="0.01" value="${assetVal?moneyFromCents(assetVal):''}" placeholder="Home, vehicle, etc." onblur="updateFinancingAcct('${f.id}','assetValue',this.value);renderDen()"></div>
         <div style="font-size:11px;color:var(--text-faint);margin:-4px 0 8px;line-height:1.4">Enter current market value for equity-building debts (mortgage, auto). Leave blank for pure liabilities (student loan, personal loan).</div>
-        <div class="den-field-row"><span class="den-field-lbl">Original balance</span><input class="den-inp den-inp-amt" type="number" min="0" step="0.01" value="${orig||''}" placeholder="0.00" onblur="updateFinancingAcct('${f.id}','originalBalance',this.value);renderDen()"></div>
-        <div class="den-field-row"><span class="den-field-lbl">Current balance</span><input class="den-inp den-inp-amt" type="number" min="0" step="0.01" value="${curr||''}" placeholder="0.00" onblur="updateFinancingAcct('${f.id}','currentBalance',this.value);renderDen()"></div>
+        <div class="den-field-row"><span class="den-field-lbl">Original balance</span><input class="den-inp den-inp-amt" type="number" min="0" step="0.01" value="${orig?moneyFromCents(orig):''}" placeholder="0.00" onblur="updateFinancingAcct('${f.id}','originalBalance',this.value);renderDen()"></div>
+        <div class="den-field-row"><span class="den-field-lbl">Current balance</span><input class="den-inp den-inp-amt" type="number" min="0" step="0.01" value="${curr?moneyFromCents(curr):''}" placeholder="0.00" onblur="updateFinancingAcct('${f.id}','currentBalance',this.value);renderDen()"></div>
         <div class="den-field-row"><span class="den-field-lbl">Interest rate</span><input class="den-inp" type="number" min="0" step="0.01" value="${rate||''}" placeholder="e.g. 6.5" style="width:80px;text-align:right" onblur="updateFinancingAcct('${f.id}','interestRate',this.value);renderDen()"><span style="font-size:12px;color:var(--text-soft);margin-left:2px">% APR</span></div>
         <div class="den-field-row"><span class="den-field-lbl">Term</span><input class="den-inp" type="number" min="0" step="1" value="${parseInt(f.termMonths)||''}" placeholder="e.g. 60" style="width:80px;text-align:right" onblur="updateFinancingAcct('${f.id}','termMonths',this.value)"><span style="font-size:12px;color:var(--text-soft);margin-left:2px">months</span></div>
         <div class="den-field-row"><span class="den-field-lbl">Start date</span><input class="den-inp" type="date" value="${f.startDate||''}" style="width:150px" onblur="updateFinancingAcct('${f.id}','startDate',this.value)"></div>
         <div class="den-field-row"><span class="den-field-lbl">Budget line</span><select class="den-inp" style="flex:1;height:28px" onchange="updateFinancingAcct('${f.id}','linkedExpenseKey',this.value);renderDen()">${expOpts}</select></div>
-        ${payoff?`<div style="font-size:12px;color:var(--text-mid);margin-top:6px;padding:6px 8px;background:var(--parchment);border-radius:var(--radius-sm)">Est. payoff: <strong>${payoff}</strong>${pmt?' at '+fmtDec(pmt)+'/mo':''}</div>`:''}
+        ${payoff?`<div style="font-size:12px;color:var(--text-mid);margin-top:6px;padding:6px 8px;background:var(--parchment);border-radius:var(--radius-sm)">Est. payoff: <strong>${payoff}</strong>${pmt?' at '+fmtCents(pmt)+'/mo':''}</div>`:''}
         ${pmtCount?`<div style="font-size:11px;color:var(--text-soft);margin-top:6px">${pmtCount} payment${pmtCount!==1?'s':''} tagged in receipts</div>`:''}
       </div>
     </div>`;
@@ -2516,7 +2569,7 @@ function renderDenPortfolio(){
     const gBasis=group.reduce((s,v)=>{
       if(v.type==='cd')return s+(parseFloat(v.costBasis)||0);
       const linked=lbp[v.id]||[];
-      const autoB=linked.reduce((a,r)=>a+(parseFloat(r.amt)||0),0);
+      const autoB=linked.reduce((a,r)=>a+moneyCents(r.amt),0)/100;
       return s+autoB+(parseFloat(v.costBasis)||0);
     },0);
     const gGL=gVal-gBasis;
@@ -2525,7 +2578,7 @@ function renderDenPortfolio(){
       const isCD=v.type==='cd';
       const linked=isCD?[]:(lbp[v.id]||[]);
       const autoUnits=linked.reduce((s,r)=>s+(parseFloat(r.investmentUnits)||0),0);
-      const autoBasis=linked.reduce((s,r)=>s+(parseFloat(r.amt)||0),0);
+      const autoBasis=linked.reduce((s,r)=>s+moneyCents(r.amt),0)/100;
       const effectiveUnits=isCD?(parseFloat(v.units)||1):(autoUnits+(parseFloat(v.units)||0));
       const effectiveBasis=isCD?(parseFloat(v.costBasis)||0):(autoBasis+(parseFloat(v.costBasis)||0));
       const val=effectiveUnits*(parseFloat(v.currentPrice)||0);
@@ -2563,7 +2616,7 @@ function renderDenPortfolio(){
           <div style="margin-left:auto;text-align:right"><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Value</div><div style="font-size:15px;font-weight:600">${fmt(val)}</div></div>
           ${basis?`<div style="text-align:right"><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Gain / Loss</div><div class="${gl>=0?'den-gain':'den-loss'}" style="font-size:13px;font-weight:600">${gl>=0?'+':''}${fmt(gl)}${glPct!==null?' ('+glPct.toFixed(1)+'%)':''}</div></div>`:''}
         </div>
-        ${linked.length?`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--border-faint)"><div style="font-size:10px;font-weight:600;color:var(--text-faint);margin-bottom:4px">Purchases from receipts</div>${linked.map(r=>`<div style="display:flex;gap:8px;font-size:11px;color:var(--text-mid);padding:2px 0"><span style="color:var(--text-soft);min-width:80px">${r.date}</span><span style="flex:1">${esc(r.vendor||r.note||'—')}</span><span>${fmt(parseFloat(r.amt)||0)}</span>${r.investmentUnits?`<span style="color:var(--text-soft)">${r.investmentUnits} units</span>`:''}</div>`).join('')}<div style="display:flex;gap:8px;font-size:11px;font-weight:600;margin-top:4px;padding-top:4px;border-top:1px solid var(--border-faint)"><span style="flex:1;color:var(--text-soft)">Subtotal</span><span>${fmt(autoBasis)}</span>${autoUnits?`<span style="color:var(--text-soft)">${autoUnits} units</span>`:''}</div></div>`:''}
+        ${linked.length?`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--border-faint)"><div style="font-size:10px;font-weight:600;color:var(--text-faint);margin-bottom:4px">Purchases from receipts</div>${linked.map(r=>`<div style="display:flex;gap:8px;font-size:11px;color:var(--text-mid);padding:2px 0"><span style="color:var(--text-soft);min-width:80px">${r.date}</span><span style="flex:1">${esc(r.vendor||r.note||'—')}</span><span>${fmt(r.amt)}</span>${r.investmentUnits?`<span style="color:var(--text-soft)">${r.investmentUnits} units</span>`:''}</div>`).join('')}<div style="display:flex;gap:8px;font-size:11px;font-weight:600;margin-top:4px;padding-top:4px;border-top:1px solid var(--border-faint)"><span style="flex:1;color:var(--text-soft)">Subtotal</span><span>${fmt(autoBasis)}</span>${autoUnits?`<span style="color:var(--text-soft)">${autoUnits} units</span>`:''}</div></div>`:''}
         <div style="display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:6px;border-top:1px solid var(--border-faint)">
           <input type="checkbox" id="wt-${v.id}" ${v.walletTracked?'checked':''} onchange="updateInvestment('${v.id}','walletTracked',this.checked);renderDenNetWorth();renderDenPortfolioChart()">
           <label for="wt-${v.id}" style="font-size:11px;color:var(--text-soft);cursor:pointer">Price tracked via wallet — exclude from net worth</label>
@@ -2579,8 +2632,8 @@ function renderDenGoals(){
   const el=document.getElementById('den-goals');if(!el)return;
   if(!savingsGoals.length){el.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:12px 0">No goals yet. Add a savings target.</div>';return;}
   el.innerHTML=savingsGoals.map(g=>{
-    const curr=parseFloat(g.currentAmt)||0;
-    const tgt=parseFloat(g.targetAmt)||0;
+    const curr=moneyCents(g.currentAmt);
+    const tgt=moneyCents(g.targetAmt);
     const pct=tgt>0?Math.min(100,curr/tgt*100):0;
     const pc=pct>=100?'':pct>=60?'warn':'over';
     const remaining=tgt>curr?tgt-curr:0;
@@ -2591,12 +2644,12 @@ function renderDenGoals(){
         <button class="receipt-del" onclick="deleteSavingsGoal('${g.id}')" title="Delete">&#215;</button>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-        <div><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Saved so far</div><input class="den-inp" type="number" min="0" step="0.01" value="${curr||''}" placeholder="0.00" style="width:120px;text-align:right" onblur="updateSavingsGoal('${g.id}','currentAmt',this.value);renderDenGoals();renderDenPortfolioChart();renderDenNetWorth()"></div>
-        <div><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Target</div><input class="den-inp" type="number" min="0" step="0.01" value="${tgt||''}" placeholder="0.00" style="width:120px;text-align:right" onblur="updateSavingsGoal('${g.id}','targetAmt',this.value);renderDenGoals();renderDenPortfolioChart();renderDenNetWorth()"></div>
-        ${tgt?`<div><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Remaining</div><div style="font-size:13px;color:var(--text-mid);padding-bottom:4px">${fmt(remaining)}</div></div>`:''}
+        <div><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Saved so far</div><input class="den-inp" type="number" min="0" step="0.01" value="${curr?moneyFromCents(curr):''}" placeholder="0.00" style="width:120px;text-align:right" onblur="updateSavingsGoal('${g.id}','currentAmt',this.value);renderDenGoals();renderDenPortfolioChart();renderDenNetWorth()"></div>
+        <div><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Target</div><input class="den-inp" type="number" min="0" step="0.01" value="${tgt?moneyFromCents(tgt):''}" placeholder="0.00" style="width:120px;text-align:right" onblur="updateSavingsGoal('${g.id}','targetAmt',this.value);renderDenGoals();renderDenPortfolioChart();renderDenNetWorth()"></div>
+        ${tgt?`<div><div style="font-size:10px;color:var(--text-soft);margin-bottom:2px">Remaining</div><div style="font-size:13px;color:var(--text-mid);padding-bottom:4px">${fmtCents(remaining)}</div></div>`:''}
       </div>
       ${tgt?`<div class="progress-wrap" style="margin-top:8px"><div class="progress-fill ${pc}" style="width:${pct.toFixed(1)}%"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-soft);margin-top:3px"><span>${pct.toFixed(0)}% of goal</span><span>${fmt(tgt)} target</span></div>`:''}
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-soft);margin-top:3px"><span>${Math.trunc(pct)}% of goal</span><span>${fmtCents(tgt)} target</span></div>`:''}
       <div class="den-field-row" style="margin-top:10px"><span class="den-field-lbl">Budget line</span><select class="den-inp" style="flex:1;height:28px" onchange="updateSavingsGoal('${g.id}','linkedExpenseKey',this.value)">${expOpts}</select></div>
     </div>`;
   }).join('');
@@ -2702,7 +2755,7 @@ async function refreshWalletBalances(){
       if(r.status!=='fulfilled')return;
       r.value.forEach(item=>{
         const stable=WALLET_STABLES.includes(item.symbol);
-        const fiat=stable?item.balance:+(item.balance*(prices[item.symbol]||0)).toFixed(2);
+        const fiat=stable?moneyString(item.balance):moneyString(item.balance*(prices[item.symbol]||0));
         if(item.balance>0)assets.push({...item,fiat,ts});
       });
     });
@@ -2797,7 +2850,7 @@ async function fetchWalletActivity(addr){
           const ts=parseInt(tx.timeStamp)||0;
           const date=new Date(ts*1000).toISOString().slice(0,10);
           const cgId=cgIdForWalletSymbol(nativeSym);
-          const item={id:uid(),chain,hash:tx.hash,date,ts,from:tx.from,to:tx.to,sym:nativeSym,tokenAmt,usdEst:0,direction:txDir,gasEth,gasUsdEst:0,status:'pending',cgId,importedReceiptId:null};
+          const item={id:uid(),chain,hash:tx.hash,date,ts,from:tx.from,to:tx.to,sym:nativeSym,tokenAmt,usdEst:'0.00',direction:txDir,gasEth,gasUsdEst:'0.00',status:'pending',cgId,importedReceiptId:null};
           seenHashes.add(chain+'|'+tx.hash);
           newItems.push(item);
         });
@@ -2816,7 +2869,7 @@ async function fetchWalletActivity(addr){
           const ts=parseInt(tx.timeStamp)||0;
           const date=new Date(ts*1000).toISOString().slice(0,10);
           const cgId=cgIdForWalletSymbol(sym);
-          const item={id:uid(),chain,hash:tx.hash,date,ts,from:tx.from,to:tx.to,sym,tokenAmt,usdEst:0,direction:txDir,gasEth:0,gasUsdEst:0,status:'pending',cgId,importedReceiptId:null};
+          const item={id:uid(),chain,hash:tx.hash,date,ts,from:tx.from,to:tx.to,sym,tokenAmt,usdEst:'0.00',direction:txDir,gasEth:0,gasUsdEst:'0.00',status:'pending',cgId,importedReceiptId:null};
           seenHashes.add(chain+'|'+tx.hash);
           newItems.push(item);
         });
@@ -2833,8 +2886,8 @@ async function fetchWalletActivity(addr){
   }));
   newItems.forEach(item=>{
     const price=priceMap[(item.cgId||'null')+':'+item.date]||0;
-    item.usdEst=+(item.tokenAmt*(WALLET_STABLES.includes(item.sym)?1:price)).toFixed(2);
-    if(item.gasEth&&price)item.gasUsdEst=+(item.gasEth*price).toFixed(4);
+    item.usdEst=moneyString(item.tokenAmt*(WALLET_STABLES.includes(item.sym)?1:price));
+    if(item.gasEth&&price)item.gasUsdEst=moneyString(item.gasEth*price);
   });
   // Prune old dismissed/imported entries (>90 days)
   const cutoff=Math.floor(Date.now()/1000)-90*86400;
@@ -2849,12 +2902,12 @@ async function fetchWalletActivity(addr){
 }
 
 function autoImportTx(item){
-  const r={id:uid(),cat:'',amt:item.usdEst.toFixed(2),vendor:item.sym+' ('+item.chain+')',note:item.hash.slice(0,12)+'…',date:item.date,by:settings.username||''};
+  const r={id:uid(),cat:'',amt:moneyString(item.usdEst),vendor:item.sym+' ('+item.chain+')',note:item.hash.slice(0,12)+'…',date:item.date,by:settings.username||''};
   receipts.push(r);
   item.status='imported';
   item.importedReceiptId=r.id;
   if(settings.walletGasFees&&item.gasUsdEst>0){
-    receipts.push({id:uid(),cat:'',amt:item.gasUsdEst.toFixed(4),vendor:'ETH Gas',note:'Gas: '+item.hash.slice(0,12)+'…',date:item.date,by:settings.username||''});
+    receipts.push({id:uid(),cat:'',amt:moneyString(item.gasUsdEst),vendor:'ETH Gas',note:'Gas: '+item.hash.slice(0,12)+'…',date:item.date,by:settings.username||''});
   }
 }
 
@@ -2872,15 +2925,15 @@ function dismissTx(id){
 function confirmImportTx(id){
   const tx=walletPendingTxs.find(t=>t.id===id);if(!tx)return;
   const dateVal=document.getElementById('wti-date-'+id)?.value||tx.date;
-  const amtVal=parseFloat(document.getElementById('wti-amt-'+id)?.value)||tx.usdEst;
+  const amtVal=moneyString(document.getElementById('wti-amt-'+id)?.value||tx.usdEst);
   const vendVal=document.getElementById('wti-vend-'+id)?.value||(tx.sym+' ('+tx.chain+')');
   const noteVal=document.getElementById('wti-note-'+id)?.value||'';
   const catVal=document.getElementById('wti-cat-'+id)?.value||'';
-  const r={id:uid(),cat:catVal,amt:amtVal.toFixed(2),vendor:vendVal,note:noteVal,date:dateVal,by:settings.username||''};
+  const r={id:uid(),cat:catVal,amt:amtVal,vendor:vendVal,note:noteVal,date:dateVal,by:settings.username||''};
   receipts.push(r);
   if(settings.walletGasFees&&tx.gasUsdEst>0){
     const gasNote=document.getElementById('wti-gas-'+id)?.checked;
-    if(gasNote!==false)receipts.push({id:uid(),cat:'',amt:tx.gasUsdEst.toFixed(4),vendor:'ETH Gas',note:'Gas: '+tx.hash.slice(0,12)+'…',date:dateVal,by:settings.username||''});
+    if(gasNote!==false)receipts.push({id:uid(),cat:'',amt:moneyString(tx.gasUsdEst),vendor:'ETH Gas',note:'Gas: '+tx.hash.slice(0,12)+'…',date:dateVal,by:settings.username||''});
   }
   tx.status='imported';tx.importedReceiptId=r.id;
   walletImportingTxId=null;
@@ -2935,7 +2988,7 @@ function renderDenWallet(){
         ${tx.gasEth>0?`<div style="font-size:11px;color:var(--text-faint);margin-top:4px">Gas: ${tx.gasEth.toFixed(6)} ETH${tx.gasUsdEst>0?' (~'+fmtDec(tx.gasUsdEst)+')':''}</div>`:''}
         ${isOpen?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-faint);display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div><div style="font-size:11px;color:var(--text-soft);margin-bottom:3px">Date</div><input id="wti-date-${tx.id}" class="den-inp" type="date" value="${esc(tx.date)}" style="width:100%;font-size:12px"></div>
-          <div><div style="font-size:11px;color:var(--text-soft);margin-bottom:3px">Amount (¥)</div><input id="wti-amt-${tx.id}" class="den-inp" type="number" step="0.01" value="${tx.usdEst.toFixed(2)}" style="width:100%;font-size:12px"></div>
+          <div><div style="font-size:11px;color:var(--text-soft);margin-bottom:3px">Amount (¥)</div><input id="wti-amt-${tx.id}" class="den-inp" type="number" step="0.01" value="${moneyString(tx.usdEst)}" style="width:100%;font-size:12px"></div>
           <div><div style="font-size:11px;color:var(--text-soft);margin-bottom:3px">Vendor</div><input id="wti-vend-${tx.id}" class="den-inp" type="text" value="${esc(tx.sym+' ('+tx.chain+')')}" style="width:100%;font-size:12px"></div>
           <div><div style="font-size:11px;color:var(--text-soft);margin-bottom:3px">Category</div><select id="wti-cat-${tx.id}" class="den-inp" style="width:100%;font-size:12px"><option value="">Uncategorized</option>${cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}</select></div>
           <div style="grid-column:1/-1"><div style="font-size:11px;color:var(--text-soft);margin-bottom:3px">Note</div><input id="wti-note-${tx.id}" class="den-inp" type="text" placeholder="Optional note" style="width:100%;font-size:12px"></div>
@@ -2966,21 +3019,21 @@ function renderDenWallet(){
   symbols.forEach(sym=>{
     const rows=bySymbol[sym];
     const stable=WALLET_STABLES.includes(sym);
-    const totalFiat=rows.reduce((s,r)=>s+r.fiat,0);
+    const totalFiat=rows.reduce((s,r)=>s+moneyCents(r.fiat),0);
     const totalBal=rows.reduce((s,r)=>s+r.balance,0);
     const multiChain=rows.length>1;
     html+=`<div style="margin-bottom:8px">
       <div style="display:flex;align-items:center;gap:8px;padding:4px 0">
         <span style="font-size:13px;font-weight:600;color:var(--text);min-width:48px">${esc(sym)}</span>
         ${!stable?`<span style="font-size:12px;color:var(--text-soft)">${totalBal.toFixed(4)}</span>`:''}
-        ${multiChain?`<span style="font-size:11px;color:var(--text-faint);flex:1;text-align:right">${fmt(totalFiat)}</span>`:'<span style="flex:1"></span>'}
+        ${multiChain?`<span style="font-size:11px;color:var(--text-faint);flex:1;text-align:right">${fmtCents(totalFiat)}</span>`:'<span style="flex:1"></span>'}
       </div>`;
     rows.forEach(r=>{
       const chainName=WALLET_CHAINS[r.chain]?.name||r.chain;
       html+=`<div style="display:flex;align-items:center;gap:8px;padding:2px 0 2px 12px;font-size:12px;color:var(--text-mid)">
         <span style="min-width:72px;color:var(--text-soft)">${chainName}</span>
         ${!stable?`<span>${r.balance.toFixed(4)} ${esc(sym)}</span>`:''}
-        <span style="margin-left:auto;font-weight:${multiChain?'400':'600'};color:${multiChain?'var(--text-mid)':'var(--text)'}">${fmt(r.fiat)}</span>
+        <span style="margin-left:auto;font-weight:${multiChain?'400':'600'};color:${multiChain?'var(--text-mid)':'var(--text)'}">${fmtCents(moneyCents(r.fiat))}</span>
       </div>`;
     });
     html+=`</div>`;
@@ -3034,7 +3087,7 @@ async function priceViaCoinGecko(){
   if(!res.ok)throw new Error('CoinGecko HTTP '+res.status);
   const data=await res.json();
   let count=0;
-  cryptos.forEach(v=>{const slug=cgId(v.priceId||v.symbol);const price=data[slug]?.usd;if(price!=null){v.currentPrice=price;v.lastPriceUpdate=todayStr();count++;}});
+  cryptos.forEach(v=>{const slug=cgId(v.priceId||v.symbol);const price=data[slug]?.usd;if(price!=null){v.currentPrice=moneyString(price);v.lastPriceUpdate=todayStr();count++;}});
   return count;
 }
 
@@ -3046,7 +3099,7 @@ async function priceViaFinnhub(){
     const res=await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${encodeURIComponent(key)}`,{signal:mkSignal(10000)});
     if(!res.ok)throw new Error(res.status);
     const data=await res.json();
-    if(data.c>0){v.currentPrice=data.c;v.lastPriceUpdate=todayStr();return true;}
+    if(data.c>0){v.currentPrice=moneyString(data.c);v.lastPriceUpdate=todayStr();return true;}
     return false;
   }));
   return results.filter(r=>r.status==='fulfilled'&&r.value).length;
@@ -3064,7 +3117,7 @@ async function priceViaTwelveData(){
     const sym=v.priceId||v.symbol;
     const entry=positions.length===1?data:data[sym];
     const price=parseFloat(entry?.price);
-    if(!isNaN(price)&&price>0){v.currentPrice=price;v.lastPriceUpdate=todayStr();count++;}
+    if(!isNaN(price)&&price>0){v.currentPrice=moneyString(price);v.lastPriceUpdate=todayStr();count++;}
   });
   return count;
 }
@@ -3086,7 +3139,7 @@ async function priceViaAlphaVantage(){
       const price=isCrypto
         ?parseFloat(data['Realtime Currency Exchange Rate']?.['5. Exchange Rate'])
         :parseFloat(data['Global Quote']?.['05. price']);
-      if(!isNaN(price)&&price>0){v.currentPrice=price;v.lastPriceUpdate=todayStr();count++;}
+      if(!isNaN(price)&&price>0){v.currentPrice=moneyString(price);v.lastPriceUpdate=todayStr();count++;}
     }catch{}
     if(i<positions.length-1)await new Promise(r=>setTimeout(r,250));
   }
@@ -3252,7 +3305,7 @@ function recalcCDValue(id){
   if(!principal)return;
   const depositTs=v.depositDate?new Date(v.depositDate).getTime():Date.now();
   const years=Math.max(0,(Date.now()-depositTs)/86400000/365);
-  v.currentPrice=apy>0?+(principal*Math.pow(1+apy/100,years)).toFixed(2):principal;
+  v.currentPrice=moneyString(apy>0?principal*Math.pow(1+apy/100,years):principal);
   v.units=1;
   triggerAutosave('den');
 }
@@ -3286,7 +3339,7 @@ function renderLineChart(points,el,isIntraday){
   const gid='cg'+Math.random().toString(36).slice(2,8);
   const path=points.map((pt,i)=>(i?'L':'M')+xf(i).toFixed(1)+','+yf(pt.p).toFixed(1)).join('');
   const fill=`${path}L${xf(points.length-1).toFixed(1)},${(pd.t+iH).toFixed(1)}L${pd.l},${(pd.t+iH).toFixed(1)}Z`;
-  const fmtP=v=>v>=1e6?'¥'+(v/1e6).toFixed(2)+'M':v>=1000?'¥'+(v/1000).toFixed(1)+'k':v>=1?'¥'+v.toFixed(2):'¥'+v.toFixed(4);
+  const fmtP=v=>v>=1e6?'¥'+moneyString(v/1e6)+'M':v>=1000?'¥'+moneyString(v/1000)+'k':'¥'+moneyString(v);
   const fmtX=t=>isIntraday?new Date(t).toLocaleTimeString('zh-CN',{hour:'numeric',hour12:true}):new Date(t).toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
   const yticks=Array.from({length:4},(_,i)=>{
     const val=minP+rng/3*i,yp=yf(val).toFixed(1);
@@ -3387,7 +3440,7 @@ async function chartViaAlphaVantageIntraday(sym,sig){
 
 function addInvestment(type){
   const isCD=type==='cd';
-  investments.push({id:uid(),name:isCD?'New CD / Savings':'New position',symbol:'',type:type||'stock',units:isCD?1:0,costBasis:0,currentPrice:0,lastPriceUpdate:'',priceId:'',apy:0,depositDate:'',purchaseDate:''});
+  investments.push({id:uid(),name:isCD?'New CD / Savings':'New position',symbol:'',type:type||'stock',units:isCD?1:0,costBasis:'0.00',currentPrice:'0.00',lastPriceUpdate:'',priceId:'',apy:0,depositDate:'',purchaseDate:''});
   invalidateDenChartCache();
   populateDenLogFields();
   triggerAutosave('den');renderDenPortfolio();renderDenNetWorth();renderDenChartCard();
@@ -3401,11 +3454,11 @@ function deleteInvestment(id){
 }
 function updateInvestment(id,field,value){
   const v=investments.find(v=>v.id===id);if(!v)return;
-  v[field]=value;triggerAutosave('den');
+  v[field]=['costBasis','currentPrice'].includes(field)?moneyString(value):value;triggerAutosave('den');
 }
 
 function addSavingsGoal(){
-  savingsGoals.push({id:uid(),name:'New goal',targetAmt:0,currentAmt:0,linkedExpenseKey:''});
+  savingsGoals.push({id:uid(),name:'New goal',targetAmt:'0.00',currentAmt:'0.00',linkedExpenseKey:''});
   triggerAutosave('den');renderDenGoals();renderDenPortfolioChart();renderDenNetWorth();
 }
 function deleteSavingsGoal(id){
@@ -3415,7 +3468,7 @@ function deleteSavingsGoal(id){
 }
 function updateSavingsGoal(id,field,value){
   const g=savingsGoals.find(g=>g.id===id);if(!g)return;
-  g[field]=value;triggerAutosave('den');
+  g[field]=['targetAmt','currentAmt'].includes(field)?moneyString(value):value;triggerAutosave('den');
 }
 
 function refreshAll(){
@@ -3440,6 +3493,8 @@ initExpenses();
 loadSettings();
 loadSyncMeta();
 loadLocalData();
+normalizeDataState();
+saveLocalData();
 updateDateLabel();
 const incomeDateInput=document.getElementById('income-date');
 if(incomeDateInput&&!incomeDateInput.value)incomeDateInput.value=todayStr();
