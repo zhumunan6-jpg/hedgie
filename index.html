@@ -26,8 +26,6 @@
   --radius-sm:8px;--radius-md:12px;--radius-lg:16px;
 }
 body.dark .quick-log{background:#2a1f14}
-body.dark .gear-btn{background:#352b1f;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
-body.dark .gear-btn:hover{background:#3d3220}
 body.dark .quick-form input,body.dark .quick-form select{background:rgba(0,0,0,0.25);border-color:rgba(255,255,255,0.15);color:var(--text)}
 body.dark .quick-form select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' opacity='0.7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
 body.dark .quick-log-title {
@@ -54,7 +52,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tab-nav{display:flex;flex:1}
 .tab-btn{display:flex;align-items:center;gap:6px;padding:12px 16px;background:transparent;border:none;border-bottom:2.5px solid transparent;color:var(--text-soft);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all 0.15s;margin-bottom:-1.5px}
 .tab-btn:hover{color:var(--brown)}.tab-btn.active{color:var(--brown-dark);border-bottom-color:var(--brown)}
-.panel{padding:1.25rem 1rem 5rem;height:0;overflow:hidden}.panel.active{display:block;height:auto;overflow:visible}
+.panel{padding:1.25rem 1rem 1.5rem;height:0;overflow:hidden}.panel.active{display:block;height:auto;overflow:visible}
 /* Tab swipe container */
 #tab-panels-wrap{overflow:hidden;max-width:860px;margin:0 auto}
 #tab-panels-inner{display:flex;align-items:flex-start;transition:transform 0.32s cubic-bezier(0.4,0,0.2,1);will-change:transform}
@@ -168,24 +166,6 @@ select{cursor:pointer}
 .yr-note{font-size:12px;color:var(--blue);text-align:right}
 .empty-state{text-align:center;padding:2rem 1rem;color:var(--text-soft)}
 .hint{font-size:11px;color:var(--text-faint);text-align:center;padding-top:6px}
-/* gear */
-.gear-btn{position:fixed;bottom:20px;right:20px;z-index:300;width:44px;height:44px;border-radius:50%;background:var(--brown-dark);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(61,42,16,0.35);transition:background 0.15s}
-.gear-btn:hover{background:var(--spine)}
-.gear-dot{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--amber);border:1.5px solid var(--brown-dark);display:none}
-.gear-dot.show{display:block}
-/* drawer */
-.drawer-overlay{position:fixed;inset:0;z-index:400;background:rgba(45,31,14,0.35);opacity:0;pointer-events:none;transition:opacity 0.25s}
-.drawer-overlay.open{opacity:1;pointer-events:all}
-.drawer{position:fixed;bottom:0;left:50%;width:min(860px,100%);z-index:401;background:var(--warm-white);border-radius:var(--radius-lg) var(--radius-lg) 0 0;border-top:1.5px solid var(--border);box-shadow:0 -4px 24px rgba(61,42,16,0.15);transform:translate(-50%,100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1);max-height:90vh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px)}
-.drawer.open{transform:translate(-50%,0)}
-.drawer-handle{width:36px;height:4px;border-radius:2px;background:var(--tan);margin:12px auto 0}
-.drawer-hdr{padding:12px 1.25rem 0;display:flex;justify-content:space-between;align-items:center}
-.drawer-title{font-size:16px;font-weight:700;color:var(--brown-dark)}
-.drawer-close{background:none;border:none;font-size:20px;color:var(--text-soft);cursor:pointer;padding:4px;line-height:1}
-.drawer-body{padding:1rem 1.25rem 1.5rem}
-
-.drawer-field{margin-bottom:10px}
-.drawer-field label{font-size:12px;color:var(--text-mid);display:block;margin-bottom:4px;font-weight:500}
 .sync-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-soft);padding:8px 0}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:var(--text-faint);flex-shrink:0}
 .sync-dot.ok{background:var(--green)}.sync-dot.err{background:var(--red)}.sync-dot.busy{background:var(--amber)}
@@ -219,16 +199,6 @@ select{cursor:pointer}
 .buf-pri-H{background:var(--red-light);color:var(--red)}
 .buf-pri-M{background:var(--amber-light);color:var(--amber)}
 .buf-pri-L{background:var(--green-bg);color:var(--green)}
-/* drawer accordion */
-.drawer-acc-hdr{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:10px 0;border-bottom:1px solid var(--border-light);user-select:none}
-.drawer-acc-hdr:last-of-type{border-bottom:none}
-.drawer-acc-title{font-size:12px;font-weight:600;color:var(--text-mid);letter-spacing:0.3px}
-.drawer-acc-arrow{font-size:12px;color:var(--text-faint);transition:transform 0.2s}
-.drawer-acc-arrow.open{transform:rotate(90deg)}
-.drawer-acc-body{overflow:hidden;max-height:0}
-.drawer-acc-body.open{max-height:2400px}
-.drawer-acc-inner{padding:12px 0 4px;opacity:0;transition:opacity 0.18s ease}
-.drawer-acc-body.open .drawer-acc-inner{opacity:1}
 .notif-rule-btns{padding-bottom:env(safe-area-inset-bottom,12px);margin-top:8px}
 /* hiber ref line */
 .hiber-bar-wrap{position:relative}
@@ -288,7 +258,6 @@ select{cursor:pointer}
 body.left-hand .tab-bar-inner{flex-direction:row-reverse}
 body.left-hand .tab-logo{border-right:none;border-left:1px solid var(--border-light);padding:8px 0 8px 14px;margin-right:0;margin-left:4px}
 body.left-hand .notif-panel{right:auto;left:0}
-body.left-hand .gear-btn{right:auto;left:20px}
 body.left-hand #gsb-inner{flex-direction:row-reverse;padding:0 1.25rem 0 0}
 body.left-hand #gsb-sync-btn{border-radius:6px}
 body.left-hand .card-hdr{flex-direction:row-reverse}
@@ -301,8 +270,6 @@ body.large-text .card-title{font-size:16px!important}
 body.large-text .btn{font-size:14px!important}
 body.large-text input,body.large-text select,body.large-text textarea{font-size:15px!important}
 body.large-text .tab-lbl{font-size:13px!important}
-body.large-text .drawer-acc-title{font-size:14px!important}
-body.large-text .drawer-acc-inner{font-size:15px!important}
 body.large-text .hint{font-size:13px!important}
 body.large-text .notif-item-label{font-size:14px!important}
 body.large-text .gsb-label,body.large-text #gsb-label{font-size:13px!important}
@@ -366,10 +333,6 @@ body.dark.high-contrast{
     <button class="tab-btn" onclick="switchTab('report')" id="tab-report">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       <span class="tab-lbl">Monthly report</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('planner')" id="tab-planner">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span class="tab-lbl">Budget planner</span>
     </button>
   </div>
   <div class="notif-wrap" style="display:flex;align-items:center;align-self:center;margin-right:4px;gap:4px">
@@ -609,440 +572,17 @@ body.dark.high-contrast{
   <div class="hint" style="margin-top:8px" id="donate-btn-report"></div>
 </div>
 
-<!-- ═══ TAB 3 — PLANNER ═══ -->
-<div class="panel" id="panel-planner">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;gap:12px;flex-wrap:wrap">
-    <div>
-      <div style="font-size:18px;font-weight:700;color:var(--brown-dark)">Budget planner</div>
-      <div style="font-size:12px;color:var(--text-soft)">Monthly targets · yearly items shown as monthly equivalent</div>
-    </div>
-    <input type="file" id="restore-inp" accept=".json" style="display:none" onchange="restoreJSON(this)">
-  </div>
-  <div class="metrics-row" id="pl-metrics"></div>
-  <div class="flow-bar-wrap">
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-soft);margin-bottom:6px">
-      <span>Expenses as % of income</span><span id="pl-pct-lbl" style="font-weight:600">0%</span>
-    </div>
-    <div class="progress-wrap" style="height:10px"><div class="progress-fill" id="pl-flow-fill" style="width:0%"></div></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><span class="card-title">Income sources</span><button class="add-exp-btn" onclick="addIncome()">+ Add source</button></div>
-    <div id="income-list"></div>
-  </div>
-  <!-- Category manager (collapsible) -->
-  <div class="card" style="margin-bottom:0.75rem">
-    <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleCatManager()">
-      <span class="card-title">Manage categories</span>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span style="font-size:11px;color:var(--text-faint)" id="cat-count-lbl"></span>
-        <span style="font-size:12px;color:var(--text-soft)" id="cat-mgr-arrow">&#9656;</span>
-      </div>
-    </div>
-    <div id="cat-manager-body" style="display:none;margin-top:10px">
-      <div id="cat-manager-rows"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--border-light)">
-        <button class="add-exp-btn" onclick="addCategory()">+ Add category</button>
-        <button class="btn" style="font-size:11px;padding:4px 10px;color:var(--text-soft)" onclick="resetCatsToDefault()">Reset to defaults</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="pills" id="plan-pills">
-    <span class="pill-label">Category:</span>
-    <button class="pill on" data-f="all" onclick="setPlanFilter('cat','all',this)">All</button>
-    <button class="pill" data-f="Home" onclick="setPlanFilter('cat','Home',this)">Home</button>
-    <button class="pill" data-f="Transportation" onclick="setPlanFilter('cat','Transportation',this)">Transportation</button>
-    <button class="pill" data-f="Shopping" onclick="setPlanFilter('cat','Shopping',this)">Shopping</button>
-    <button class="pill" data-f="Services" onclick="setPlanFilter('cat','Services',this)">Services</button>
-    <button class="pill" data-f="Debts" onclick="setPlanFilter('cat','Debts',this)">Debts</button>
-    <button class="pill" data-f="Savings" onclick="setPlanFilter('cat','Savings',this)">Savings</button>
-    <span class="pill-label" style="margin-left:4px">Priority:</span>
-    <button class="pill" data-fp="H" onclick="setPlanFilter('pri','H',this)">High</button>
-    <button class="pill" data-fp="M" onclick="setPlanFilter('pri','M',this)">Medium</button>
-    <button class="pill" data-fp="L" onclick="setPlanFilter('pri','L',this)">Low</button>
-  </div>
-  <div id="expense-sections"></div>
-  <div class="card">
-    <div class="card-hdr">
-      <div>
-        <span class="card-title">Rainy day buffer</span>
-        <div style="font-size:11px;color:var(--text-soft);margin-top:2px">Monthly surplus earmarked per category — weighted by the cost of High/Medium/Low expenses in each. Think of it as a per-category rainy day reserve funded by your leftover income.</div>
-      </div>
-      <span class="card-sub" id="buf-avail">Surplus: ¥0</span>
-    </div>
-    <div id="buffer-list"></div>
-    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:13px;color:var(--text-soft)">Rainy day buffer</span>
-      <span style="font-size:13px;font-weight:600;color:var(--green)" id="buf-total-amt">¥0</span>
-    </div>
-  </div>
-  <div class="hint" style="margin-top:8px"><a href="#" onclick="openDrawer();setTimeout(()=>toggleAcc('acc-data'),120);return false" style="color:var(--brown-light);text-decoration:none">&#128190; Export &amp; backup &#8250;</a></div>
-  <div class="hint" style="margin-top:8px" id="donate-btn-planner"></div>
-</div><!-- /panel-planner -->
-
-<!-- ═══ TAB 4 — DEN ═══ -->
+<!-- ═══ TAB 3 — DEN ═══ -->
 </div></div><!-- /tab-panels-inner /tab-panels-wrap -->
 
-<!-- GEAR -->
-<button class="gear-btn" onclick="openDrawer()" title="Settings">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-  </svg>
-  <div class="gear-dot" id="gear-dot"></div>
-</button>
 
-<!-- DRAWER -->
-<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer">
-  <div class="drawer-handle"></div>
-  <div class="drawer-hdr">
-    <span class="drawer-title">Settings</span>
-    <button class="drawer-close" onclick="closeDrawer()">&#215;</button>
-  </div>
-  <div class="drawer-body" style="padding:0 1.25rem 1.5rem">
 
-    <!-- IDENTITY -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0 10px;border-bottom:1px solid var(--border-light);margin-bottom:8px">
-      <span style="font-size:12px;color:var(--text-faint)">Open Hedgie · v2.5.9</span>
-      <div style="display:flex;align-items:center;gap:12px">
-        <a href="https://github.com/lancebramsay/hedgie/wiki" target="_blank" style="font-size:12px;color:var(--brown-light);text-decoration:none">&#128214; Wiki &#8594;</a>
-        <a href="https://github.com/lancebramsay/hedgie" target="_blank" style="font-size:12px;color:var(--brown-light);text-decoration:none">GitHub &#8594;</a>
-      </div>
-    </div>
 
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-identity')">
-      <span class="drawer-acc-title">&#128100; Identity</span>
-      <span class="drawer-acc-arrow" id="arr-acc-identity">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-identity">
-      <div class="drawer-acc-inner">
-        <div class="drawer-field">
-          <label>Display name <span style="color:var(--text-faint);font-weight:400">(stamps your receipts)</span></label>
-          <input type="text" id="cfg-username" placeholder="e.g. Lance" oninput="settings.username=this.value;saveSettings()">
-        </div>
-        <div class="drawer-field">
-          <label>Signature color <span style="color:var(--text-faint);font-weight:400">(your name next to receipts)</span></label>
-          <input type="color" id="cfg-user-color" style="width:36px;height:36px;padding:2px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:transparent" onchange="settings.userColor=this.value;saveSettings();renderReceiptList();buildNotifications()">
-        </div>
-        <div class="drawer-field">
-          <label>Shared secret key <span style="color:var(--text-faint);font-weight:400">(signs sync payloads)</span></label>
-          <div class="key-display" id="key-display">No key generated</div>
-          <div class="key-actions">
-            <button class="btn" style="font-size:12px;padding:5px 10px" onclick="generateKey()">Generate</button>
-            <button class="btn" style="font-size:12px;padding:5px 10px" onclick="copyKey()">Copy</button>
-            <button class="btn" style="font-size:12px;padding:5px 10px" onclick="pasteKey()">Paste</button>
-          </div>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:5px" id="key-status"></div>
-        </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <span style="flex:1;font-size:13px;color:var(--text)">&#128274; Encrypt sync payload</span>
-            <input type="checkbox" id="cfg-encrypt" onchange="toggleEncryption(this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div id="encrypt-status" style="font-size:11px;color:var(--text-faint);margin-top:5px;line-height:1.5"></div>
-        </div>
-      </div>
-    </div>
 
-    <!-- DATA -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-data')">
-      <span class="drawer-acc-title">&#128190; Data</span>
-      <span class="drawer-acc-arrow" id="arr-acc-data">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-data">
-      <div class="drawer-acc-inner">
-        <div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.3px;margin-bottom:8px">BACKUP &amp; RESTORE</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">
-          <button class="btn success" onclick="saveJSON()">Save local</button>
-          <button class="btn" onclick="document.getElementById('restore-inp').click()">Restore local</button>
-        </div>
-        <div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.3px;margin-top:16px;margin-bottom:8px;padding-top:12px;border-top:1px solid var(--border-light)">EXPORT</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">
-          <button class="btn" onclick="exportReceiptsCSV()">Export receipts CSV</button>
-          <button class="btn" onclick="exportCSV()">Export budget CSV</button>
-          <button class="btn" id="copy-btn" onclick="copySheets()">Copy for Sheets</button>
-          <button class="btn" onclick="exportArchiveCSV()">Export archived receipts</button>
-        </div>
-        <div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.3px;margin-top:16px;margin-bottom:8px;padding-top:12px;border-top:1px solid var(--border-light)">RETENTION</div>
-        <div class="drawer-field" style="margin-top:0">
-          <label>Receipt data retention</label>
-          <select id="cfg-prune-years" onchange="settings.pruneYears=parseInt(this.value);saveSettings();">
-            <option value="0">Keep forever</option>
-            <option value="1">1 year</option>
-            <option value="2">2 years</option>
-            <option value="3">3 years</option>
-            <option value="5">5 years</option>
-            <option value="7">7 years</option>
-            <option value="10">10 years</option>
-          </select>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:5px;line-height:1.4">Archived data outside this window is permanently deleted on the next sync or app open.</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- SYNC -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-sync')">
-      <span class="drawer-acc-title">&#9729; Sync</span>
-      <span class="drawer-acc-arrow" id="arr-acc-sync">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-sync">
-      <div class="drawer-acc-inner">
-        <div class="sync-status" id="sync-status-row">
-          <div class="sync-dot" id="sync-dot"></div>
-          <span id="sync-status-txt">Not configured</span>
-        </div>
-        <div class="drawer-field">
-          <label>Sync provider</label>
-          <select id="cfg-provider" onchange="onProviderChange()">
-            <option value="none">None (local only)</option>
-            <option value="gist">GitHub Gist (private)</option>
-            <option value="dropbox">Dropbox</option>
-            <option value="jsonbin">JSONBin.io</option>
-            <option value="self">Self-hosted endpoint</option>
-          </select>
-        </div>
-        <div id="provider-fields"></div>
-        <div id="sync-timestamps" style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border-light);font-size:11px;color:var(--text-faint);line-height:2.1"></div>
-        <div class="btn-row" style="margin-top:12px">
-          <button class="btn" onclick="cloudPull()">&#8595; Pull</button>
-          <button class="btn primary" onclick="cloudPush()">&#8593; Push</button>
-          <button class="btn" style="font-size:12px" onclick="forceRefresh()" title="Clears cached version and reloads the app">&#8635; Force refresh</button>
-        </div>
-        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <div id="health-panel"></div>
-        </div>
-      </div>
-    </div>
 
-    <!-- DEN -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-den')">
-      <span class="drawer-acc-title">&#127968; Den</span>
-      <span class="drawer-acc-arrow" id="arr-acc-den">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-den">
-      <div class="drawer-acc-inner">
-        <div style="font-size:12px;color:var(--text-soft);margin-bottom:10px;line-height:1.5">Unlocks the <strong>Den tab</strong> for tracking loans, investments, and savings goals. Receipts can be tagged to financing accounts in the log form.</div>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:0">
-          <input type="checkbox" id="cfg-den-preview" onchange="toggleDenPreview(this.checked)">
-          <span style="font-size:13px;font-weight:500">Enable Den Preview features</span>
-        </label>
-        <div id="den-preview-content" style="display:none;margin-top:10px">
-          <div style="font-size:12px;color:var(--text-soft);line-height:1.5">Manage accounts, investments, and goals in the <strong>Den tab</strong>. Receipt tagging is available in the log form above.</div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
-            <div style="font-size:12px;font-weight:600;color:var(--text-mid);margin-bottom:6px">Price Feed</div>
-            <div style="font-size:12px;color:var(--text-soft);margin-bottom:8px">Fetch live stock and crypto prices. All providers offer a free tier.</div>
-            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-              <span style="font-size:12px;color:var(--text-soft);white-space:nowrap;min-width:60px">Provider</span>
-              <select id="cfg-price-provider" class="den-inp" style="flex:1;height:28px" onchange="updatePriceProvider(this.value)">
-                <option value="none">None — manual only</option>
-                <option value="coingecko">CoinGecko — crypto, free (optional key)</option>
-                <option value="finnhub">Finnhub — stocks + crypto, free key</option>
-                <option value="twelvedata">Twelve Data — stocks + crypto, free key</option>
-                <option value="alphavantage">Alpha Vantage — stocks + crypto, free key</option>
-              </select>
-            </div>
-            <div id="cfg-price-key-row" style="display:none;gap:8px;align-items:center;margin-bottom:8px">
-              <span id="cfg-price-key-lbl" style="font-size:12px;color:var(--text-soft);white-space:nowrap;min-width:60px">API key</span>
-              <input id="cfg-price-apikey" class="den-inp" type="password" style="flex:1" placeholder="Paste API key" onblur="savePriceApiKey(this.value)">
-            </div>
-            <div id="cfg-price-notes" style="font-size:11px;color:var(--text-soft);line-height:1.5"></div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- WALLET -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-wallet')">
-      <span class="drawer-acc-title">&#128179; Wallet</span>
-      <span class="drawer-acc-arrow" id="arr-acc-wallet">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-wallet">
-      <div class="drawer-acc-inner">
-        <div style="font-size:12px;color:var(--text-soft);margin-bottom:12px;line-height:1.5">Transaction import settings for the Den Wallet card. Requires Den Preview to be enabled.</div>
-        <div class="drawer-field">
-          <label>Etherscan API key <span style="color:var(--text-faint);font-weight:400">(free at etherscan.io/apis — covers all chains)</span></label>
-          <input type="text" id="cfg-etherscan-key" placeholder="Paste API key" onblur="settings.etherscanApiKey=this.value.trim();saveSettings()">
-        </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)">
-          <div style="font-size:11px;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Import options</div>
-          <div class="drawer-field">
-            <label>Direction</label>
-            <select id="cfg-wallet-dir" onchange="settings.walletTxDir=this.value;saveSettings()">
-              <option value="out">Outgoing only</option>
-              <option value="in">Incoming only</option>
-              <option value="both">Both</option>
-            </select>
-          </div>
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px">
-            <span style="flex:1;font-size:13px;color:var(--text)">Auto-import on sync</span>
-            <input type="checkbox" id="cfg-wallet-autoimport" onchange="settings.walletAutoImport=this.checked;saveSettings()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">When on, new transactions are logged as uncategorized receipts immediately. When off, they appear in the import queue for review.</div>
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:10px">
-            <span style="flex:1;font-size:13px;color:var(--text)">Include gas fees</span>
-            <input type="checkbox" id="cfg-wallet-gas" onchange="settings.walletGasFees=this.checked;saveSettings()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">Logs a separate ETH Gas receipt for each transaction's network fee.</div>
-        </div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)">
-          <div style="font-size:11px;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Networks</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-              <span style="flex:1;font-size:13px;color:var(--text)">Ethereum</span>
-              <input type="checkbox" id="cfg-chain-ethereum" onchange="toggleWalletChain('ethereum',this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-            </label>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-              <span style="flex:1;font-size:13px;color:var(--text)">Arbitrum</span>
-              <input type="checkbox" id="cfg-chain-arbitrum" onchange="toggleWalletChain('arbitrum',this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-            </label>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-              <span style="flex:1;font-size:13px;color:var(--text)">Base</span>
-              <input type="checkbox" id="cfg-chain-base" onchange="toggleWalletChain('base',this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-            </label>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-              <span style="flex:1;font-size:13px;color:var(--text)">Polygon</span>
-              <input type="checkbox" id="cfg-chain-polygon" onchange="toggleWalletChain('polygon',this.checked)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- NOTIFICATIONS -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-notifs')">
-      <span class="drawer-acc-title">&#128276; Notifications</span>
-      <span class="drawer-acc-arrow" id="arr-acc-notifs">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-notifs">
-      <div class="drawer-acc-inner">
-        <div style="font-size:11px;color:var(--text-soft);margin-bottom:10px;line-height:1.5">Choose which notifications appear in the bell menu.</div>
-        <div id="notif-toggles"></div>
-        <div class="drawer-field" style="margin-top:10px">
-          <label>Bill reminder window</label>
-          <select id="cfg-reminder-days-2" onchange="settings.reminderDays=parseInt(this.value);saveSettings();buildNotifications()">
-            <option value="7">1 week out</option>
-            <option value="14">2 weeks out</option>
-          </select>
-        </div>
-        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:12px;font-weight:600;color:var(--text-mid)">Custom notifications</span>
-            <button class="btn" style="font-size:11px;padding:3px 10px" onclick="addCustomNotif()">+ Add</button>
-          </div>
-          <div id="custom-notif-list"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- APPEARANCE -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-appearance')">
-      <span class="drawer-acc-title">&#127775; Appearance</span>
-      <span class="drawer-acc-arrow" id="arr-acc-appearance">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-appearance">
-      <div class="drawer-acc-inner">
-        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-          <span style="flex:1;font-size:13px;color:var(--text)">Dark mode</span>
-          <input type="checkbox" id="cfg-dark-mode" onchange="toggleDarkMode()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-        </label>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <span style="flex:1;font-size:13px;color:var(--text)">Show dark mode button in tab bar</span>
-            <input type="checkbox" id="cfg-show-darkmode-btn" onchange="settings.showDarkModeBtn=this.checked;saveSettings();applyDarkModeBtn()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">Hides the ☾ toggle from the tab bar. Dark mode can still be toggled here in Settings.</div>
-        </div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <span style="flex:1;font-size:13px;color:var(--text)">Left-hand mode</span>
-            <input type="checkbox" id="cfg-left-hand" onchange="settings.leftHandMode=this.checked;saveSettings();applyLeftHandMode()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">Mirrors the tab bar and card action buttons so controls sit on the left.</div>
-        </div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <span style="flex:1;font-size:13px;color:var(--text)">Reduce motion</span>
-            <input type="checkbox" id="cfg-reduced-motion" onchange="settings.reducedMotion=this.checked;saveSettings();applyReducedMotion()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">Disables slide animations and transitions. Recommended for motion sensitivity or vestibular disorders.</div>
-        </div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <span style="flex:1;font-size:13px;color:var(--text)">Large text</span>
-            <input type="checkbox" id="cfg-large-text" onchange="settings.largeText=this.checked;saveSettings();applyLargeText()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">Increases font size on buttons, form fields, card titles, and settings. Helps with low vision or small screens.</div>
-        </div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
-          <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-            <span style="flex:1;font-size:13px;color:var(--text)">High contrast</span>
-            <input type="checkbox" id="cfg-high-contrast" onchange="settings.highContrast=this.checked;saveSettings();applyHighContrast()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-          </label>
-          <div style="font-size:11px;color:var(--text-faint);margin-top:4px;line-height:1.4">Strengthens text, border, and status colors for improved readability. Works in both light and dark mode.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DANGER ZONE -->
-    <div class="drawer-acc-hdr" onclick="toggleAcc('acc-danger')">
-      <span class="drawer-acc-title" style="color:var(--red)">&#9888; Danger zone</span>
-      <span class="drawer-acc-arrow" id="arr-acc-danger">&#9656;</span>
-    </div>
-    <div class="drawer-acc-body" id="acc-danger">
-      <div class="drawer-acc-inner">
-        <div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.3px;margin-bottom:10px">TARGETED</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-size:13px;color:var(--text)">Clear receipts &amp; archives</div>
-              <div style="font-size:11px;color:var(--text-faint);margin-top:2px;line-height:1.4">Removes all logged receipts and historical archives. Budget structure is kept.</div>
-            </div>
-            <button class="btn danger" style="font-size:12px;flex-shrink:0" onclick="clearReceiptsAndArchives()">Clear</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-size:13px;color:var(--text)">Clear vendor memory</div>
-              <div style="font-size:11px;color:var(--text-faint);margin-top:2px;line-height:1.4">Removes all saved vendor suggestions used for autofill.</div>
-            </div>
-            <button class="btn danger" style="font-size:12px;flex-shrink:0" onclick="clearVendorMemory()">Clear</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-size:13px;color:var(--text)">Clear Den data</div>
-              <div style="font-size:11px;color:var(--text-faint);margin-top:2px;line-height:1.4">Removes portfolio positions, liabilities, savings goals, and wallet data.</div>
-            </div>
-            <button class="btn danger" style="font-size:12px;flex-shrink:0" onclick="clearDenData()">Clear</button>
-          </div>
-        </div>
-        <div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.3px;margin-top:16px;margin-bottom:10px;padding-top:12px;border-top:1px solid var(--border-light)">FULL RESET</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-size:13px;color:var(--text)">Erase identity &amp; sync</div>
-              <div style="font-size:11px;color:var(--text-faint);margin-top:2px;line-height:1.4">Clears display name, shared key, and all cloud sync credentials. Budget and receipts are untouched.</div>
-            </div>
-            <button class="btn danger" style="font-size:12px;flex-shrink:0" onclick="resetIdentity()">Erase</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-size:13px;color:var(--text)">Erase budget &amp; receipts</div>
-              <div style="font-size:11px;color:var(--text-faint);margin-top:2px;line-height:1.4">Clears income, categories, expense lines, and all receipts. Identity and sync settings are untouched.</div>
-            </div>
-            <button class="btn danger" style="font-size:12px;flex-shrink:0" onclick="resetBudgetAndReceipts()">Erase</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1">
-              <div style="font-size:13px;color:var(--text)">Erase everything</div>
-              <div style="font-size:11px;color:var(--text-faint);margin-top:2px;line-height:1.4">Removes all data including identity, sync, budget, and receipts. Cannot be undone.</div>
-            </div>
-            <button class="btn danger" style="font-size:12px;flex-shrink:0;font-weight:700" onclick="resetAll()">Erase</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
 
 <!-- CONFLICT MODAL -->
 <div class="modal-overlay" id="conflict-modal">
@@ -1414,16 +954,20 @@ function loadSyncMeta(){
 function loadSettings(){
   const saved=localStorage.getItem('hedgie_settings');
   if(saved){try{settings={...settings,...JSON.parse(saved)};}catch(e){}}
-  document.getElementById('cfg-username').value=settings.username;
-  document.getElementById('cfg-provider').value=settings.provider||'none';
+  const username=document.getElementById('cfg-username');
+  if(username)username.value=settings.username||'';
+  const provider=document.getElementById('cfg-provider');
+  if(provider)provider.value=settings.provider||'none';
   if(!settings.notifs)settings.notifs={bills:true,budget:true,yearly:true,sync:true,firstSync:true,localSave:true,nudge:true};
   if(settings.notifs.firstSync===undefined)settings.notifs.firstSync=true;
   if(settings.notifs.localSave===undefined)settings.notifs.localSave=true;
   if(settings.darkMode===undefined)settings.darkMode=false;
   if(settings.pwaInstalled===undefined)settings.pwaInstalled=false;
-  onProviderChange(true);renderKeyDisplay();updateSyncStatus('idle');
+  if(provider)onProviderChange(true);
+  renderKeyDisplay();updateSyncStatus('idle');
   const providerNames={none:'Local only',jsonbin:'JSONBin',gist:'GitHub Gist',self:'Self-hosted',dropbox:'Dropbox'};
-  document.getElementById('gsb-right').textContent=providerNames[settings.provider||'none']||'';
+  const providerLabel=document.getElementById('gsb-right');
+  if(providerLabel)providerLabel.textContent=providerNames[settings.provider||'none']||'';
   updateSyncButton();
 }
 function saveSettings(){localStorage.setItem('hedgie_settings',JSON.stringify(settings));}
@@ -1529,11 +1073,12 @@ function onProviderChange(silent){
 // ── SYNC STATUS ───────────────────────────────
 function updateSyncStatus(state,msg){
   const dot=document.getElementById('sync-dot'),txt=document.getElementById('sync-status-txt'),gdot=document.getElementById('gear-dot');
+  if(!dot||!txt)return;
   const map={idle:['',settings.provider==='none'?(totalIncome()>0||totalExpMo()>0||receipts.length>0?'Not backed up':'No data yet \u2014 add income and expenses to get started'):'Ready \u00b7 use Push to sync'],busy:['busy','Syncing\u2026'],ok:['ok',msg||'Sync successful'],err:['err',msg||'Sync failed'],conflict:['err','Conflict — action required']};
   const[cls,label]=map[state]||map.idle;
   dot.className='sync-dot'+(cls?' '+cls:'');
   txt.textContent=label+(syncMeta.lastEditedAt?' · Last push '+fmtAgo(syncMeta.lastEditedAt)+(syncMeta.lastEditedBy?' by '+syncMeta.lastEditedBy:''):'');
-  gdot.classList.toggle('show',state==='conflict'||state==='err');
+  if(gdot)gdot.classList.toggle('show',state==='conflict'||state==='err');
 }
 function fmtAgo(iso){const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return'just now';if(d<3600)return Math.round(d/60)+'m ago';if(d<86400)return Math.round(d/3600)+'h ago';return Math.round(d/86400)+'d ago';}
 
@@ -2848,7 +2393,7 @@ function dismissAllNotifs(){
 }
 
 // ── TAB SWITCHING ─────────────────────────────
-let TAB_ORDER=['log','report','planner'];
+let TAB_ORDER=['log','report'];
 let currentTabIdx=0;
 
 function switchTab(tab){
@@ -3422,6 +2967,7 @@ let plannerDebounce=null;
 function plannerChanged(){clearTimeout(plannerDebounce);plannerDebounce=setTimeout(()=>triggerAutosave('pl'),2000);}
 
 function updatePlanner(){
+  if(!document.getElementById('pl-metrics'))return;
   const inc=totalIncome(),exp=totalExpMo(),net=inc-exp,pct=inc>0?Math.min(200,Math.round(exp/inc*100)):0,surplus=Math.max(0,net);
   document.getElementById('pl-metrics').innerHTML=`<div class="metric"><div class="metric-label">Income / mo</div><div class="metric-val">${fmt(inc)}</div></div><div class="metric"><div class="metric-label">Expenses / mo</div><div class="metric-val">${fmt(exp)}</div></div><div class="metric"><div class="metric-label">Net cash flow</div><div class="metric-val ${net>=0?'pos':'neg'}">${net<0?'-':''}${fmt(net)}</div></div><div class="metric"><div class="metric-label">Rainy day buffer</div><div class="metric-val" id="pl-buf-total">¥0</div></div>`;
   document.getElementById('pl-pct-lbl').textContent=pct+'%';
@@ -3699,7 +3245,7 @@ async function triggerPwaInstall(){
 
 function renderDonateBtns(){
   const btn='<a href="https://liberapay.com/lancebramsay/donate" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--parchment);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;font-size:12px;color:var(--text-mid);text-decoration:none;font-family:inherit;transition:background 0.15s" onmouseover="this.style.background=\'var(--tan)\'" onmouseout="this.style.background=\'var(--parchment)\'"><svg width="14" height="14" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="40" fill="#F6C915"/><path d="M27 57V23h16c4.4 0 7.8 1.1 10.2 3.2 2.4 2.1 3.6 5 3.6 8.6 0 3.7-1.2 6.6-3.6 8.7-2.4 2.1-5.8 3.2-10.2 3.2H34v10.3H27zm7-16.8h8.6c2.3 0 4-.5 5.2-1.6 1.2-1.1 1.8-2.6 1.8-4.6s-.6-3.5-1.8-4.6c-1.2-1.1-3-1.6-5.2-1.6H34v12.4z" fill="#1A1A1A"/></svg>Support Open Hedgie</a>';
-  ['donate-btn-log','donate-btn-den','donate-btn-report','donate-btn-planner'].forEach(id=>{
+  ['donate-btn-log','donate-btn-den','donate-btn-report'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.innerHTML=btn;
   });
@@ -4955,7 +4501,7 @@ function updateSavingsGoal(id,field,value){
   g[field]=value;triggerAutosave('den');
 }
 
-function refreshAll(){runAutoArchive();if(runAutoPrune())triggerAutosave('prune');initExpenses();rebuildCatUI();processRecurringBills();buildNotifications();document.getElementById('cat-count-lbl')&&(document.getElementById('cat-count-lbl').textContent=CATS().length+' categories');populateMonthSelects();renderBuffers();updatePlanner();renderLogMetrics();renderReceiptList();if(document.getElementById('panel-report').classList.contains('active'))renderReport();applyDenPreview();if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();}
+function refreshAll(){runAutoArchive();if(runAutoPrune())triggerAutosave('prune');initExpenses();rebuildCatUI();processRecurringBills();buildNotifications();populateMonthSelects();renderLogMetrics();renderReceiptList();if(document.getElementById('panel-report').classList.contains('active'))renderReport();applyDenPreview();if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();}
 
 function gatherRows(){
   let rows=[];
@@ -5040,12 +4586,9 @@ function resetAll(){if(!confirm('Erase ALL data including identity, sync credent
 initExpenses();
 updateDateLabel();
 rebuildCatUI();
-document.getElementById('cat-count-lbl')&&(document.getElementById('cat-count-lbl').textContent=CATS().length+' categories');
 setGSB('idle','',''); // status bar seeded by updateSyncStatus below
 updateSyncButton();
 populateMonthSelects();
-renderBuffers();
-updatePlanner();
 renderLogMetrics();
 renderReceiptList();
 loadSettings();
