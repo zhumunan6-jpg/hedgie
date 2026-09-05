@@ -615,10 +615,14 @@ const currentYear=()=>new Date().getFullYear().toString();
 const monthLabel=ym=>{const[y,m]=ym.split('-');return MONTH_NAMES[parseInt(m)-1]+' '+y;};
 const fmtDate=d=>{if(!d)return'';const[,m,dy]=d.split('-');return MONTH_NAMES[parseInt(m)-1]+' '+parseInt(dy);};
 const receiptsForMonth=ym=>receipts.filter(r=>monthKey(r.date)===ym);
+const historicalReceiptsForMonth=ym=>allHistoricalReceipts().filter(r=>monthKey(r.date)===ym);
 const receiptsForYear=yr=>receipts.filter(r=>r.date&&r.date.startsWith(yr));
 
 function allMonths(){
   const keys=new Set(receipts.map(r=>monthKey(r.date)));
+  Object.values(archives||{}).flatMap(items=>Array.isArray(items)?items:[]).forEach(r=>{
+    if(r?.date)keys.add(monthKey(r.date));
+  });
   income.forEach(r=>{if(r.date)keys.add(monthKey(r.date));});
   Object.keys(savingsTargets).forEach(month=>keys.add(month));
   keys.add(currentMonth());
@@ -791,6 +795,16 @@ function normalizeIncomeRecords(records){
   }).filter(Boolean);
 }
 
+function normalizeReceiptRecords(records){
+  if(!Array.isArray(records))return [];
+  return records.map(record=>{
+    if(!record||typeof record!=='object'||record.cat==='Savings')return null;
+    const amount=Number(record.amt??record.amount??0);
+    if(!Number.isFinite(amount))return null;
+    return {...record,id:record.id||uid(),amt:amount};
+  }).filter(Boolean);
+}
+
 function normalizeSavingsTargets(targets){
   const normalized={};
   if(Array.isArray(targets)){
@@ -828,10 +842,10 @@ function normalizeDataState(){
 
   income=normalizeIncomeRecords(income);
   recurringIncome=Array.isArray(recurringIncome)?recurringIncome.filter(template=>template&&template.id&&Number(template.amt)>0&&['monthly','yearly','interval'].includes(template.freq)).map(template=>({...template,amt:Number(template.amt),freq:String(template.freq),every:template.freq==='interval'?Math.max(2,parseInt(template.every,10)||3):undefined})):[];
-  receipts=Array.isArray(receipts)?receipts.filter(receipt=>receipt&&receipt.cat!=='Savings'):[];
+  receipts=normalizeReceiptRecords(receipts);
   const cleanedArchives={};
   Object.entries(archives&&typeof archives==='object'?archives:{}).forEach(([year,items])=>{
-    const kept=Array.isArray(items)?items.filter(receipt=>receipt&&receipt.cat!=='Savings'):[];
+    const kept=normalizeReceiptRecords(items);
     if(kept.length)cleanedArchives[year]=kept;
   });
   archives=cleanedArchives;
@@ -1551,7 +1565,7 @@ function renderUserBreakdown(recs){
 // ── MONTHLY REPORT ────────────────────────────
 function renderMonthlyReport(){
   const ym=document.getElementById('rpt-month-sel')?.value||currentMonth();
-  const recs=receiptsForMonth(ym);
+  const recs=historicalReceiptsForMonth(ym);
   const spent=recs.reduce((s,r)=>s+r.amt,0);
   const inc=incomeAmountForMonth(ym);
   const savings=inc-spent;
@@ -1639,7 +1653,6 @@ function renderYearlyReport(){
         <span style="color:#b94040">&#9632; Over budget</span>
         <span>&#x2504; Monthly budget (${fmt(monthlyBudget)})</span>
       </div>
-    </div>
     </div>
     <div class="metrics-row">
       <div class="metric"><div class="metric-label">Annual income</div><div class="metric-val">${fmt(inc)}</div></div>

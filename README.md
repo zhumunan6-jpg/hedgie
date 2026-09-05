@@ -4,7 +4,7 @@
 
 No account. No subscription. No company holding your data. Just a single file you open in a browser — on any device, any time, fully offline if you want it to be.
 
-The current interface is intentionally compact: record purchases, review monthly or yearly spending, and keep the app available offline. Existing local data and compatible sync payloads remain readable.
+The current interface is intentionally compact: record income and purchases, track total and monthly savings, review monthly or yearly reports, and keep the app available offline. Existing local data and compatible sync payloads remain readable.
 
 **Stable:** [hedgie.pages.dev](https://hedgie.pages.dev) — Cloudflare Pages, fully tested releases<br>
 **Pilot:** [lancebramsay.github.io/hedgie](https://lancebramsay.github.io/hedgie) — GitHub Pages, latest updates<br>
@@ -20,11 +20,18 @@ The current interface is intentionally compact: record purchases, review monthly
 - Edit and delete receipts, filter by category, and review a selected month
 - Existing recurring bills continue to auto-log when their saved data is present
 
+### Income and savings
+- Record income by source, amount, date, note, and optional recurring schedule
+- Edit and delete income records; stopping a recurring income keeps existing entries
+- Savings overview shows cumulative income, cumulative spending, and total savings across all history
+- Set a monthly savings target and track actual savings with a bounded progress bar
+- Core data is saved immediately in the browser's local storage and restored on reload
+
 ### Reports
-- Monthly income, actual spending, and remaining income metrics
+- Monthly income, actual spending, monthly savings, and monthly savings target progress
 - Spending breakdown by category with progress indicators
-- Monthly transactions with user attribution
-- Yearly spending overview (Hibernation View)
+- Yearly income is calculated from actual income records
+- Yearly spending overview (Hibernation View), including archived receipts
 
 ### Local data and compatibility
 - Core receipt and report data stays in the browser and works offline
@@ -63,8 +70,10 @@ Den is hidden by default. If an existing local profile has the Den preview enabl
 
 1. Download `index.html` from the [releases page](https://github.com/lancebramsay/hedgie/releases) or open the [hosted version](https://hedgie.pages.dev)
 2. Open in Chrome, Safari, Firefox, or Brave
-3. Log purchases in **Log receipt** as you spend
-4. Review **Monthly report** for current and yearly totals
+3. Log purchases in **Log a purchase** as you spend
+4. Log paychecks and other money received in **Log income**
+5. Set the current month's target in **Monthly savings target**
+6. Review **Monthly report** for income, spending, savings, and yearly totals
 
 Works fully offline. No internet required for core features.
 
