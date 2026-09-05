@@ -167,28 +167,6 @@ select{cursor:pointer}
 .hiber-bar-wrap{position:relative}
 .hiber-ref-line{position:absolute;left:0;right:0;border-top:1.5px dashed rgba(255,255,255,0.35);pointer-events:none}
 
-/* notifications */
-.notif-btn{position:relative;background:none;border:none;cursor:pointer;padding:6px;display:flex;align-items:center;color:var(--text-soft);transition:color 0.15s;margin-left:auto;flex-shrink:0}
-.notif-btn:hover{color:var(--brown)}
-.notif-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--warm-white)}
-.notif-badge.show{display:flex}
-.notif-panel{position:absolute;top:calc(100% + 6px);right:0;width:320px;background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:0 4px 20px var(--shadow);z-index:200;display:none;max-height:400px;overflow-y:auto}
-.notif-panel.open{display:block}
-.notif-panel-hdr{padding:10px 14px 8px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
-.notif-panel-title{font-size:13px;font-weight:600;color:var(--brown-dark)}
-.notif-clear-btn{font-size:11px;color:var(--text-soft);background:none;border:none;cursor:pointer;font-family:inherit}
-.notif-clear-btn:hover{color:var(--red)}
-.notif-item{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border-light);align-items:flex-start}
-.notif-item:last-child{border-bottom:none}
-.notif-icon{font-size:16px;flex-shrink:0;margin-top:1px}
-.notif-body{flex:1;min-width:0}
-.notif-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.3}
-.notif-desc{font-size:11px;color:var(--text-soft);margin-top:2px;line-height:1.4}
-.notif-dismiss{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:0 2px;flex-shrink:0;line-height:1}
-.notif-dismiss:hover{color:var(--red)}
-.notif-empty{padding:20px 14px;text-align:center;font-size:12px;color:var(--text-faint)}
-.notif-section-label{font-size:10px;font-weight:600;color:var(--text-faint);letter-spacing:0.5px;padding:8px 14px 2px;background:var(--parchment)}
-.notif-wrap{position:relative}
 @media(max-width:580px){
   .quick-form{grid-template-columns:1fr}
   .quick-form input[type=date]{width:100%;font-size:12px}
@@ -263,20 +241,9 @@ select{cursor:pointer}
       <span class="tab-lbl">Monthly report</span>
     </button>
   </div>
-  <div class="notif-wrap" style="display:flex;align-items:center;align-self:center;margin-right:4px;gap:4px">
+  <div style="display:flex;align-items:center;align-self:center;margin-right:4px;gap:4px">
     <button id="pwa-install-btn" onclick="triggerPwaInstall()" title="Add to home screen" style="display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--text-soft);font-size:18px;line-height:1">&#128242;</button>
     <button onclick="toggleDarkMode()" title="Toggle dark mode" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--text-soft);font-size:16px;line-height:1" id="dark-mode-btn">&#9790;</button>
-    <button class="notif-btn" onclick="toggleNotifPanel()" title="Notifications" id="notif-btn" style="margin-bottom:0">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <div class="notif-badge" id="notif-badge"></div>
-    </button>
-    <div class="notif-panel" id="notif-panel">
-      <div class="notif-panel-hdr">
-        <span class="notif-panel-title">Notifications</span>
-        <button class="notif-clear-btn" onclick="dismissAllNotifs()">Dismiss all</button>
-      </div>
-      <div id="notif-list"></div>
-    </div>
   </div>
 </div>
 </div>
@@ -485,7 +452,7 @@ select{cursor:pointer}
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
     <div>
       <div style="font-size:18px;font-weight:700;color:var(--brown-dark)" id="rpt-main-title">Monthly report</div>
-      <div style="font-size:12px;color:var(--text-soft)" id="rpt-main-sub">Budget vs. actual spending</div>
+      <div style="font-size:12px;color:var(--text-soft)" id="rpt-main-sub">Income and spending overview</div>
     </div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <div class="view-toggle">
@@ -599,7 +566,7 @@ let walletImportingTxId=null; // which pending tx has inline import form open
 let walletHistPriceCache={}; // session cache: {cgId:date -> price}
 let denOpenItems=new Set(); // tracks which Den liability body IDs are expanded
 let currentRecurring='none';
-let settings={username:'',provider:'none',jsonbinId:'',jsonbinKey:'',gistId:'',gistToken:'',selfUrl:'',selfToken:'',selfPayloadKB:'',dropboxToken:'',sharedKey:'',encryptSync:false,darkMode:false,pwaInstalled:false,reminderDays:7,pruneYears:0,notifs:{bills:true,budget:true,yearly:true,sync:true,firstSync:true,nudge:true},customNotifs:[],denPreview:false,userColor:'',priceProvider:'none',priceApiKey:'',cgApiKey:'',etherscanApiKey:'',walletAutoImport:false,walletTxDir:'out',walletGasFees:false};
+let settings={username:'',provider:'none',jsonbinId:'',jsonbinKey:'',gistId:'',gistToken:'',selfUrl:'',selfToken:'',selfPayloadKB:'',dropboxToken:'',sharedKey:'',encryptSync:false,darkMode:false,pwaInstalled:false,pruneYears:0,denPreview:false,userColor:'',priceProvider:'none',priceApiKey:'',cgApiKey:'',etherscanApiKey:'',walletAutoImport:false,walletTxDir:'out',walletGasFees:false};
 let rcptFilterCat='all',rptFilterCat='all';
 let reportView='monthly';
 let pendingCloudData=null;
@@ -766,8 +733,6 @@ function loadSyncMeta(){
 function loadSettings(){
   const saved=localStorage.getItem('hedgie_settings');
   if(saved){try{settings={...settings,...JSON.parse(saved)};}catch(e){}}
-  if(!settings.notifs)settings.notifs={bills:true,budget:true,yearly:true,sync:true,firstSync:true,nudge:true};
-  if(settings.notifs.firstSync===undefined)settings.notifs.firstSync=true;
   if(settings.darkMode===undefined)settings.darkMode=false;
   if(settings.pwaInstalled===undefined)settings.pwaInstalled=false;
   const providerNames={none:'Local only',jsonbin:'JSONBin',gist:'GitHub Gist',self:'Self-hosted',dropbox:'Dropbox'};
@@ -970,7 +935,7 @@ function triggerAutosave(source){
       }
       try{
         await cloudPushSilent();
-        syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Synced to cloud','just now');saveSyncMeta();buildNotifications();
+        syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Synced to cloud','just now');saveSyncMeta();
       }catch(e){
         setGSB('warn','Saved locally only — cloud unreachable','');
       }
@@ -1281,132 +1246,6 @@ async function resolveConflict(choice){
   pendingCloudData=null;
 }
 
-// ── CUSTOM NOTIFICATIONS ENGINE ──────────────────────────────
-const CN_FIELDS=[
-  {key:'receipt.category',   label:'Receipt category',          type:'cat'},
-  {key:'receipt.vendor',     label:'Vendor',                    type:'text'},
-  {key:'receipt.amount',     label:'Receipt amount (¥)',         type:'num'},
-  {key:'receipt.note',       label:'Receipt note',              type:'text'},
-  {key:'receipt.by',         label:'Logged by',                 type:'text'},
-  {key:'month.total',        label:'Month total spent (¥)',      type:'num'},
-  {key:'month.category',     label:'Month total by category (¥)',type:'catnum'},
-  {key:'month.receipts',     label:'Receipt count this month',  type:'num'},
-  {key:'budget.pct',         label:'Category budget used (%)',  type:'catnum'},
-  {key:'days.since',         label:'Days since last receipt',   type:'num'},
-  {key:'expense.amount',     label:'Expense line amount (¥)',   type:'num'},
-  {key:'note.total',         label:'Note keyword total (¥)',    type:'notenum'},
-];
-const CN_OPS={
-  cat:     [{key:'is',label:'is'},{key:'is_not',label:'is not'}],
-  text:    [{key:'is',label:'is'},{key:'is_not',label:'is not'},{key:'contains',label:'contains'}],
-  num:     [{key:'gt',label:'exceeds'},{key:'lt',label:'is under'}],
-  catnum:  [{key:'gt',label:'exceeds'},{key:'lt',label:'is under'}],
-  notenum: [{key:'gt',label:'exceeds'},{key:'lt',label:'is under'}],
-};
-
-function evalCondition(cond){
-  const ym=currentMonth();
-  const monthRecs=receiptsForMonth(ym);
-  const v=cond.value;
-  const cat=cond.cat||'';
-  switch(cond.field){
-    case 'receipt.category':{
-      return monthRecs.some(r=>cond.op==='is'?r.cat===v:r.cat!==v);
-    }
-    case 'receipt.vendor':{
-      const lv=(v||'').toLowerCase();
-      return monthRecs.some(r=>{
-        const rv=(r.vendor||'').toLowerCase();
-        if(cond.op==='is')return rv===lv;
-        if(cond.op==='is_not')return rv!==lv;
-        return rv.includes(lv);
-      });
-    }
-    case 'receipt.amount':{
-      const n=parseFloat(v)||0;
-      return monthRecs.some(r=>cond.op==='gt'?r.amt>n:r.amt<n);
-    }
-    case 'receipt.note':{
-      const lv=(v||'').toLowerCase();
-      return monthRecs.some(r=>(r.note||'').toLowerCase().includes(lv));
-    }
-    case 'receipt.by':{
-      const lv=(v||'').toLowerCase();
-      return monthRecs.some(r=>{
-        const bv=(r.by||'').toLowerCase();
-        if(cond.op==='is')return bv===lv;
-        if(cond.op==='is_not')return bv!==lv;
-        return bv.includes(lv);
-      });
-    }
-    case 'month.total':{
-      const total=monthRecs.reduce((s,r)=>s+r.amt,0);
-      const n=parseFloat(v)||0;
-      return cond.op==='gt'?total>n:total<n;
-    }
-    case 'month.category':{
-      const total=monthRecs.filter(r=>r.cat===cat).reduce((s,r)=>s+r.amt,0);
-      const n=parseFloat(v)||0;
-      return cond.op==='gt'?total>n:total<n;
-    }
-    case 'month.receipts':{
-      const n=parseFloat(v)||0;
-      return cond.op==='gt'?monthRecs.length>n:monthRecs.length<n;
-    }
-    case 'budget.pct':{
-      const budget=catMo(cat);
-      if(budget<=0)return false;
-      const spent=monthRecs.filter(r=>r.cat===cat).reduce((s,r)=>s+r.amt,0);
-      const pct=Math.round(spent/budget*100);
-      const n=parseFloat(v)||0;
-      return cond.op==='gt'?pct>n:pct<n;
-    }
-    case 'days.since':{
-      const allDates=receipts.map(r=>new Date(r.date).getTime()).filter(Boolean);
-      if(!allDates.length)return false;
-      const latest=Math.max(...allDates);
-      const days=Math.floor((Date.now()-latest)/(1000*60*60*24));
-      const n=parseFloat(v)||0;
-      return days>n;
-    }
-    case 'expense.amount':{
-      const n=parseFloat(v)||0;
-      return Object.values(expenses).flat().some(e=>cond.op==='gt'?(e.a||0)>n:(e.a||0)<n);
-    }
-    case 'note.total':{
-      const kw=(cond.noteText||'').toLowerCase().trim();
-      if(!kw)return false;
-      const total=monthRecs.filter(r=>(r.note||'').toLowerCase().includes(kw)).reduce((s,r)=>s+r.amt,0);
-      const n=parseFloat(v)||0;
-      return cond.op==='gt'?total>n:total<n;
-    }
-    default:return false;
-  }
-}
-
-function evalCustomRule(rule){
-  if(!rule.conditions||!rule.conditions.length)return false;
-  const results=rule.conditions.map(evalCondition);
-  return rule.conditionJoin==='or'?results.some(Boolean):results.every(Boolean);
-}
-
-function describeRule(rule){
-  if(!rule.conditions||!rule.conditions.length)return '';
-  return rule.conditions.map(c=>{
-    const f=CN_FIELDS.find(x=>x.key===c.field);
-    const ops=CN_OPS[f?.type||'num'];
-    const op=ops?.find(x=>x.key===c.op);
-    const catPart=c.cat?' ('+c.cat+')':'';
-    const isNum=c.value!==''&&!isNaN(c.value);
-    const val=c.field==='budget.pct'?c.value+'%':(isNum?'¥'+c.value:c.value);
-    if(f?.type==='notenum'){
-      const kw=c.noteText?'"'+c.noteText+'"':'?';
-      return 'Note '+kw+' total '+(op?.label||c.op)+' '+(val||'?');
-    }
-    return (f?.label||c.field)+catPart+' '+(op?.label||c.op)+' '+(val||'?');
-  }).join(rule.conditionJoin==='or'?' OR ':' AND ');
-}
-
 function rebuildCatUI(){
   // Rebuild log-cat dropdown
   const logCat=document.getElementById('log-cat');
@@ -1421,278 +1260,6 @@ function rebuildCatUI(){
       +'<button class="pill on" data-rc="all" onclick="setRcptFilter(\'all\',this)">All</button>'
       +CATS().map(n=>`<button class="pill" data-rc="${esc(n)}" onclick="setRcptFilter('${esc(n)}',this)">${esc(n)}</button>`).join('');
   }
-}
-
-// ── NOTIFICATIONS ─────────────────────────────
-let dismissedNotifs=new Set(); // ids dismissed this session
-let notifPanelOpen=false;
-
-function toggleNotifPanel(){
-  notifPanelOpen=!notifPanelOpen;
-  document.getElementById('notif-panel').classList.toggle('open',notifPanelOpen);
-  if(notifPanelOpen)renderNotifList();
-  // Close on outside click
-  if(notifPanelOpen){
-    setTimeout(()=>document.addEventListener('click',closeNotifOnOutside),10);
-  }
-}
-
-function closeNotifOnOutside(e){
-  const panel=document.getElementById('notif-panel');
-  const btn=document.getElementById('notif-btn');
-  if(!panel||!btn)return;
-  // Target detached from DOM means a re-render (e.g. dismiss button) replaced it — don't close
-  if(!document.body.contains(e.target))return;
-  if(!panel.contains(e.target)&&!btn.contains(e.target)){
-    notifPanelOpen=false;
-    panel.classList.remove('open');
-    document.removeEventListener('click',closeNotifOnOutside);
-  }
-}
-
-function buildNotifications(){
-  const notifs=[];
-  const today=new Date();today.setHours(0,0,0,0);
-  const reminderDays=settings.reminderDays||7;
-  const windowMs=reminderDays*24*60*60*1000;
-  const thisMonth=currentMonth();
-  const dayOfMonth=today.getDate();
-  const daysInMonth=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
-
-  // ── 1. Upcoming recurring bills ──
-  if(settings.notifs?.bills!==false) recurringBills.forEach(bill=>{
-    if(bill.freq!=='monthly')return;
-    const due=parseInt(bill.day)||1;
-    const effectiveDue=Math.min(due,daysInMonth);
-    const daysUntil=effectiveDue-dayOfMonth;
-    // Look ahead: due this month (and not past) or due early next month within window
-    const nextMonthDays=new Date(today.getFullYear(),today.getMonth()+2,0).getDate();
-    const effectiveDueNext=Math.min(due,nextMonthDays);
-    const isNext=daysUntil<0;
-    let daysAway=isNext?(daysInMonth-dayOfMonth+effectiveDueNext):daysUntil;
-    if(daysAway<=reminderDays){
-      const id='recur-'+bill.id+'-'+thisMonth;
-      if(!dismissedNotifs.has(id)){
-        const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        const shownDay=isNext?effectiveDueNext:effectiveDue;
-        const shownMon=months[isNext?(today.getMonth()+1)%12:today.getMonth()];
-        const clamped=isNext?(effectiveDueNext!==due):(effectiveDue!==due);
-        const dateTag=clamped?` · ${shownMon} ${shownDay}`:'';
-        notifs.push({
-          id,type:'bill',icon:'&#128197;',
-          title:`${bill.vendor||bill.cat} due ${daysAway===0?'today':daysAway===1?'tomorrow':'in '+daysAway+' days'}${dateTag}`,
-          desc:`${bill.cat} · ${fmt(bill.amt)} · day ${due} of every month`,
-          urgency:daysAway<=2?'high':daysAway<=5?'med':'low'
-        });
-      }
-    }
-  });
-
-  // ── 1b. Upcoming yearly recurring bills ──
-  if(settings.notifs?.bills!==false) recurringBills.forEach(bill=>{
-    if(bill.freq!=='yearly')return;
-    const now=new Date();now.setHours(0,0,0,0);
-    const dueMonth=(parseInt(bill.month)||1)-1;
-    const dueDay=parseInt(bill.day)||1;
-    let dueDate=new Date(now.getFullYear(),dueMonth,dueDay);
-    if(dueDate<now)dueDate=new Date(now.getFullYear()+1,dueMonth,dueDay);
-    const daysAway=Math.round((dueDate-now)/86400000);
-    if(daysAway>reminderDays)return;
-    const dueYear=dueDate.getFullYear().toString();
-    const alreadyLogged=receipts.some(r=>r.recurId===bill.id&&r.date.startsWith(dueYear));
-    if(alreadyLogged)return;
-    const id='recur-'+bill.id+'-'+dueYear;
-    if(!dismissedNotifs.has(id)){
-      const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const dueLabel=months[dueMonth]+' '+dueDay;
-      notifs.push({
-        id,type:'bill',icon:'&#128197;',
-        title:`${bill.vendor||bill.cat} due ${daysAway===0?'today':daysAway===1?'tomorrow':'in '+daysAway+' days'} · ${dueLabel}`,
-        desc:`${bill.cat} · ${fmt(bill.amt)}/yr · set aside ${fmt(bill.amt/12)}/mo`,
-        urgency:daysAway<=2?'high':daysAway<=5?'med':'low'
-      });
-    }
-  });
-
-  // ── 1c. Upcoming interval recurring bills ──
-  if(settings.notifs?.bills!==false) recurringBills.forEach(bill=>{
-    if(bill.freq!=='interval')return;
-    const N=parseInt(bill.intervalMonths)||2;
-    const billRecs=receipts.filter(r=>r.recurId===bill.id).sort((a,b)=>b.date.localeCompare(a.date));
-    const lastDateStr=billRecs.length?billRecs[0].date:(bill.startDate||'');
-    if(!lastDateStr)return;
-    const last=new Date(lastDateStr+'T00:00:00');
-    const nextDue=new Date(last.getFullYear(),last.getMonth()+N,last.getDate());
-    nextDue.setHours(0,0,0,0);
-    const now2=new Date();now2.setHours(0,0,0,0);
-    const daysAway=Math.round((nextDue-now2)/86400000);
-    if(daysAway<0||daysAway>reminderDays)return;
-    const id='recur-'+bill.id+'-'+nextDue.toISOString().slice(0,10);
-    if(!dismissedNotifs.has(id)){
-      notifs.push({
-        id,type:'bill',icon:'&#128197;',
-        title:`${bill.vendor||bill.cat} due ${daysAway===0?'today':daysAway===1?'tomorrow':'in '+daysAway+' days'}`,
-        desc:`${bill.cat} · ${fmt(bill.amt)} every ${N} months · set aside ${fmt(bill.amt/N)}/mo`,
-        urgency:daysAway<=2?'high':daysAway<=5?'med':'low'
-      });
-    }
-  });
-
-  // ── 2. Budget warnings — over 80% spent this month ──
-  const monthRecs=receiptsForMonth(thisMonth);
-  if(settings.notifs?.budget!==false){
-  CATS().forEach(name=>{
-    if(!isExpenseCat(name))return;
-    const budget=catMo(name);
-    if(budget<=0)return;
-    const spent=monthRecs.filter(r=>r.cat===name).reduce((s,r)=>s+r.amt,0);
-    const pct=spent/budget;
-    if(pct>=0.8){
-      const id='budget-warn-'+name+'-'+thisMonth;
-      if(!dismissedNotifs.has(id)){
-        const over=spent>budget;
-        notifs.push({
-          id,type:'budget',icon:over?'&#128308;':'&#128993;',
-          title:`${name} ${over?'over budget':'near budget limit'}`,
-          desc:`${fmt(spent)} spent of ${fmt(budget)} budget (${Math.round(pct*100)}%)`,
-          urgency:over?'high':'med'
-        });
-      }
-    }
-  });
-
-  } // end budget
-
-  // ── 3. First-session sync prompt — no data, provider configured ──
-  if(settings.notifs?.firstSync!==false&&settings.provider!=='none'){
-    const isBlankSession=totalIncome()===0&&receipts.length===0&&totalExpMo()===0;
-    if(isBlankSession){
-      const id='sync-first-session';
-      if(!dismissedNotifs.has(id)){
-        notifs.push({
-          id,type:'sync',icon:'&#9729;',
-          title:'Sync to load your data',
-          desc:'A sync provider is configured but no data has loaded yet — tap Sync to pull from the cloud',
-          urgency:'info'
-        });
-      }
-    }
-  }
-
-  // ── 4. Sync staleness — no push in 7+ days OR never synced with provider configured ──
-  if(settings.notifs?.sync!==false&&settings.provider!=='none'){
-    if(!syncMeta.lastEditedAt){
-      const id='sync-never';
-      if(!dismissedNotifs.has(id)){
-        notifs.push({
-          id,type:'sync',icon:'&#9729;',
-          title:'Cloud not yet synced',
-          desc:'You have a sync provider configured but haven\'t pushed any data yet — tap Sync to get started',
-          urgency:'med'
-        });
-      }
-    } else {
-      const daysSince=(Date.now()-new Date(syncMeta.lastEditedAt).getTime())/(1000*60*60*24);
-      const id='sync-stale-'+Math.floor(daysSince/7);
-      if(daysSince>=7&&!dismissedNotifs.has(id)){
-        notifs.push({
-          id,type:'sync',icon:'&#9729;',
-          title:'Cloud sync is stale',
-          desc:`Last synced ${Math.floor(daysSince)} days ago — tap Sync to update`,
-          urgency:daysSince>=14?'med':'low'
-        });
-      }
-    }
-  }
-
-  // ── 5. Logging nudge — past day 20, budget data exists, no receipts this month ──
-  const hasBudgetData=totalIncome()>0||totalExpMo()>0;
-  if(settings.notifs?.nudge!==false&&dayOfMonth>=20&&hasBudgetData&&monthRecs.length===0){
-    const id='log-nudge-'+thisMonth;
-    if(!dismissedNotifs.has(id)){
-      notifs.push({
-        id,type:'nudge',icon:'&#9997;',
-        title:'No receipts logged this month',
-        desc:`It's the ${dayOfMonth}${dayOfMonth===21?'st':dayOfMonth===22?'nd':dayOfMonth===23?'rd':'th'} — add some purchases to track your spending`,
-        urgency:'low'
-      });
-    }
-  }
-
-  // ── 6. Custom notifications ──
-  (settings.customNotifs||[]).forEach(rule=>{
-    if(!rule.enabled)return;
-    const id='custom-'+rule.id+'-'+thisMonth;
-    if(dismissedNotifs.has(id))return;
-    if(evalCustomRule(rule)){
-      notifs.push({
-        id,type:'custom',icon:'\u2B50',
-        title:rule.label||'Custom alert',
-        desc:describeRule(rule),
-        urgency:rule.urgency||'low'
-      });
-    }
-  });
-
-  // Sort: high → med → low → info
-  const urgOrder={high:0,med:1,low:2,info:3};
-  notifs.sort((a,b)=>(urgOrder[a.urgency]??3)-(urgOrder[b.urgency]??3));
-
-  // Badge: count and color based on highest-priority urgency present
-  const badge=document.getElementById('notif-badge');
-  if(badge){
-    badge.textContent=notifs.length>9?'9+':notifs.length;
-    badge.classList.toggle('show',notifs.length>0);
-    if(notifs.length>0){
-      const top=notifs[0].urgency;
-      badge.style.background=top==='high'?'var(--red)':top==='med'?'var(--amber)':top==='low'?'var(--green)':'var(--blue)';
-    }
-  }
-
-  return notifs;
-}
-
-function renderNotifList(){
-  const notifs=buildNotifications();
-  const el=document.getElementById('notif-list');
-  if(!el)return;
-  if(!notifs.length){
-    el.innerHTML='<div class="notif-empty">&#10003; All clear — nothing needs attention</div>';
-    return;
-  }
-  const urgLabels={high:'Urgent',med:'Heads up',low:'Info',info:'Heads up'};
-  const urgColors={high:'var(--red)',med:'var(--amber)',low:'var(--text-faint)',info:'var(--blue)'};
-  let lastUrgency=null;
-  let html='';
-  notifs.forEach(n=>{
-    if(n.urgency!==lastUrgency){
-      html+=`<div class="notif-section-label" style="color:${urgColors[n.urgency]}">${urgLabels[n.urgency]}</div>`;
-      lastUrgency=n.urgency;
-    }
-    const urgBorderColor={high:'var(--red)',med:'var(--amber)',low:'var(--text-faint)',info:'var(--blue)'};
-    const urgBg={high:'rgba(185,64,64,0.06)',med:'rgba(184,120,32,0.06)',low:'transparent',info:'rgba(58,110,168,0.06)'};
-    html+=`<div class="notif-item" id="ni-${n.id}" style="border-left:3px solid ${urgBorderColor[n.urgency]||'var(--border)'};background:${urgBg[n.urgency]||'transparent'};padding-left:11px">
-      <span class="notif-icon">${n.icon}</span>
-      <div class="notif-body">
-        <div class="notif-title" style="color:${n.urgency==='high'?'var(--red)':n.urgency==='med'?'var(--amber)':n.urgency==='info'?'var(--blue)':'var(--text)'}">${esc(n.title)}</div>
-        <div class="notif-desc">${esc(n.desc)}</div>
-      </div>
-      <button class="notif-dismiss" onclick="dismissNotif('${n.id}')" title="Dismiss">&#215;</button>
-    </div>`;
-  });
-  el.innerHTML=html;
-}
-
-function dismissNotif(id){
-  dismissedNotifs.add(id);
-  buildNotifications(); // refresh badge
-  renderNotifList();
-}
-
-function dismissAllNotifs(){
-  buildNotifications().forEach(n=>dismissedNotifs.add(n.id));
-  buildNotifications();
-  renderNotifList();
 }
 
 // ── TAB SWITCHING ─────────────────────────────
@@ -1799,7 +1366,7 @@ function setReportView(v){
   document.getElementById('rpt-month-sel').style.display=v==='monthly'?'':'none';
   document.getElementById('rpt-year-sel').style.display=v==='yearly'?'':'none';
   document.getElementById('rpt-main-title').textContent=v==='monthly'?'Monthly report':'Hibernation View';
-  document.getElementById('rpt-main-sub').textContent=v==='monthly'?'Budget vs. actual spending':'Full year at a glance — like a hedgehog seeing the whole winter ahead';
+  document.getElementById('rpt-main-sub').textContent=v==='monthly'?'Income and spending overview':'Full year at a glance — like a hedgehog seeing the whole winter ahead';
   renderReport();
 }
 
@@ -1837,9 +1404,8 @@ function renderMonthlyReport(){
   const ym=document.getElementById('rpt-month-sel')?.value||currentMonth();
   const recs=receiptsForMonth(ym);
   const spent=recs.reduce((s,r)=>s+r.amt,0);
-  const budgetMo=totalExpMo(),inc=totalIncome(),pct=budgetMo>0?Math.min(200,Math.round(spent/budgetMo*100)):0;
+  const inc=totalIncome();
   const rem=inc-recs.filter(r=>!isSavingsCat(r.cat)).reduce((s,r)=>s+r.amt,0);
-  let billSetAside=0;CATS().forEach(c=>expenses[c].forEach(r=>{if(r.f!=='M'&&r.setAside!==false)billSetAside+=moAmt(r);}));
   const visRecs=rptFilterCat==='all'?recs:recs.filter(r=>r.cat===rptFilterCat);
   const rptTotal=visRecs.reduce((s,r)=>s+r.amt,0);
   const rptPills='<div class="pills" id="rpt-filters" style="margin:4px 0 8px">'+['all',...CATS()].map(c=>`<button class="pill${(c==='all'?rptFilterCat==='all':rptFilterCat===c)?' on':''}" data-rp="${esc(c)}" onclick="setRptFilter(this.dataset.rp)">${c==='all'?'All':esc(c)}</button>`).join('')+'</div>';
@@ -1847,26 +1413,21 @@ function renderMonthlyReport(){
   body.innerHTML=`
     <div class="metrics-row">
       <div class="metric"><div class="metric-label">Monthly income</div><div class="metric-val">${fmt(inc)}</div></div>
-      <div class="metric"><div class="metric-label">Total budgeted</div><div class="metric-val">${fmt(budgetMo)}</div></div>
-      <div class="metric"><div class="metric-label">Actually spent</div><div class="metric-val ${spent>budgetMo?'neg':''}">${fmt(spent)}</div></div>
-      <div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(rem)}</div></div>
-      ${billSetAside>0?`<div class="metric"><div class="metric-label">Bill set-aside</div><div class="metric-val" style="color:${rem>billSetAside*1.2?'var(--green)':rem>=billSetAside?'var(--amber)':'var(--red)'}">${fmt(billSetAside)}/mo</div></div>`:''}
-    </div>
+       <div class="metric"><div class="metric-label">Actually spent</div><div class="metric-val">${fmt(spent)}</div></div>
+       <div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(rem)}</div></div>
+     </div>
     <div class="card">
-      <div class="card-hdr"><span class="card-title">Spending by category</span><span class="card-sub">${pct}% of budget used</span></div>
+      <div class="card-hdr"><span class="card-title">Spending by category</span><span class="card-sub">${fmt(spent)}</span></div>
       ${CATS().map(c=>{
-        const budget=catMo(c),actual=recs.filter(r=>r.cat===c).reduce((s,r)=>s+r.amt,0);
-        const cpct=budget>0?Math.min(200,Math.round(actual/budget*100)):(actual>0?100:0);
-        const over=actual>budget&&budget>0,warn=cpct>80&&cpct<=100;
-        const cls=over?'over':warn?'warn':'',ncls=over?'rpt-over':warn?'rpt-warn':'rpt-under';
-        const status=budget>0?(over?fmt(actual-budget)+' over':fmt(budget-actual)+' left'):(actual>0?fmt(actual)+' spent':'no budget set');
+        const actual=recs.filter(r=>r.cat===c).reduce((s,r)=>s+r.amt,0);
+        const cpct=spent>0?Math.round(actual/spent*100):0;
         const catRecs=recs.filter(r=>r.cat===c);
         return`<div class="rpt-cat-row">
           <div class="rpt-cat-hdr">
             <span class="rpt-cat-name" style="color:${catColor(c)}">${c}</span>
-            <span class="rpt-cat-nums"><span class="${ncls}">${fmt(actual)}</span> <span style="color:var(--text-faint)">/ ${fmt(budget)} — </span><span class="${ncls}">${status}</span>${budget>0?` <span style="color:var(--text-faint)">(${cpct}%)</span>`:''}</span>
+            <span class="rpt-cat-nums"><span>${fmt(actual)}</span> <span style="color:var(--text-faint)">(${cpct}% of spending)</span></span>
           </div>
-          <div class="progress-wrap"><div class="progress-fill ${cls}" style="width:${Math.min(100,cpct)}%"></div></div>
+          <div class="progress-wrap"><div class="progress-fill" style="width:${Math.min(100,cpct)}%"></div></div>
           ${renderUserBreakdown(catRecs)}
         </div>`;
       }).join('')}
@@ -2125,11 +1686,9 @@ function setRptFilter(cat){rptFilterCat=cat;renderMonthlyReport();}
 function renderLogMetrics(){
   const ym=document.getElementById('log-month-sel')?.value||currentMonth();
   const recs=receiptsForMonth(ym),spent=recs.reduce((s,r)=>s+r.amt,0);
-  const budget=totalExpMo(),inc=totalIncome(),pct=budget>0?Math.round(spent/budget*100):0;
+  const inc=totalIncome();
   const rem=inc-recs.filter(r=>!isSavingsCat(r.cat)).reduce((s,r)=>s+r.amt,0);
-  let billSetAside=0;
-  CATS().forEach(c=>expenses[c].forEach(r=>{if(r.f!=='M'&&r.setAside!==false)billSetAside+=moAmt(r);}));
-  document.getElementById('log-metrics').innerHTML=`<div class="metric"><div class="metric-label">Spent ${monthLabel(ym)}</div><div class="metric-val">${fmt(spent)}</div></div><div class="metric"><div class="metric-label">Total budgeted</div><div class="metric-val">${fmt(budget)}</div></div><div class="metric"><div class="metric-label">Budget used</div><div class="metric-val ${pct>=100?'neg':pct>=80?'warn':'pos'}">${pct}%</div></div><div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(Math.abs(rem))}</div></div>${billSetAside>0?`<div class="metric"><div class="metric-label">Bill set-aside</div><div class="metric-val" style="color:${rem>billSetAside*1.2?'var(--green)':rem>=billSetAside?'var(--amber)':'var(--red)'}">${fmt(billSetAside)}/mo</div></div>`:''}`;
+  document.getElementById('log-metrics').innerHTML=`<div class="metric"><div class="metric-label">Spent ${monthLabel(ym)}</div><div class="metric-val">${fmt(spent)}</div></div><div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(Math.abs(rem))}</div></div>`;
 }
 
 let editingReceiptId=null;
@@ -2239,7 +1798,6 @@ function saveReceiptEdit(id){
   renderLogMetrics();
   renderReceiptList();
   if(settings.denPreview){renderDenPortfolio();renderDenNetWorth();}
-  buildNotifications();
   triggerAutosave('log');
 }
 
@@ -2252,7 +1810,6 @@ function deleteRecurringBill(billId){
   receipts.forEach(r=>{if(r.recurId===billId){delete r.recurring;delete r.recurId;}});
   editingReceiptId=null;
   renderReceiptList();
-  buildNotifications();
   triggerAutosave('log');
 }
 
@@ -3555,7 +3112,7 @@ function updateSavingsGoal(id,field,value){
   g[field]=value;triggerAutosave('den');
 }
 
-function refreshAll(){runAutoArchive();if(runAutoPrune())triggerAutosave('prune');initExpenses();rebuildCatUI();processRecurringBills();buildNotifications();populateMonthSelects();renderLogMetrics();renderReceiptList();if(document.getElementById('panel-report').classList.contains('active'))renderReport();applyDenPreview();if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();}
+function refreshAll(){runAutoArchive();if(runAutoPrune())triggerAutosave('prune');initExpenses();rebuildCatUI();processRecurringBills();populateMonthSelects();renderLogMetrics();renderReceiptList();if(document.getElementById('panel-report').classList.contains('active'))renderReport();applyDenPreview();if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();}
 
 // ── INIT ──────────────────────────────────────
 initExpenses();
@@ -3590,10 +3147,7 @@ loadSyncMeta();
   }
 })();
 processRecurringBills();
-buildNotifications(); // runs after settings and syncMeta loaded
 renderDonateBtns();
-// Refresh notifications every 5 minutes while app is open
-setInterval(()=>{buildNotifications();if(notifPanelOpen)renderNotifList();}, 5*60*1000);
 window.addEventListener('beforeunload',e=>{
   if(settings.provider!=='none')return;
   if(!budgetWeight())return;
@@ -3607,7 +3161,7 @@ window.addEventListener('beforeunload',e=>{
 const ZH_TRANSLATIONS={
   'Hedge Your Spending':'守护你的支出','Open · v2.5.9':'开放版 · v2.5.9',
   'Log receipt':'记账','Monthly report':'月报','Add to home screen':'添加到主屏幕',
-  'Toggle dark mode':'切换深色模式','Notifications':'通知','Dismiss all':'全部忽略','Sync with cloud':'与云端同步','Sync':'同步',
+  'Toggle dark mode':'切换深色模式','Sync with cloud':'与云端同步','Sync':'同步',
   'To install: tap':'安装：点击','Share':'分享','Add to Home Screen':'添加到主屏幕',
   'New to Open Hedgie? Read the wiki to get the most out of the app.':'第一次使用 Open Hedgie？阅读使用说明，了解如何充分使用本应用。',
   'Get started':'开始使用','Log a purchase':'记录一笔支出','Category':'类别','Home':'居家','Transportation':'交通','Shopping':'购物',
@@ -3621,9 +3175,9 @@ const ZH_TRANSLATIONS={
   "This month's receipts":'本月记录','Filter:':'筛选：','All':'全部','Long-term assets & liabilities':'长期资产与负债',
   'Performance':'走势','Stock / ETF':'股票 / ETF','Crypto':'加密货币','CD / Savings':'定期存款 / 储蓄','Wallet':'钱包',
   'Refresh':'刷新','Liabilities':'负债','Add':'添加','Savings goals':'储蓄目标','Add goal':'添加目标',
-  'Budget vs. actual spending':'预算与实际支出','Active':'当前','Hibernate':'冬眠视图',
+  'Income and spending overview':'收入与支出概览','Active':'当前','Hibernate':'冬眠视图',
   'No sync provider configured.':'尚未配置同步服务。',
-  'All clear — nothing needs attention':'一切正常——没有需要处理的事项','Last push:':'上次推送：','Last pull:':'上次拉取：','Last sync:':'上次同步：',
+  'Last push:':'上次推送：','Last pull:':'上次拉取：','Last sync:':'上次同步：',
   'No accounts yet. Add a loan, credit line, or lease.':'还没有账户。添加贷款、信用额度或租赁账户。','No positions yet. Add a stock, ETF, or crypto holding.':'还没有持仓。添加股票、ETF 或加密货币。',
   'No goals yet. Add a savings target.':'还没有目标。添加一个储蓄目标。','Saved so far':'当前已存','Target':'目标','Remaining':'剩余','Budget line':'预算项目',
   'Principal (¥)':'本金（¥）','APY (%)':'年化收益率（%）','Deposit date':'存入日期','Current value':'当前价值','Interest earned':'已赚利息',
@@ -3633,10 +3187,9 @@ const ZH_TRANSLATIONS={
   'Enter or connect a wallet address above, then tap Refresh.':'请在上方输入或连接钱包地址，然后点击“刷新”。','Import queue':'导入队列','pending':'待处理',
   'Cancel':'取消','Import':'导入','Dismiss':'忽略','Gas:':'Gas：','Log receipt':'记录','Uncategorized':'未分类','Optional note':'可选备注',
   'Also log gas fee':'同时将 Gas 费记录为单独支出','No transactions':'没有交易记录','item':'项','items':'项','Budget':'预算','Actual':'实际',
-  'Spent':'支出','Total budgeted':'预算总额','Budget used':'预算使用','Balance':'余额','Income':'收入','Expenses':'支出','Savings rate':'储蓄率',
+  'Spent':'支出','Balance':'余额','Income':'收入','Expenses':'支出','Savings rate':'储蓄率',
   'under budget':'低于预算','over budget':'超出预算','No transactions yet.':'还没有交易记录。','No archived receipts yet.':'还没有归档记录。',
   'Clear saved vendors':'清除已保存的商家','Pick color':'选择颜色','Move up':'上移','Move down':'下移','Remove':'删除',
-  'No custom notifications yet.':'还没有自定义通知。','Notification label':'通知名称','keyword':'关键词','value':'数值',
   'just now':'刚刚','Never':'从未','Updated':'已更新','Loading…':'加载中…','Fetching…':'获取中…','Refresh prices':'刷新价格',
   'Error:':'错误：','Saved locally':'已保存到本地','Saved locally only':'仅已保存到本地','Synced to cloud':'已同步到云端','Pushed to cloud':'已推送到云端',
   'Pulled from cloud':'已从云端拉取','Already up to date':'已经是最新','Syncing…':'同步中…','Saving…':'保存中…','Could not reach cloud':'无法连接云端',
@@ -3656,13 +3209,9 @@ const ZH_TRANSLATIONS={
   'Nothing in cloud yet — add data and Push to start':'云端还没有数据——添加数据后点击“推送”开始同步','No budget data — pull from cloud to verify before pushing':'没有预算数据——推送前请先从云端拉取并确认',
   'Cloud signature mismatch — check your shared key':'云端签名不匹配——请检查共享密钥','Could not decrypt cloud data on startup':'启动时无法解密云端数据','Could not reach cloud on startup':'启动时无法连接云端',
   'Pull failed:':'拉取失败：','Push failed:':'推送失败：','Sync failed:':'同步失败：','Resolved locally — push failed':'本地已解决——推送失败','Resolved locally, push failed:':'本地已解决，推送失败：',
-  'Custom alert':'自定义提醒',
-  'Upcoming recurring bills':'即将到期的周期性账单','Budget warnings (80%+ spent)':'预算提醒（已使用 80% 以上）','Cloud sync staleness':'云端同步过期提醒','Sync prompt on empty session':'空白会话同步提示','Monthly logging reminder':'每月记账提醒',
-  'Urgent':'紧急','Heads up':'提醒','Info':'信息','No custom notifications yet.':'还没有自定义通知。','Dismiss':'忽略',
   'due':'到期','today':'今天','tomorrow':'明天','in ':'还有 ',' days':' 天','day ':'第 ',' of every month':'（每月）','every ':'每隔 ',' set aside ':'，每月预留 ',' over budget':'超出预算','near budget limit':'接近预算上限','spent of':'已支出 / 预算','Last synced':'上次同步','tap Sync to update':'点击“同步”更新',
-  "It's the ":'今天是本月第 ',' — add some purchases to track your spending':'——添加几笔支出以开始跟踪消费',
-  'Budget warnings':'预算提醒','Monthly income':'月收入','Actually spent':'实际支出','Income remaining':'剩余收入','Bill set-aside':'账单预留',
-  'Spending by category':'按类别统计支出','% of budget used':'预算使用率','left':'剩余','no budget set':'未设置预算','Transactions':'交易记录','transaction':'笔交易','transactions':'笔交易',
+  'Monthly income':'月收入','Actually spent':'实际支出','Income remaining':'剩余收入',
+  'Spending by category':'按类别统计支出','of spending':'占支出','recorded':'已记录','Transactions':'交易记录','transaction':'笔交易','transactions':'笔交易',
   'Full year at a glance — like a hedgehog seeing the whole winter ahead':'全年概览——像刺猬一样看清整个冬季','Hibernation View':'冬眠视图','Bars show monthly spending. Dashed line = monthly budget. Shaded bars = future months.':'柱状图显示每月支出。虚线表示月度预算，阴影柱表示未来月份。',
   'Monthly budget':'月度预算','Annual income':'年度收入','Annual budget':'年度预算','Total spent':'总支出','Year by category':'按类别统计全年数据',
   'Source':'来源','Actual spending':'实际支出','Monthly surplus earmarked per category — weighted by the cost of High/Medium/Low expenses in each. Think of it as a per-category rainy day reserve funded by your leftover income.':'按类别预留每月结余，并根据高、中、低优先级支出的成本加权。可以把它理解为由剩余收入建立的分类应急储备。',
@@ -3686,7 +3235,7 @@ const ZH_TRANSLATIONS={
   'No data yet':'暂无数据','No data yet — add income and expenses to get started':'还没有数据——添加收入和支出即可开始','No budget data':'没有预算数据','Ready':'准备就绪','Sync successful':'同步成功',
   'Decryption failed — wrong shared key?':'解密失败——共享密钥是否错误？','Encryption failed:':'加密失败：','Decryption failed:':'解密失败：','No key to decrypt payload':'没有用于解密数据的密钥',
   'Free at':'可免费获取：','Create an account':'创建账户','Both users enter the same credentials plus the shared key above.':'双方输入相同的凭据和上方的共享密钥。','Create a private Gist':'创建私有 Gist','with a file named':'文件名为','initial content':'初始内容','Token and Gist must belong to the same GitHub account.':'令牌和 Gist 必须属于同一个 GitHub 账户。',
-  'is':'是','is not':'不是','contains':'包含','exceeds':'超过','is under':'低于','Notification label':'通知名称','e.g. Leisure over $100':'例如：休闲支出超过 ¥100','placeholder':'占位符',
+  'placeholder':'占位符',
   'Not updated today':'今天尚未更新','Updated ${updated}':'已更新 ${updated}','Current price':'当前价格','Annual due date':'年度到期日','Every how many months?':'每隔几个月？','Optional note':'可选备注','0x wallet address':'0x 钱包地址','Paste API key':'粘贴 API 密钥','e.g. 4.50':'例如 4.50','e.g. 6.5':'例如 6.5','e.g. 60':'例如 60','e.g. bitcoin':'例如 bitcoin','e.g. AAPL or BTC':'例如 AAPL 或 BTC','e.g. AAPL or BINANCE:BTCUSDT':'例如 AAPL 或 BINANCE:BTCUSDT','e.g. AAPL or BTC/USD':'例如 AAPL 或 BTC/USD',
   'Annual budget':'年度预算','Annual income':'年度收入','Total assets':'总资产','Total debt':'总负债','Net worth':'净资产','Portfolio G/L':'投资组合收益 / 损失','Portfolio':'投资组合','Savings goals':'储蓄目标','Long-term assets':'长期资产','long-term assets':'长期资产',
   'Interest earned':'已赚利息','Saved so far':'当前已存','Target':'目标','Remaining':'剩余','Budget line':'预算项目','Additional basis (¥)':'追加成本（¥）','Additional units':'追加数量','Units / shares':'数量 / 股数',

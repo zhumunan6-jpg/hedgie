@@ -21,16 +21,10 @@ The current interface is intentionally compact: record purchases, review monthly
 - Existing recurring bills continue to auto-log when their saved data is present
 
 ### Reports
-- Monthly income, budget, actual spending, and remaining income metrics
+- Monthly income, actual spending, and remaining income metrics
 - Spending breakdown by category with progress indicators
 - Monthly transactions with user attribution
 - Yearly spending overview (Hibernation View)
-
-### Insights and notifications
-- Built-in notifications: upcoming bills, budget warnings, sync staleness, monthly logging nudge, and first-session sync prompt
-- Four urgency tiers: high (red), med (amber), low (green), info (blue)
-- Bell badge color reflects the highest-priority active notification
-- Existing custom notification rules remain evaluable from compatible saved data
 
 ### Local data and compatibility
 - Core receipt and report data stays in the browser and works offline
@@ -52,7 +46,7 @@ Den is hidden by default. If an existing local profile has the Den preview enabl
 - **Liabilities** — loans, credit, leases, and other financing accounts with balance, interest rate, term, and payoff estimate; optional asset value field for equity-building debts
 - **Portfolio** — stocks, ETFs, crypto, CD/Savings, and other positions; CD/Savings entries calculate compound interest from principal, APY, and deposit date; purchase receipts can be linked to auto-track cost basis and units
 - **Performance chart** — aggregate portfolio value over 1D / 1W / 1M / 3M / 6M / 1Y; all ranges are purchase-date-aware
-- **Savings goals** — named targets with progress bar and budget line link
+- **Savings goals** — named targets with progress bar
 - **Live price feed** — CoinGecko (free, no key), Finnhub, Twelve Data, Alpha Vantage
 - **Wallet balances** — connect a public 0x address or MetaMask/Brave/Coinbase Wallet; pulls ETH, POL, USDC, USDT, and DAI across Ethereum, Arbitrum, Base, and Polygon
 - **Transaction import** — Etherscan API key optional; fetches transaction history across all enabled chains into a review queue before logging as receipts; auto-import mode available

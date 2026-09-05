@@ -25,9 +25,7 @@ Thanks for your interest in contributing. Hedgie Open is intentionally simple �
 - Sync provider adapters (new cloud backends)
 - Accessibility improvements
 - Mobile UX refinements
-- New built-in notification types
 - Performance improvements for large receipt datasets
-- Custom notification field additions
 - Translations (UI text is currently English only)
 
 ## What we'll probably decline
@@ -71,14 +69,10 @@ The sync system has several interacting guards (empty-state guard, first-sync gu
 - Two users with different budget plans → conflict modal should appear
 - Payload missing `_hedgie` flag but with valid `data` object → should be accepted
 
-## Custom notifications
-
-New queryable fields for custom notifications are defined in the `CN_FIELDS` array and evaluated in `evalCondition()`. If you add a new field, add it to both arrays and document what data it reads and when it returns true.
-
 ## Versioning
 
 Hedgie Open uses [Semantic Versioning](https://semver.org/). The version string appears in two places in `index.html`:
 - The tab bar logo subtitle
-- The Budget planner footer
+- The app version footer
 
 Update both when cutting a release. Tag the release in git with `git tag -a vX.Y.Z -m 'Hedgie Open vX.Y.Z'` and push the tag.
