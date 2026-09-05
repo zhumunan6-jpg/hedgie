@@ -294,7 +294,7 @@ select{cursor:pointer}
     <div class="quick-form">
       <div>
         <label>Category</label>
-        <select id="log-cat" onchange="updateDenLogFieldVisibility()"><option value="Home">Home</option><option value="Transportation">Transportation</option><option value="Shopping" selected>Shopping</option><option value="Services">Services</option><option value="Debts">Debts</option><option value="Savings">Savings</option></select>
+        <select id="log-cat" onchange="updateDenLogFieldVisibility()"><option value="Home">Home</option><option value="Transportation">Transportation</option><option value="Shopping" selected>Shopping</option><option value="Services">Services</option><option value="Debts">Debts</option></select>
       </div>
       <div>
         <label>Amount (¥)</label>
@@ -377,7 +377,6 @@ select{cursor:pointer}
       <button class="pill" data-rc="Shopping" onclick="setRcptFilter('Shopping',this)">Shopping</button>
       <button class="pill" data-rc="Services" onclick="setRcptFilter('Services',this)">Services</button>
       <button class="pill" data-rc="Debts" onclick="setRcptFilter('Debts',this)">Debts</button>
-      <button class="pill" data-rc="Savings" onclick="setRcptFilter('Savings',this)">Savings</button>
     </div>
     <div id="receipt-list"></div>
   </div>
@@ -506,9 +505,9 @@ const DEFAULT_CATS=[
   {name:'Transportation',color:'#3a6ea8',type:'expense'},
   {name:'Shopping',color:'#4a7c59',type:'expense'},
   {name:'Services',color:'#7c5a8b',type:'expense'},
-  {name:'Debts',color:'#b94040',type:'expense'},
-  {name:'Savings',color:'#b87820',type:'savings'}
+  {name:'Debts',color:'#b94040',type:'expense'}
 ];
+const LOCKED_CATS=DEFAULT_CATS.map(c=>c.name);
 let categories=DEFAULT_CATS.map(c=>({...c})); // mutable, persisted
 // Category object shape: {name, color, financing?: boolean}
 // financing:true enables Den linking for expense lines in this category
@@ -516,7 +515,6 @@ let categories=DEFAULT_CATS.map(c=>({...c})); // mutable, persisted
 const CATS=()=>categories.map(c=>c.name);
 const catColor=name=>{const c=categories.find(x=>x.name===name);return c?c.color:'#888888';};
 const isExpenseCat=name=>{const c=categories.find(x=>x.name===name);return !c?.type||c.type==='expense';};
-const isSavingsCat=name=>{const c=categories.find(x=>x.name===name);return c?.type==='savings';};
 const MONTH_NAMES=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const USER_COLORS=['#3a6ea8','#b94040','#4a7c59','#7c5a8b','#b87820','#8b6340'];
 
@@ -527,8 +525,7 @@ const DEF={
   Transportation:[{n:'车贷',a:0,p:'M',f:'M'},{n:'车险',a:0,p:'M',f:'M'},{n:'油费',a:0,p:'M',f:'M'},{n:'车辆牌照 / 注册',a:0,p:'L',f:'Y'},{n:'车辆保养',a:0,p:'L',f:'Y'}],
   Shopping:[{n:'买菜',a:0,p:'H',f:'M'},{n:'外出就餐',a:0,p:'L',f:'M'},{n:'咖啡 / 零食',a:0,p:'L',f:'M'}],
   Services:[{n:'Apple One',a:0,p:'L',f:'M'},{n:'Netflix',a:0,p:'L',f:'M'},{n:'手机套餐',a:0,p:'M',f:'M'},{n:'Kaiser（医疗）',a:0,p:'H',f:'M'},{n:'Willamette Dental',a:0,p:'M',f:'M'},{n:'处方药',a:0,p:'H',f:'M'},{n:'视力/眼科',a:0,p:'M',f:'Y'},{n:'云存储',a:0,p:'L',f:'M'}],
-  Debts:[{n:'助学贷款',a:0,p:'H',f:'M'},{n:'信用卡最低还款',a:0,p:'H',f:'M'},{n:'个人贷款',a:0,p:'M',f:'M'}],
-  Savings:[{n:'应急储蓄',a:0,p:'H',f:'M'},{n:'普通储蓄',a:0,p:'L',f:'M'}]
+  Debts:[{n:'助学贷款',a:0,p:'H',f:'M'},{n:'信用卡最低还款',a:0,p:'H',f:'M'},{n:'个人贷款',a:0,p:'M',f:'M'}]
 };
 
 let income=[{n:'主职收入',a:0},{n:'其他收入',a:0}];
@@ -555,6 +552,7 @@ let financing=[]; // Den feature: financing accounts (loans, credit lines, lease
 //  linkedExpenseKey ('catName|expName'), receipt.financeId links payments}
 let savingsGoals=[]; // Den feature: savings goals
 // Savings goal shape: {id, name, targetAmt, currentAmt, linkedExpenseKey}
+let savingsTargets={}; // Monthly savings targets keyed by YYYY-MM
 let investments=[]; // Den feature: investment positions (stocks, ETFs, crypto)
 // Investment shape: {id, name, symbol, type ('stock'|'etf'|'crypto'|'other'),
 //  units, costBasis, currentPrice, lastPriceUpdate}
@@ -729,6 +727,128 @@ function loadSyncMeta(){
   }catch(e){}
 }
 
+// ── LOCAL DATA PERSISTENCE & MIGRATION ─────────
+const LOCAL_DATA_KEY='hedgie_data';
+const LOCAL_DATA_VERSION=1;
+
+function buildDataSnapshot(){
+  return {categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,savingsTargets,investments,walletAddress,walletChains,walletAssets,walletPendingTxs};
+}
+
+function normalizeIncomeRecords(records){
+  const today=todayStr();
+  if(!Array.isArray(records))return [];
+  return records.map((record)=>{
+    if(!record||typeof record!=='object')return null;
+    const amount=Number(record.a??record.amount??0);
+    if(!Number.isFinite(amount)||amount<=0)return null;
+    const rawFrequency=record.frequency??record.freq??record.recurring??record.f??'none';
+    const frequency=rawFrequency===true?'monthly':String(rawFrequency).toLowerCase();
+    const normalizedFrequency=frequency==='m'||frequency==='monthly'?'monthly':frequency==='y'||frequency==='yearly'?'yearly':frequency==='c'||frequency==='custom'||frequency==='interval'?'interval':'none';
+    const every=Math.max(2,parseInt(record.every??record.intervalMonths,10)||3);
+    const {cat:_legacyCategory,category:_legacyCategoryName,...legacy}=record;
+    return {...legacy,
+      id:record.id||uid(),
+      n:String(record.n??record.source??record.name??'').trim(),
+      a:amount,
+      date:/^\d{4}-\d{2}-\d{2}$/.test(record.date||'')?record.date:today,
+      note:String(record.note??record.memo??'').trim(),
+      frequency:normalizedFrequency,
+      f:normalizedFrequency==='monthly'?'M':normalizedFrequency==='yearly'?'Y':normalizedFrequency==='interval'?'C':'O',
+      ...(normalizedFrequency==='interval'?{every}: {})
+    };
+  }).filter(Boolean);
+}
+
+function normalizeSavingsTargets(targets){
+  const normalized={};
+  if(Array.isArray(targets)){
+    targets.forEach(target=>{
+      const month=target?.month||target?.ym;
+      const amount=Number(target?.amount??target?.targetAmt??target?.a);
+      if(/^\d{4}-\d{2}$/.test(month||'')&&Number.isFinite(amount)&&amount>=0)normalized[month]=amount;
+    });
+  }else if(targets&&typeof targets==='object'){
+    Object.entries(targets).forEach(([month,amount])=>{
+      const value=Number(amount);
+      if(/^\d{4}-\d{2}$/.test(month)&&Number.isFinite(value)&&value>=0)normalized[month]=value;
+    });
+  }
+  return normalized;
+}
+
+function normalizeDataState(){
+  const before=JSON.stringify(buildDataSnapshot());
+  const incomingCats=Array.isArray(categories)?categories:[];
+  const locked=DEFAULT_CATS.map(defaultCat=>{
+    const saved=incomingCats.find(cat=>cat&&cat.name===defaultCat.name);
+    return saved?{...defaultCat,...saved,type:defaultCat.type}:{...defaultCat};
+  });
+  const custom=incomingCats.filter(cat=>cat&&cat.name&&cat.name!=='Savings'&&!LOCKED_CATS.includes(cat.name));
+  categories=[...locked,...custom];
+
+  const oldExpenses=expenses&&typeof expenses==='object'?expenses:{};
+  const cleanedExpenses={};
+  Object.entries(oldExpenses).forEach(([name,lines])=>{
+    if(name!=='Savings')cleanedExpenses[name]=Array.isArray(lines)?lines:[];
+  });
+  CATS().forEach(name=>{if(!cleanedExpenses[name])cleanedExpenses[name]=DEF[name]?JSON.parse(JSON.stringify(DEF[name])):[];});
+  expenses=cleanedExpenses;
+
+  income=normalizeIncomeRecords(income);
+  receipts=Array.isArray(receipts)?receipts.filter(receipt=>receipt&&receipt.cat!=='Savings'):[];
+  const cleanedArchives={};
+  Object.entries(archives&&typeof archives==='object'?archives:{}).forEach(([year,items])=>{
+    const kept=Array.isArray(items)?items.filter(receipt=>receipt&&receipt.cat!=='Savings'):[];
+    if(kept.length)cleanedArchives[year]=kept;
+  });
+  archives=cleanedArchives;
+  recurringBills=Array.isArray(recurringBills)?recurringBills.filter(bill=>bill&&bill.cat!=='Savings'):[];
+  financing=Array.isArray(financing)?financing.map(account=>account?.linkedExpenseKey?.startsWith('Savings|')?{...account,linkedExpenseKey:''}:account):[];
+  savingsGoals=Array.isArray(savingsGoals)?savingsGoals.map(goal=>goal?.linkedExpenseKey?.startsWith('Savings|')?{...goal,linkedExpenseKey:''}:goal):[];
+  savingsTargets=normalizeSavingsTargets(savingsTargets);
+  return before!==JSON.stringify(buildDataSnapshot());
+}
+
+function saveLocalData(){
+  try{
+    localStorage.setItem(LOCAL_DATA_KEY,JSON.stringify({schemaVersion:LOCAL_DATA_VERSION,savedAt:new Date().toISOString(),data:buildDataSnapshot()}));
+    return true;
+  }catch(e){
+    console.warn('Hedgie local save failed:',e);
+    return false;
+  }
+}
+
+function loadLocalData(){
+  try{
+    const saved=localStorage.getItem(LOCAL_DATA_KEY);
+    if(!saved)return false;
+    const parsed=JSON.parse(saved);
+    const data=parsed.data||parsed;
+    if(!data||typeof data!=='object')return false;
+    applyDataCollections(data);
+    // Re-save after migration so old income and Savings data are not restored again.
+    saveLocalData();
+    return true;
+  }catch(e){
+    console.warn('Hedgie local load failed:',e);
+    return false;
+  }
+}
+
+function getSavingsTarget(month=currentMonth()){
+  const target=Number(savingsTargets[month]);
+  return Number.isFinite(target)&&target>=0?target:null;
+}
+
+function setSavingsTarget(month,amount){
+  const value=Number(amount);
+  if(!/^\d{4}-\d{2}$/.test(month)||!Number.isFinite(value)||value<0)return;
+  savingsTargets[month]=value;
+  triggerAutosave('savings-target');
+}
+
 // ── LOAD SETTINGS ────────────────────────────
 function loadSettings(){
   const saved=localStorage.getItem('hedgie_settings');
@@ -788,7 +908,7 @@ async function quickSync(){
       const vr=await verifyPayload(cloudCheck);
       if(!vr.ok){setGSB('err','Signature mismatch — check shared key','',false);if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}return;}
       let plainCloud;try{plainCloud=await toPlainPayload(cloudCheck);}catch(e){setGSB('err',e.message,'',false);if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}return;}
-      const localSnap={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
+      const localSnap={version:syncMeta.version,data:buildDataSnapshot()};
       if(budgetChanged(localSnap,plainCloud)){
         pendingCloudData=plainCloud;showConflictModal(plainCloud);
         if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}
@@ -830,7 +950,7 @@ async function quickSync(){
 
     // Step 3 - decrypt + decide direction
     cloud=await toPlainPayload(cloud);
-    const localPayload={version:syncMeta.version,lastEditedBy:settings.username,lastEditedAt:new Date().toISOString(),data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
+    const localPayload={version:syncMeta.version,lastEditedBy:settings.username,lastEditedAt:new Date().toISOString(),data:buildDataSnapshot()};
     const cloudAhead=(cloud.version||0)>(syncMeta.lastPulledVersion||0);
 
     let resolved;
@@ -911,6 +1031,8 @@ function setGSB(state, msg, rightText, persist){
 // ── AUTOSAVE ──────────────────────────────────
 function triggerAutosave(source){
   clearTimeout(autosaveTimer);
+  // Local persistence is immediate; cloud sync remains debounced and guarded below.
+  saveLocalData();
   autosaveTimer=setTimeout(async()=>{
     setGSB('saving','Saving…','');
     if(settings.provider!=='none'){
@@ -940,14 +1062,14 @@ function triggerAutosave(source){
         setGSB('warn','Saved locally only — cloud unreachable','');
       }
     }else{
-      setGSB('warn','Not backed up — export a backup to keep your data','');
+      setGSB('saved','Saved locally','');
     }
   },2000);
 }
 
 // ── CLOUD PAYLOAD ─────────────────────────────
 async function buildPayload(){
-  const rawData={categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments,walletAddress,walletChains,walletAssets,walletPendingTxs,darkMode:settings.darkMode,pwaInstalled:settings.pwaInstalled};
+  const rawData={...buildDataSnapshot(),darkMode:settings.darkMode,pwaInstalled:settings.pwaInstalled};
   const base={_hedgie:true,version:(syncMeta.version||0)+1,lastEditedBy:settings.username||'Unknown',lastEditedAt:new Date().toISOString()};
   if(settings.encryptSync&&settings.sharedKey){
     try{
@@ -994,36 +1116,28 @@ function applyPayload(payload){
   _applyData(payload.data||payload,payload);
 }
 
-function _applyData(d,payload){
-  // Handle old schema — if no categories key, keep current categories
-  if(d.categories&&d.categories.length){
-    // Merge: keep locked defaults with potentially updated colors, append custom cats
-    const locked=DEFAULT_CATS.map(dc=>{
-      const saved=d.categories.find(sc=>sc.name===dc.name);
-      return saved?{type:dc.type,...saved}:dc;
-    });
-    const custom=d.categories.filter(sc=>!LOCKED_CATS.includes(sc.name));
-    categories=[...locked,...custom];
-  }
-  if(d.income)income=d.income;
-  if(d.expenses){
-    // Migrate old schema expenses — ensure all current categories have an entry
-    expenses=d.expenses;
-    initExpenses();
-  }else{
-    initExpenses();
-  }
-  if(d.receipts)receipts=d.receipts;
-  if(d.vendors)vendors=d.vendors;
-  if(d.archives)archives=d.archives;
-  if(d.recurringBills)recurringBills=d.recurringBills;
-  if(d.financing)financing=d.financing;
-  if(d.savingsGoals)savingsGoals=d.savingsGoals;
-  if(d.investments)investments=d.investments;
+function applyDataCollections(d){
+  if(!d||typeof d!=='object')return;
+  if(d.categories!==undefined)categories=d.categories;
+  if(d.income!==undefined)income=d.income;
+  if(d.expenses!==undefined)expenses=d.expenses;
+  if(d.receipts!==undefined)receipts=d.receipts;
+  if(d.vendors!==undefined)vendors=d.vendors;
+  if(d.archives!==undefined)archives=d.archives;
+  if(d.recurringBills!==undefined)recurringBills=d.recurringBills;
+  if(d.financing!==undefined)financing=d.financing;
+  if(d.savingsGoals!==undefined)savingsGoals=d.savingsGoals;
+  if(d.savingsTargets!==undefined)savingsTargets=d.savingsTargets;
+  if(d.investments!==undefined)investments=d.investments;
   if(d.walletAddress!==undefined)walletAddress=d.walletAddress;
-  if(d.walletChains)walletChains=d.walletChains;
-  if(d.walletAssets)walletAssets=d.walletAssets;
-  if(d.walletPendingTxs)walletPendingTxs=d.walletPendingTxs;
+  if(d.walletChains!==undefined)walletChains=d.walletChains;
+  if(d.walletAssets!==undefined)walletAssets=d.walletAssets;
+  if(d.walletPendingTxs!==undefined)walletPendingTxs=d.walletPendingTxs;
+  normalizeDataState();
+}
+
+function _applyData(d,payload){
+  applyDataCollections(d);
   // Restore preference flags from payload
   if(d.darkMode!==undefined&&settings.darkMode!==d.darkMode){settings.darkMode=d.darkMode;applyDarkMode();}
   if(d.pwaInstalled!==undefined)settings.pwaInstalled=d.pwaInstalled;
@@ -1037,6 +1151,7 @@ function _applyData(d,payload){
   syncMeta.lastEditedAt=payload.lastEditedAt||'';
   syncMeta.lastPulledVersion=payload.version||0;
   saveSyncMeta();
+  saveLocalData();
   refreshAll();
 }
 
@@ -1057,7 +1172,7 @@ function mergePayloads(local,cloud){
   const merged=mergeReceipts(local.data.receipts||[],cd.receipts||[]);
   const mergedArc={...((local.data&&local.data.archives)||{}),...(cd.archives||{})};
   const mergedCats=cd.categories||local.data.categories||DEFAULT_CATS;
-  return {...local,version:Math.max(local.version,cloud.version)+1,lastEditedBy:settings.username||'Unknown',lastEditedAt:new Date().toISOString(),data:{...local.data,receipts:merged,vendors:{...(cd.vendors||{}),...(local.data.vendors||{})},archives:mergedArc,categories:mergedCats}};
+  return {...local,version:Math.max(local.version,cloud.version)+1,lastEditedBy:settings.username||'Unknown',lastEditedAt:new Date().toISOString(),data:{...local.data,receipts:merged,vendors:{...(cd.vendors||{}),...(local.data.vendors||{})},archives:mergedArc,categories:mergedCats,savingsTargets:local.data.savingsTargets??cd.savingsTargets??{}}};
 }
 
 function budgetWeight(){
@@ -1073,6 +1188,7 @@ function budgetWeight(){
     recurringBills.length*3+
     financing.length*3+
     savingsGoals.length*3+
+    Object.keys(savingsTargets).length*3+
     investments.length*2
   );
 }
@@ -1094,13 +1210,13 @@ function firstSyncMerge(local,cloud){
     version:(cloud.version||0)+1,
     lastEditedBy:settings.username||'Unknown',
     lastEditedAt:new Date().toISOString(),
-    data:{...cd,receipts:merged,vendors:{...(cd.vendors||{}),...(local.data.vendors||{})}}
+    data:{...cd,receipts:merged,vendors:{...(cd.vendors||{}),...(local.data.vendors||{})},savingsTargets:cd.savingsTargets??local.data.savingsTargets??{}}
   };
 }
 
 function budgetChanged(local,cloud){
   const cd=cloud.data||{};
-  return JSON.stringify({i:local.data.income,e:local.data.expenses,cat:local.data.categories})!==JSON.stringify({i:cd.income,e:cd.expenses,cat:cd.categories});
+  return JSON.stringify({i:local.data.income,e:local.data.expenses,cat:local.data.categories,t:local.data.savingsTargets||{}})!==JSON.stringify({i:cd.income,e:cd.expenses,cat:cd.categories,t:cd.savingsTargets||{}});
 }
 
 // ── CLOUD ADAPTERS ────────────────────────────
@@ -1121,7 +1237,7 @@ async function toPlainPayload(payload){
     }
   }
   // Ensure .data always exists even for a malformed/empty payload
-  if(!payload.data)return {...payload,data:{income:[],expenses:{},receipts:[],vendors:{},archives:{},recurringBills:[],categories:DEFAULT_CATS,financing:[],savingsGoals:[],investments:[],walletAddress:'',walletChains:['ethereum','arbitrum','base','polygon'],walletAssets:[],walletPendingTxs:[]}};
+  if(!payload.data)return {...payload,data:{income:[],expenses:{},receipts:[],vendors:{},archives:{},recurringBills:[],categories:DEFAULT_CATS,financing:[],savingsGoals:[],savingsTargets:{},investments:[],walletAddress:'',walletChains:['ethereum','arbitrum','base','polygon'],walletAssets:[],walletPendingTxs:[]}};
   return payload;
 }
 
@@ -1175,14 +1291,14 @@ async function cloudPull(){
     if(vr.unsigned&&settings.sharedKey){setGSB('warn','Cloud payload has no signature — push to sign it','');}
         // Decrypt before any .data access
     let plainCloud;try{plainCloud=await toPlainPayload(cloud);}catch(e){setGSB('err',e.message,'',true);return;}
-    const localPayload={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
+    const localPayload={version:syncMeta.version,data:buildDataSnapshot()};
     const cloudVer=plainCloud.version||0;
     const isFirstSync=syncMeta.lastPulledVersion===0&&syncMeta.version===0;
     if(cloudVer>(syncMeta.lastPulledVersion||0)){
       if(isFirstSync){
         // First pull — cloud is authoritative, but rescue any local receipts entered
         // before this pull so they aren't silently dropped.
-        const localSnap={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
+        const localSnap={version:syncMeta.version,data:buildDataSnapshot()};
         const payloadToApply=(receipts&&receipts.length>0)?firstSyncMerge(localSnap,plainCloud):plainCloud;
         await applyPayloadAsync(payloadToApply);
         syncMeta.lastPulledAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','First sync complete','by '+(cloud.lastEditedBy||'someone'));
@@ -1206,7 +1322,7 @@ async function cloudPush(){
       if(!vr.ok){setGSB('err','Remote signature invalid — check shared key','',true);return;}
       if(vr.unsigned&&settings.sharedKey){setGSB('warn','Remote payload unsigned — will be signed on push','');}
       if((cloud.version||0)>syncMeta.lastPulledVersion){
-        const localPayload={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
+        const localPayload={version:syncMeta.version,data:buildDataSnapshot()};
         let plainCloud2;try{plainCloud2=await toPlainPayload(cloud);}catch(e){setGSB('err',e.message,'',true);return;}
         if(budgetChanged(localPayload,plainCloud2)){pendingCloudData=plainCloud2;showConflictModal(plainCloud2);return;}
         const neverSyncedPush=syncMeta.lastPulledVersion===0&&syncMeta.version===0;
@@ -1236,9 +1352,9 @@ function showConflictModal(cloud){
 async function resolveConflict(choice){
   document.getElementById('conflict-modal').classList.remove('open');
   const cloud=pendingCloudData;if(!cloud)return;
-  const local={version:syncMeta.version,lastEditedBy:settings.username,lastEditedAt:new Date().toISOString(),data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
+  const local={version:syncMeta.version,lastEditedBy:settings.username,lastEditedAt:new Date().toISOString(),data:buildDataSnapshot()};
   let resolved=mergePayloads(local,cloud);
-  if(choice==="theirs"){const cd2=cloud.data||{};resolved.data.income=cd2.income||income;resolved.data.expenses=cd2.expenses||expenses;}
+  if(choice==="theirs"){const cd2=cloud.data||{};resolved.data.income=cd2.income||income;resolved.data.expenses=cd2.expenses||expenses;resolved.data.savingsTargets=cd2.savingsTargets??savingsTargets;}
   resolved.signature=await signPayload(resolved);
   await applyPayloadAsync(resolved);
   try{await pushToCloud(resolved);syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Conflict resolved — synced ↑↓','just now');}
@@ -1405,7 +1521,7 @@ function renderMonthlyReport(){
   const recs=receiptsForMonth(ym);
   const spent=recs.reduce((s,r)=>s+r.amt,0);
   const inc=totalIncome();
-  const rem=inc-recs.filter(r=>!isSavingsCat(r.cat)).reduce((s,r)=>s+r.amt,0);
+  const rem=inc-recs.reduce((s,r)=>s+r.amt,0);
   const visRecs=rptFilterCat==='all'?recs:recs.filter(r=>r.cat===rptFilterCat);
   const rptTotal=visRecs.reduce((s,r)=>s+r.amt,0);
   const rptPills='<div class="pills" id="rpt-filters" style="margin:4px 0 8px">'+['all',...CATS()].map(c=>`<button class="pill${(c==='all'?rptFilterCat==='all':rptFilterCat===c)?' on':''}" data-rp="${esc(c)}" onclick="setRptFilter(this.dataset.rp)">${c==='all'?'All':esc(c)}</button>`).join('')+'</div>';
@@ -1449,7 +1565,7 @@ function renderYearlyReport(){
   const totalSpent=recs.reduce((s,r)=>s+r.amt,0);
   const annualBudget=totalExpMo()*12;
   const inc=totalIncome()*12;
-  const rem=inc-recs.filter(r=>!isSavingsCat(r.cat)).reduce((s,r)=>s+r.amt,0);
+  const rem=inc-recs.reduce((s,r)=>s+r.amt,0);
   const nowYr=new Date().getFullYear().toString();
   const nowMo=new Date().getMonth();
   const isCurrentYear=(yr===nowYr);
@@ -1608,6 +1724,7 @@ function processRecurringBills(){
     receipts.sort((a,b)=>b.date.localeCompare(a.date));
     populateMonthSelects();renderLogMetrics();renderReceiptList();
     setGSB('info',`${added} recurring bill${added>1?'s':''} auto-logged`,'');
+    triggerAutosave('recurring');
   }
 }
 
@@ -1623,7 +1740,7 @@ function showVendorDD(){
 }
 function hideVendorDD(){setTimeout(()=>{document.getElementById('vendor-dd').style.display='none';},150);}
 function selectVendor(n,cat){document.getElementById('log-vendor').value=n;document.getElementById('log-cat').value=cat;document.getElementById('vendor-dd').style.display='none';}
-function clearVendors(){if(confirm('Clear all saved vendors?')){vendors={};document.getElementById('vendor-dd').style.display='none';}}
+function clearVendors(){if(confirm('Clear all saved vendors?')){vendors={};document.getElementById('vendor-dd').style.display='none';triggerAutosave('vendors');}}
 function saveVendor(n,cat){if(!n)return;const k=n.trim();if(!k)return;if(!vendors[k])vendors[k]={cat,count:0};vendors[k].count++;vendors[k].cat=cat;enforceVendorLimit();}
 
 // ── LOG RECEIPT ───────────────────────────────
@@ -1687,7 +1804,7 @@ function renderLogMetrics(){
   const ym=document.getElementById('log-month-sel')?.value||currentMonth();
   const recs=receiptsForMonth(ym),spent=recs.reduce((s,r)=>s+r.amt,0);
   const inc=totalIncome();
-  const rem=inc-recs.filter(r=>!isSavingsCat(r.cat)).reduce((s,r)=>s+r.amt,0);
+  const rem=inc-recs.reduce((s,r)=>s+r.amt,0);
   document.getElementById('log-metrics').innerHTML=`<div class="metric"><div class="metric-label">Spent ${monthLabel(ym)}</div><div class="metric-val">${fmt(spent)}</div></div><div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(Math.abs(rem))}</div></div>`;
 }
 
@@ -3112,10 +3229,26 @@ function updateSavingsGoal(id,field,value){
   g[field]=value;triggerAutosave('den');
 }
 
-function refreshAll(){runAutoArchive();if(runAutoPrune())triggerAutosave('prune');initExpenses();rebuildCatUI();processRecurringBills();populateMonthSelects();renderLogMetrics();renderReceiptList();if(document.getElementById('panel-report').classList.contains('active'))renderReport();applyDenPreview();if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();}
+function refreshAll(){
+  runAutoArchive();
+  if(runAutoPrune())triggerAutosave('prune');
+  initExpenses();
+  rebuildCatUI();
+  processRecurringBills();
+  populateMonthSelects();
+  renderLogMetrics();
+  renderReceiptList();
+  if(document.getElementById('panel-report').classList.contains('active'))renderReport();
+  applyDenPreview();
+  if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();
+  saveLocalData();
+}
 
 // ── INIT ──────────────────────────────────────
 initExpenses();
+loadSettings();
+loadSyncMeta();
+loadLocalData();
 updateDateLabel();
 rebuildCatUI();
 setGSB('idle','','');
@@ -3123,11 +3256,9 @@ updateSyncButton();
 populateMonthSelects();
 renderLogMetrics();
 renderReceiptList();
-loadSettings();
 applyDarkMode();
 applyDenPreview();
 checkIosInstallBanner(); // show iOS install banner if on iOS Safari without standalone mode
-loadSyncMeta();
 (async function autoStartupSync(){
   if(settings.provider==='none')return;
   if(budgetWeight()>0)return;
@@ -3165,7 +3296,7 @@ const ZH_TRANSLATIONS={
   'To install: tap':'安装：点击','Share':'分享','Add to Home Screen':'添加到主屏幕',
   'New to Open Hedgie? Read the wiki to get the most out of the app.':'第一次使用 Open Hedgie？阅读使用说明，了解如何充分使用本应用。',
   'Get started':'开始使用','Log a purchase':'记录一笔支出','Category':'类别','Home':'居家','Transportation':'交通','Shopping':'购物',
-  'Services':'服务','Debts':'债务','Savings':'储蓄','Amount (¥)':'金额（¥）','Vendor / store':'商家 / 店铺',
+  'Services':'服务','Debts':'债务','Amount (¥)':'金额（¥）','Vendor / store':'商家 / 店铺',
   '(remembered automatically)':'（自动记忆）','Note':'备注','(optional)':'（可选）','weekly grocery run':'本周采购',
   'Date':'日期','Recurring':'周期','One-time':'一次性','Monthly':'每月','Yearly':'每年','Custom':'自定义',
   'Day of month (bill due date)':'每月几号（账单到期日）','Every how many months?':'每隔几个月？','months':'个月',
