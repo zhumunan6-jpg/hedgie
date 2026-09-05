@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Hedgie — Hedge Your Spending</title>
+<title>Hedgie — 守护你的支出</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#5c3d1e">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -5148,6 +5148,98 @@ window.addEventListener('beforeunload',e=>{
   e.preventDefault();
   return e.returnValue='';
 });
+
+// ── 简体中文界面 ─────────────────────────────
+// Keep the original data values and function names intact; translate only
+// user-facing text in the DOM and browser dialogs.
+const ZH_TRANSLATIONS={
+  'Hedge Your Spending':'守护你的支出','Open · v2.5.9':'开放版 · v2.5.9',
+  'Log receipt':'记账','Monthly report':'月报','Budget planner':'预算规划','Add to home screen':'添加到主屏幕',
+  'Toggle dark mode':'切换深色模式','Notifications':'通知','Dismiss all':'全部忽略','Sync with cloud':'与云端同步','Sync':'同步',
+  'To install: tap':'安装：点击','Share':'分享','Add to Home Screen':'添加到主屏幕',
+  'New to Open Hedgie? Read the wiki to get the most out of the app.':'第一次使用 Open Hedgie？阅读使用说明，了解如何充分使用本应用。',
+  'Get started':'开始使用','Log a purchase':'记录一笔支出','Category':'类别','Home':'居家','Transportation':'交通','Shopping':'购物',
+  'Services':'服务','Debts':'债务','Savings':'储蓄','Amount ($)':'金额（$）','Vendor / store':'商家 / 店铺',
+  '(remembered automatically)':'（自动记忆）','Note':'备注','(optional)':'（可选）','weekly grocery run':'本周采购',
+  'Date':'日期','Recurring':'周期','One-time':'一次性','Monthly':'每月','Yearly':'每年','Custom':'自定义',
+  'Day of month (bill due date)':'每月几号（账单到期日）','Every how many months?':'每隔几个月？','months':'个月',
+  'Annual due date':'年度到期日','January':'一月','February':'二月','March':'三月','April':'四月','May':'五月','June':'六月',
+  'July':'七月','August':'八月','September':'九月','October':'十月','November':'十一月','December':'十二月','Day':'日',
+  'Payment towards':'用于还款','Portfolio purchase':'投资组合购买','None':'无','Units':'数量','Add to log':'添加记录',
+  "This month's receipts":'本月记录','Filter:':'筛选：','All':'全部','Long-term assets & liabilities':'长期资产与负债',
+  'Performance':'走势','Stock / ETF':'股票 / ETF','Crypto':'加密货币','CD / Savings':'定期存款 / 储蓄','Wallet':'钱包',
+  'Refresh':'刷新','Liabilities':'负债','Add':'添加','Savings goals':'储蓄目标','Add goal':'添加目标',
+  'Budget vs. actual spending':'预算与实际支出','Active':'当前','Hibernate':'冬眠视图',
+  'Budget planner':'预算规划','Monthly targets · yearly items shown as monthly equivalent':'每月目标 · 年度项目按月均值显示',
+  'Expenses as % of income':'支出占收入比例','Income sources':'收入来源','Add source':'添加来源','Manage categories':'管理类别',
+  'Add category':'添加类别','Reset to defaults':'恢复默认','Category:':'类别：','Priority:':'优先级：','High':'高','Medium':'中','Low':'低',
+  'Rainy day buffer':'应急储备','Surplus:':'结余：','Export & backup':'导出与备份','Settings':'设置','Wiki':'使用说明',
+  'Identity':'身份','Display name':'显示名称','(stamps your receipts)':'（显示在记录旁）','Signature color':'签名颜色',
+  '(your name next to receipts)':'（记录旁显示你的名称）','Shared secret key':'共享密钥','(signs sync payloads)':'（用于签名同步数据）',
+  'No key generated':'尚未生成密钥','Generate':'生成','Copy':'复制','Paste':'粘贴','Encrypt sync payload':'加密同步数据',
+  'Data':'数据','BACKUP & RESTORE':'备份与恢复','Save local':'保存到本地','Restore local':'从本地恢复','EXPORT':'导出',
+  'Export receipts CSV':'导出记录 CSV','Export budget CSV':'导出预算 CSV','Copy for Sheets':'复制到表格','Export archived receipts':'导出归档记录',
+  'RETENTION':'保留期限','Receipt data retention':'记录数据保留期限','Keep forever':'永久保留','1 year':'1 年','2 years':'2 年',
+  '3 years':'3 年','5 years':'5 年','7 years':'7 年','10 years':'10 年',
+  'Archived data outside this window is permanently deleted on the next sync or app open.':'超出此期限的归档数据将在下次同步或打开应用时永久删除。',
+  'Not configured':'未配置','Sync provider':'同步服务','None (local only)':'无（仅本地）','GitHub Gist (private)':'GitHub Gist（私有）',
+  'Self-hosted endpoint':'自托管端点','Pull':'拉取','Push':'推送','Force refresh':'强制刷新','Clears cached version and reloads the app':'清除缓存版本并重新加载应用',
+  'Unlocks the Den tab for tracking loans, investments, and savings goals. Receipts can be tagged to financing accounts in the log form.':'开启“长期资产”页，用于记录贷款、投资和储蓄目标。你可以在记账表单中将记录关联到融资账户。',
+  'Enable Den Preview features':'启用长期资产预览功能','Manage accounts, investments, and goals in the Den tab. Receipt tagging is available in the log form above.':'在“长期资产”页管理账户、投资和目标。你可以在上方记账表单中关联记录。',
+  'Price Feed':'价格数据源','Fetch live stock and crypto prices. All providers offer a free tier.':'获取股票和加密货币实时价格。所有服务都提供免费额度。',
+  'Provider':'服务商','None — manual only':'无——仅手动输入','crypto, free (optional key)':'加密货币，免费（可选密钥）',
+  'stocks + crypto, free key':'股票 + 加密货币，需免费密钥','API key':'API 密钥','Paste API key':'粘贴 API 密钥',
+  'Transaction import settings for the Den Wallet card. Requires Den Preview to be enabled.':'“长期资产”页钱包卡片的交易导入设置，需要先启用长期资产预览。',
+  'Etherscan API key':'Etherscan API 密钥','(free at etherscan.io/apis — covers all chains)':'（可在 etherscan.io/apis 免费获取，支持所有链）',
+  'Import options':'导入选项','Direction':'方向','Outgoing only':'仅转出','Incoming only':'仅转入','Both':'全部',
+  'Auto-import on sync':'同步时自动导入','Include gas fees':'包含 Gas 费','Networks':'网络','Ethereum':'以太坊','Arbitrum':'Arbitrum','Base':'Base','Polygon':'Polygon',
+  'Choose which notifications appear in the bell menu.':'选择在铃铛菜单中显示哪些通知。','Bill reminder window':'账单提醒时间','1 week out':'提前 1 周','2 weeks out':'提前 2 周',
+  'Custom notifications':'自定义通知','Dark mode':'深色模式','Show dark mode button in tab bar':'在标签栏显示深色模式按钮',
+  'Left-hand mode':'左手模式','Reduce motion':'减少动画','Large text':'大号文字','Appearance':'外观',
+  'All clear — nothing needs attention':'一切正常——没有需要处理的事项','Last push:':'上次推送：','Last pull:':'上次拉取：','Last sync:':'上次同步：',
+  'No accounts yet. Add a loan, credit line, or lease.':'还没有账户。添加贷款、信用额度或租赁账户。','No positions yet. Add a stock, ETF, or crypto holding.':'还没有持仓。添加股票、ETF 或加密货币。',
+  'No goals yet. Add a savings target.':'还没有目标。添加一个储蓄目标。','Saved so far':'当前已存','Target':'目标','Remaining':'剩余','Budget line':'预算项目',
+  'Principal ($)':'本金（$）','APY (%)':'年化收益率（%）','Deposit date':'存入日期','Current value':'当前价值','Interest earned':'已赚利息',
+  'Units / shares':'数量 / 股数','Cost basis ($)':'成本基础（$）','Purchase date':'购买日期','Current price':'当前价格','Value':'价值','Gain / Loss':'收益 / 损失',
+  'Purchases from receipts':'来自记账记录的购买','Subtotal':'小计','Price tracked via wallet — exclude from net worth':'价格通过钱包跟踪——不计入净资产',
+  'Goal name':'目标名称','% of goal':'目标的','target':'目标','No balances yet — tap ↺ Refresh to load.':'还没有余额——点击“刷新”加载。',
+  'Enter or connect a wallet address above, then tap Refresh.':'请在上方输入或连接钱包地址，然后点击“刷新”。','Import queue':'导入队列','pending':'待处理',
+  'Cancel':'取消','Import':'导入','Dismiss':'忽略','Gas:':'Gas：','Log receipt':'记录','Uncategorized':'未分类','Optional note':'可选备注',
+  'Also log gas fee':'同时将 Gas 费记录为单独支出','No transactions':'没有交易记录','item':'项','items':'项','Budget':'预算','Actual':'实际',
+  'Spent':'支出','Total budgeted':'预算总额','Budget used':'预算使用','Balance':'余额','Income':'收入','Expenses':'支出','Savings rate':'储蓄率',
+  'under budget':'低于预算','over budget':'超出预算','No transactions yet.':'还没有交易记录。','No archived receipts yet.':'还没有归档记录。',
+  'Clear saved vendors':'清除已保存的商家','Pick color':'选择颜色','Move up':'上移','Move down':'下移','Remove':'删除',
+  'No custom notifications yet.':'还没有自定义通知。','Notification label':'通知名称','keyword':'关键词','value':'数值',
+  'just now':'刚刚','Never':'从未','Updated':'已更新','Loading…':'加载中…','Fetching…':'获取中…','Refresh prices':'刷新价格',
+  'Error:':'错误：','Saved locally':'已保存到本地','Saved locally only':'仅已保存到本地','Synced to cloud':'已同步到云端','Pushed to cloud':'已推送到云端',
+  'Pulled from cloud':'已从云端拉取','Already up to date':'已经是最新','Syncing…':'同步中…','Saving…':'保存中…','Could not reach cloud':'无法连接云端',
+  'Signature mismatch':'签名不匹配','Signature invalid':'签名无效','Sync failed':'同步失败','Push failed':'推送失败','Pull failed':'拉取失败',
+  'New key generated':'新密钥已生成','Key copied to clipboard':'密钥已复制到剪贴板','Key saved':'密钥已保存','No key — generate one below':'还没有密钥——请在下方生成',
+  'Off — sync payloads are plain JSON.':'关闭——同步数据为普通 JSON。','Requires a shared key':'需要共享密钥','Requires HTTPS to function.':'需要 HTTPS 才能使用。',
+  'Could not load chart data':'无法加载图表数据','Check symbol and API key, or wait a moment and try again.':'请检查代码和 API 密钥，或稍后重试。',
+  'Not enough data for this range.':'此时间范围内数据不足。','Not enough data points for this range.':'此时间范围内数据点不足。',
+  'Enter a principal amount to see projected growth.':'请输入本金金额以查看预计增长。','Delete':'删除'
+};
+const ZH_TRANSLATION_ENTRIES=Object.entries(ZH_TRANSLATIONS).sort((a,b)=>b[0].length-a[0].length);
+function zhTranslate(value){
+  let result=String(value);
+  for(const [from,to] of ZH_TRANSLATION_ENTRIES)result=result.split(from).join(to);
+  return result;
+}
+function zhTranslateDom(root=document){
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  const nodes=[];let node;
+  while((node=walker.nextNode()))nodes.push(node);
+  nodes.forEach(n=>{const next=zhTranslate(n.nodeValue);if(next!==n.nodeValue)n.nodeValue=next;});
+  root.querySelectorAll?.('[title],[placeholder],[aria-label]').forEach(el=>{
+    ['title','placeholder','aria-label'].forEach(attr=>{if(el.hasAttribute(attr)){const next=zhTranslate(el.getAttribute(attr));if(next!==el.getAttribute(attr))el.setAttribute(attr,next);}});
+  });
+}
+const nativeAlert=window.alert.bind(window),nativeConfirm=window.confirm.bind(window);
+window.alert=message=>nativeAlert(zhTranslate(message));
+window.confirm=message=>nativeConfirm(zhTranslate(message));
+zhTranslateDom();
+new MutationObserver(mutations=>mutations.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===Node.ELEMENT_NODE)zhTranslateDom(n);}))).observe(document.body,{childList:true,subtree:true});
 </script>
 </body>
 </html>

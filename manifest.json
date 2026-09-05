@@ -1,7 +1,7 @@
 ﻿{
-  "name": "Open Hedgie 🦔",
-  "short_name": "Hedgie",
-  "description": "Hedge Your Spending — a lightweight personal budget planner",
+  "name": "Hedgie 记账 🦔",
+  "short_name": "Hedgie 记账",
+  "description": "守护你的支出——轻量个人预算规划工具",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fdf8f2",
