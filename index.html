@@ -145,35 +145,8 @@ select{cursor:pointer}
 .view-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;height:32px;flex-shrink:0}
 .view-toggle button{flex:1;font-size:12px;border:none;background:transparent;color:var(--text-soft);cursor:pointer;padding:0 12px;white-space:nowrap;font-family:inherit;font-weight:500;transition:all 0.15s}
 .view-toggle button.on{background:var(--brown-dark);color:var(--warm-white)}
-/* autosave indicator */
-
-.autosave-label{font-size:11px;color:var(--text-faint);margin-left:2px;vertical-align:middle}
-/* planner */
-.exp-grid{display:grid;grid-template-columns:1fr 88px 76px 64px 80px 26px;gap:6px;align-items:center}
-.exp-inp-name{font-size:13px;padding:3px 6px;height:28px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text);width:100%;outline:none;font-family:inherit}
-.exp-inp-amt{font-size:13px;padding:3px 6px;height:28px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text);width:100%;text-align:right;outline:none;font-family:inherit}
-.exp-sel{font-size:12px;padding:2px 4px;height:28px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text-mid);width:100%;outline:none;font-family:inherit}
-.freq-tog{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;height:28px}
-.freq-tog button{flex:1;font-size:12px;border:none;background:transparent;color:var(--text-soft);cursor:pointer;padding:0 4px;white-space:nowrap;font-family:inherit;min-width:0}
-.freq-tog button.on{background:var(--brown);color:var(--warm-white)}
-.del-btn{width:24px;height:24px;border-radius:50%;border:1px solid var(--border-light);background:transparent;color:var(--text-faint);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all 0.15s}
-.del-btn:hover{border-color:var(--red);color:var(--red)}
-.add-exp-btn{font-size:12px;color:var(--brown);background:transparent;border:none;cursor:pointer;padding:4px 0;margin-top:6px;font-family:inherit;font-weight:500}
-.add-exp-btn:hover{text-decoration:underline}
-.col-hdr{font-size:11px;color:var(--text-faint);font-weight:500}.col-hdr.r{text-align:right}.col-hdr.c{text-align:center}
-
-.flow-bar-wrap{background:var(--warm-white);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:0.75rem 1.25rem;margin-bottom:1rem;box-shadow:0 1px 3px var(--shadow)}
-.yr-note{font-size:12px;color:var(--blue);text-align:right}
 .empty-state{text-align:center;padding:2rem 1rem;color:var(--text-soft)}
 .hint{font-size:11px;color:var(--text-faint);text-align:center;padding-top:6px}
-.sync-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-soft);padding:8px 0}
-.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--text-faint);flex-shrink:0}
-.sync-dot.ok{background:var(--green)}.sync-dot.err{background:var(--red)}.sync-dot.busy{background:var(--amber)}
-.provider-fields{margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light)}
-.provider-note{font-size:11px;color:var(--text-soft);margin-bottom:8px;line-height:1.5}
-/* key section */
-.key-display{font-family:monospace;font-size:12px;background:var(--parchment);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;word-break:break-all;color:var(--text-mid);margin-bottom:8px;user-select:all}
-.key-actions{display:flex;gap:6px;flex-wrap:wrap}
 /* conflict modal */
 .modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(45,31,14,0.45);display:none;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.open{display:flex}
@@ -190,16 +163,6 @@ select{cursor:pointer}
 .recur-toggle{display:flex;border:1px solid rgba(255,255,255,0.25);border-radius:var(--radius-sm);overflow:hidden;height:38px;flex-shrink:0}
 .recur-toggle button{flex:1;font-size:12px;border:none;background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;padding:0 8px;font-family:inherit;white-space:nowrap;transition:all 0.15s}
 .recur-toggle button.on{background:var(--purple);color:#fff}
-/* buffer cards */
-.buf-card{background:var(--parchment);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
-.buf-card:last-child{margin-bottom:0}
-.buf-card-bar{flex:1;height:6px;border-radius:3px;background:var(--border-light);overflow:hidden}
-.buf-card-fill{height:100%;border-radius:3px;transition:width 0.4s}
-.buf-pri-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;white-space:nowrap;flex-shrink:0}
-.buf-pri-H{background:var(--red-light);color:var(--red)}
-.buf-pri-M{background:var(--amber-light);color:var(--amber)}
-.buf-pri-L{background:var(--green-bg);color:var(--green)}
-.notif-rule-btns{padding-bottom:env(safe-area-inset-bottom,12px);margin-top:8px}
 /* hiber ref line */
 .hiber-bar-wrap{position:relative}
 .hiber-ref-line{position:absolute;left:0;right:0;border-top:1.5px dashed rgba(255,255,255,0.35);pointer-events:none}
@@ -227,13 +190,9 @@ select{cursor:pointer}
 .notif-section-label{font-size:10px;font-weight:600;color:var(--text-faint);letter-spacing:0.5px;padding:8px 14px 2px;background:var(--parchment)}
 .notif-wrap{position:relative}
 @media(max-width:580px){
-  .exp-grid{grid-template-columns:1fr 80px 68px 54px 0 24px}.yr-col{display:none}
   .quick-form{grid-template-columns:1fr}
   .quick-form input[type=date]{width:100%;font-size:12px}
   .tab-btn .tab-lbl{display:none}.tab-btn{padding:12px 12px}
-  .cat-edit-row{flex-wrap:wrap}
-  .cat-edit-row input[type=text]{order:0;flex:1 1 100%;min-width:0}
-  .cat-edit-row input[type=color],.cat-edit-row select,.cat-edit-row>div:last-child{order:5}
   .log-date-recur-row{flex-wrap:wrap}
   .log-date-recur-row>div:first-child{flex:0 0 100%}
 }
@@ -255,40 +214,9 @@ select{cursor:pointer}
 .den-field-lbl{font-size:11px;color:var(--text-soft);white-space:nowrap;min-width:90px;flex-shrink:0}
 .den-gain{color:var(--green)}.den-loss{color:var(--red)}
 .den-expand-arrow{font-size:11px;color:var(--text-faint);transition:transform 0.2s;flex-shrink:0;margin-left:auto}
-body.left-hand .tab-bar-inner{flex-direction:row-reverse}
-body.left-hand .tab-logo{border-right:none;border-left:1px solid var(--border-light);padding:8px 0 8px 14px;margin-right:0;margin-left:4px}
-body.left-hand .notif-panel{right:auto;left:0}
-body.left-hand #gsb-inner{flex-direction:row-reverse;padding:0 1.25rem 0 0}
-body.left-hand #gsb-sync-btn{border-radius:6px}
-body.left-hand .card-hdr{flex-direction:row-reverse}
-body.left-hand .btn-row{flex-direction:row-reverse}
-body.left-hand .quick-log .full{justify-content:flex-start!important}
-/* REDUCED MOTION */
-body.reduced-motion *{transition:none!important;animation:none!important}
-/* LARGE TEXT */
-body.large-text .card-title{font-size:16px!important}
-body.large-text .btn{font-size:14px!important}
-body.large-text input,body.large-text select,body.large-text textarea{font-size:15px!important}
-body.large-text .tab-lbl{font-size:13px!important}
-body.large-text .hint{font-size:13px!important}
-body.large-text .notif-item-label{font-size:14px!important}
-body.large-text .gsb-label,body.large-text #gsb-label{font-size:13px!important}
-/* HIGH CONTRAST */
-body.high-contrast{
-  --text:#111111;--text-soft:#333333;--text-mid:#222222;--text-faint:#555555;
-  --border:#777777;--border-light:#aaaaaa;--shadow:rgba(0,0,0,0.22);
-  --green:#176a17;--green-bg:#d4edd4;--red:#b30000;--red-light:#f5d0d0;
-  --amber:#8a4a00;--amber-light:#fae6c0;--blue:#1245b5;--blue-light:#ccdaf5;
-}
-body.dark.high-contrast{
-  --text:#ffffff;--text-soft:#e8e8e8;--text-mid:#f5f5f5;--text-faint:#aaaaaa;
-  --border:#8a8a8a;--border-light:#6a6a6a;
-  --green:#5ec45e;--green-bg:#0d2e0d;--red:#ef5350;--red-light:#2e0d0d;
-  --amber:#ffb74d;--amber-light:#2e1f00;--blue:#64a3e8;--blue-light:#0d1e30;
-}
 </style>
 <script>
-// Strip ?v= cache-bust param from URL immediately on load (added by forceRefresh())
+// Strip a legacy cache-bust query parameter from the URL immediately on load.
 (function(){
   const u=new URL(window.location.href);
   if(u.searchParams.has('v')){
@@ -606,7 +534,6 @@ body.dark.high-contrast{
 </div>
 
 <script>
-const PRIS={H:'High',M:'Medium',L:'Low'};
 const DEFAULT_CATS=[
   {name:'Home',color:'#8b6340',type:'expense'},
   {name:'Transportation',color:'#3a6ea8',type:'expense'},
@@ -626,19 +553,7 @@ const isSavingsCat=name=>{const c=categories.find(x=>x.name===name);return c?.ty
 const MONTH_NAMES=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const USER_COLORS=['#3a6ea8','#b94040','#4a7c59','#7c5a8b','#b87820','#8b6340'];
 
-const LIMITS={vendors:200,expPerCat:25,warnAt:0.8};
-const PROVIDER_LIMITS={none:Infinity,jsonbin:100,gist:102400,dropbox:2097152,self:null};
-function fmtLimitKB(kb){
-  if(!isFinite(kb))return'No limit';
-  if(kb>=1024*1024)return(kb/1024/1024).toFixed(0)+'GB';
-  if(kb>=1024)return(kb/1024).toFixed(0)+'MB';
-  return kb+'KB';
-}
-function getProviderPayloadKB(){
-  const p=settings.provider||'none';
-  if(p==='self'){const v=parseFloat(settings.selfPayloadKB);return v>0?v:10240;}
-  return PROVIDER_LIMITS[p]??Infinity;
-}
+const VENDOR_LIMIT=200;
 
 const DEF={
   Home:[{n:'房贷',a:0,p:'H',f:'M'},{n:'房屋净值信贷',a:0,p:'H',f:'M'},{n:'房屋保险',a:0,p:'H',f:'M'},{n:'房产税',a:0,p:'H',f:'Y'},{n:'电费 / 燃气费',a:0,p:'M',f:'M'},{n:'水费 / 排污费',a:0,p:'M',f:'M'},{n:'网络',a:0,p:'M',f:'M'},{n:'房屋维护',a:0,p:'L',f:'Y'}],
@@ -660,7 +575,6 @@ function initExpenses(){
   expenses=newExp;
 }
 initExpenses();
-let bufferPct={}; // populated dynamically from categories
 let receipts=[];
 let vendors={};
 let syncMeta={version:0,lastEditedBy:'',lastEditedAt:'',lastPulledVersion:0,lastPushedAt:'',lastPulledAt:'',lastSyncedAt:''};
@@ -685,8 +599,8 @@ let walletImportingTxId=null; // which pending tx has inline import form open
 let walletHistPriceCache={}; // session cache: {cgId:date -> price}
 let denOpenItems=new Set(); // tracks which Den liability body IDs are expanded
 let currentRecurring='none';
-let settings={username:'',provider:'none',jsonbinId:'',jsonbinKey:'',gistId:'',gistToken:'',selfUrl:'',selfToken:'',selfPayloadKB:'',dropboxToken:'',sharedKey:'',encryptSync:false,darkMode:false,pwaInstalled:false,reminderDays:7,pruneYears:0,notifs:{bills:true,budget:true,yearly:true,sync:true,firstSync:true,localSave:true,nudge:true},customNotifs:[],denPreview:false,userColor:'',priceProvider:'none',priceApiKey:'',cgApiKey:'',etherscanApiKey:'',walletAutoImport:false,walletTxDir:'out',walletGasFees:false,showDarkModeBtn:true,leftHandMode:false,reducedMotion:false,largeText:false,highContrast:false};
-let planFilterCat='all',planFilterPri='all',rcptFilterCat='all',rptFilterCat='all';
+let settings={username:'',provider:'none',jsonbinId:'',jsonbinKey:'',gistId:'',gistToken:'',selfUrl:'',selfToken:'',selfPayloadKB:'',dropboxToken:'',sharedKey:'',encryptSync:false,darkMode:false,pwaInstalled:false,reminderDays:7,pruneYears:0,notifs:{bills:true,budget:true,yearly:true,sync:true,firstSync:true,nudge:true},customNotifs:[],denPreview:false,userColor:'',priceProvider:'none',priceApiKey:'',cgApiKey:'',etherscanApiKey:'',walletAutoImport:false,walletTxDir:'out',walletGasFees:false};
+let rcptFilterCat='all',rptFilterCat='all';
 let reportView='monthly';
 let pendingCloudData=null;
 let autosaveTimer=null;
@@ -753,43 +667,7 @@ function runAutoPrune(){
   return changed;
 }
 
-// ── HMAC KEY SYSTEM ──────────────────────────
-function generateKey(){
-  let key;
-  if(window.crypto&&window.crypto.getRandomValues){
-    const arr=new Uint8Array(24);crypto.getRandomValues(arr);
-    key=Array.from(arr).map(b=>b.toString(36).padStart(2,'0')).join('').slice(0,32).toUpperCase();
-  }else{
-    // Fallback for non-secure contexts
-    key=Array.from({length:32},()=>Math.random().toString(36)[2]||'X').join('').toUpperCase();
-  }
-  settings.sharedKey=key;saveSettings();renderKeyDisplay();
-  document.getElementById('key-status').textContent='New key generated — share with your household before next push.';
-}
-function copyKey(){
-  if(!settings.sharedKey){alert('Generate a key first.');return;}
-  navigator.clipboard.writeText(settings.sharedKey).then(()=>{
-    document.getElementById('key-status').textContent='Key copied to clipboard — share via AirDrop or iMessage.';
-  });
-}
-async function pasteKey(){
-  try{const t=await navigator.clipboard.readText();const k=t.trim().toUpperCase();
-    if(k.length<16){alert('That doesn\'t look like a valid Hedgie key.');return;}
-    settings.sharedKey=k;saveSettings();renderKeyDisplay();
-    document.getElementById('key-status').textContent='Key saved. Make sure both users have the same key before syncing.';
-  }catch(e){
-    const k=prompt('Paste the shared key:');if(!k)return;
-    settings.sharedKey=k.trim().toUpperCase();saveSettings();renderKeyDisplay();
-    document.getElementById('key-status').textContent='Key saved.';
-  }
-}
-function renderKeyDisplay(){
-  const el=document.getElementById('key-display');
-  if(!el)return;
-  el.textContent=settings.sharedKey?formatKey(settings.sharedKey):'No key — generate one below';
-}
-function formatKey(k){return k.match(/.{1,4}/g).join('-');}
-
+// ── HMAC SIGNING ──────────────────────────────
 async function signPayload(payload){
   if(!settings.sharedKey)return null;
   if(!window.crypto||!window.crypto.subtle){
@@ -834,7 +712,6 @@ return {ok:true, unsigned:true};}
 // ── AES-GCM ENCRYPTION ───────────────────────
 const ENC_PBKDF2_ITERATIONS=100000;
 const ENC_SALT_AES='hedgie-aes-v1';
-const ENC_SALT_HMAC='hedgie-hmac-v1';
 
 async function deriveAesKey(secret){
   if(!window.crypto||!window.crypto.subtle)return null;
@@ -866,78 +743,13 @@ async function decryptData(ciphertext,iv,secret){
   return JSON.parse(new TextDecoder().decode(plainBuf));
 }
 
-// ── LIMITS & HEALTH ──────────────────────────
-function estimatePayloadKB(){
-  const state={categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments};
-  return Math.round(JSON.stringify(state).length/1024);
-}
-
-function getLimitWarnings(){
-  const warns=[];
-  const vc=Object.keys(vendors).length,vl=LIMITS.vendors;
-  if(vc>=vl)warns.push({sev:'err',msg:`Vendor memory full (${vc}/${vl}) — oldest vendors no longer saved`});
-  else if(vc>=vl*LIMITS.warnAt)warns.push({sev:'warn',msg:`Vendor memory filling up (${vc}/${vl})`});
-  CATS().forEach(c=>{const len=expenses[c].length;if(len>=LIMITS.expPerCat)warns.push({sev:'warn',msg:`${c} has ${len} expense lines (limit ${LIMITS.expPerCat})`});});
-  const kb=estimatePayloadKB();
-  const limitKB=getProviderPayloadKB();
-  if(isFinite(limitKB)){
-    if(kb>=limitKB)warns.push({sev:'err',msg:`Payload is ${kb}KB — at or over sync provider limit (${fmtLimitKB(limitKB)})`});
-    else if(kb>=limitKB*LIMITS.warnAt)warns.push({sev:'warn',msg:`Payload is ${kb}KB — nearing sync limit (${fmtLimitKB(limitKB)})`});
-  }
-  return warns;
-}
-
-function renderHealthPanel(){
-  const warns=getLimitWarnings();
-  const kb=estimatePayloadKB();
-  const rc=receipts.length,arc=Object.values(archives).reduce((s,a)=>s+a.length,0);
-  const limitKB=getProviderPayloadKB();
-  const pct=isFinite(limitKB)?Math.min(100,Math.round(kb/limitKB*100)):0;
-  const barColor=pct>=100?'var(--red)':pct>=80?'var(--amber)':'var(--green)';
-  const limitLabel=fmtLimitKB(limitKB);
-  let html=`<div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-soft);margin-bottom:4px">
-      <span>Payload size</span><span style="font-weight:600">${kb}KB${isFinite(limitKB)?' / '+limitLabel:' — '+limitLabel}</span>
-    </div>
-    ${isFinite(limitKB)?`<div class="progress-wrap"><div style="height:100%;border-radius:4px;background:${barColor};width:${pct}%;transition:width 0.4s"></div></div>`:''}
-  </div>
-  <div style="font-size:12px;color:var(--text-soft);display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px">
-    <span>Active receipts: <strong style="color:var(--text)">${rc}</strong></span>
-    <span>Archived: <strong style="color:var(--text)">${arc}</strong></span>
-    <span>Vendors: <strong style="color:var(--text)">${Object.keys(vendors).length}</strong></span>
-    <span>Retention: <strong style="color:var(--text)">${settings.pruneYears?settings.pruneYears+'yr':'Forever'}</strong></span>
-  </div>`;
-  if(warns.length){
-    html+=warns.map(w=>`<div style="font-size:12px;padding:6px 10px;border-radius:var(--radius-sm);margin-bottom:5px;background:${w.sev==='err'?'var(--red-light)':'var(--amber-light)'};color:${w.sev==='err'?'var(--red)':'var(--amber)'}">${w.msg}</div>`).join('');
-  }else{
-    html+=`<div style="font-size:12px;color:var(--green);padding:6px 0">&#10003; All limits healthy</div>`;
-  }
-  const el=document.getElementById('health-panel');
-  if(el)el.innerHTML=html;
-}
-
 function enforceVendorLimit(){
   const keys=Object.keys(vendors);
-  if(keys.length>LIMITS.vendors){
+  if(keys.length>VENDOR_LIMIT){
     // prune least-used vendors beyond limit
-    keys.sort((a,b)=>vendors[a].count-vendors[b].count).slice(0,keys.length-LIMITS.vendors).forEach(k=>delete vendors[k]);
+    keys.sort((a,b)=>vendors[a].count-vendors[b].count).slice(0,keys.length-VENDOR_LIMIT).forEach(k=>delete vendors[k]);
   }
 }
-
-// ── DRAWER ACCORDION ─────────────────────────
-function toggleAcc(id){
-  const body=document.getElementById(id);
-  const arrow=document.getElementById('arr-'+id);
-  if(!body)return;
-  const opening=!body.classList.contains('open');
-  const ACC_IDS=['acc-identity','acc-data','acc-sync','acc-den','acc-wallet','acc-notifs','acc-appearance','acc-danger'];
-  ACC_IDS.forEach(aid=>{
-    document.getElementById(aid)?.classList.remove('open');
-    document.getElementById('arr-'+aid)?.classList.remove('open');
-  });
-  if(opening){body.classList.add('open');if(arrow)arrow.classList.add('open');}
-}
-
 
 // ── SYNC META PERSISTENCE ────────────────────
 function saveSyncMeta(){
@@ -954,17 +766,10 @@ function loadSyncMeta(){
 function loadSettings(){
   const saved=localStorage.getItem('hedgie_settings');
   if(saved){try{settings={...settings,...JSON.parse(saved)};}catch(e){}}
-  const username=document.getElementById('cfg-username');
-  if(username)username.value=settings.username||'';
-  const provider=document.getElementById('cfg-provider');
-  if(provider)provider.value=settings.provider||'none';
-  if(!settings.notifs)settings.notifs={bills:true,budget:true,yearly:true,sync:true,firstSync:true,localSave:true,nudge:true};
+  if(!settings.notifs)settings.notifs={bills:true,budget:true,yearly:true,sync:true,firstSync:true,nudge:true};
   if(settings.notifs.firstSync===undefined)settings.notifs.firstSync=true;
-  if(settings.notifs.localSave===undefined)settings.notifs.localSave=true;
   if(settings.darkMode===undefined)settings.darkMode=false;
   if(settings.pwaInstalled===undefined)settings.pwaInstalled=false;
-  if(provider)onProviderChange(true);
-  renderKeyDisplay();updateSyncStatus('idle');
   const providerNames={none:'Local only',jsonbin:'JSONBin',gist:'GitHub Gist',self:'Self-hosted',dropbox:'Dropbox'};
   const providerLabel=document.getElementById('gsb-right');
   if(providerLabel)providerLabel.textContent=providerNames[settings.provider||'none']||'';
@@ -972,125 +777,11 @@ function loadSettings(){
 }
 function saveSettings(){localStorage.setItem('hedgie_settings',JSON.stringify(settings));}
 
-// ── DRAWER ────────────────────────────────────
-function openDrawer(){
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  renderHealthPanel();renderNotifToggles();renderCustomNotifList();
-  const cfgColor=document.getElementById('cfg-user-color');if(cfgColor)cfgColor.value=settings.userColor||USER_COLORS[0];
-  const cbEnc=document.getElementById('cfg-encrypt');if(cbEnc)cbEnc.checked=!!settings.encryptSync;
-  renderEncryptStatus();
-  renderSyncTimestamps();
-  // Wallet section
-  const ethKey=document.getElementById('cfg-etherscan-key');if(ethKey)ethKey.value=settings.etherscanApiKey||'';
-  const walDir=document.getElementById('cfg-wallet-dir');if(walDir)walDir.value=settings.walletTxDir||'out';
-  const walAuto=document.getElementById('cfg-wallet-autoimport');if(walAuto)walAuto.checked=!!settings.walletAutoImport;
-  const walGas=document.getElementById('cfg-wallet-gas');if(walGas)walGas.checked=!!settings.walletGasFees;
-  ['ethereum','arbitrum','base','polygon'].forEach(c=>{const cb=document.getElementById('cfg-chain-'+c);if(cb)cb.checked=walletChains.includes(c);});
-  // Appearance section
-  applyDarkMode();
-  applyDarkModeBtn();
-  applyLeftHandMode();
-}
-function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');}
-
-function toggleEncryption(enabled){
-  if(enabled&&!settings.sharedKey){
-    alert('A shared key is required to enable encryption. Generate one in the Identity section first.');
-    const cb=document.getElementById('cfg-encrypt');if(cb)cb.checked=false;
-    return;
-  }
-  if(enabled&&(!window.crypto||!window.crypto.subtle)){
-    alert('Encryption requires HTTPS. Load Hedgie over https:// to enable this feature.');
-    const cb=document.getElementById('cfg-encrypt');if(cb)cb.checked=false;
-    return;
-  }
-  settings.encryptSync=enabled;
-  saveSettings();
-  renderEncryptStatus();
-
-}
-
-function renderEncryptStatus(){
-  const el=document.getElementById('encrypt-status');
-  if(!el)return;
-  if(!settings.encryptSync){
-    el.textContent='Off — sync payloads are plain JSON.';
-    return;
-  }
-  if(!settings.sharedKey){el.textContent='Requires a shared key — generate one in Identity.';el.style.color='var(--amber)';return;}
-  if(!window.crypto||!window.crypto.subtle){el.textContent='Requires HTTPS to function.';el.style.color='var(--red)';return;}
-  el.style.color='var(--green)';
-  el.textContent='✓ Enabled — payloads encrypted with AES-256-GCM. Both household members need the same shared key.';
-}
-
-function forceRefresh(){
-  // Bust iOS Safari's PWA cache by navigating to a timestamped URL.
-  // A startup script strips the ?v= param immediately so the clean URL is restored.
-  const url=new URL(window.location.href);
-  url.searchParams.set('v',Date.now());
-  window.location.replace(url.toString());
-}
-
-async function exportDecryptedBackup(){
-  const data={categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments};
-  const payload={_hedgie:true,version:syncMeta.version,lastEditedBy:syncMeta.lastEditedBy,lastEditedAt:syncMeta.lastEditedAt,data};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='hedgie-decrypted-backup-'+todayStr()+'.json';
-  a.click();
-  setGSB('saved','Decrypted backup exported','');
-}
-
-function onProviderChange(silent){
-  const p=document.getElementById('cfg-provider').value;
-  settings.provider=p;if(!silent)saveSettings();
-  updateSyncButton();
-  const el=document.getElementById('provider-fields');
-  const notes={
-    none:'',
-    gist:'<p class="provider-note">Free with GitHub — <strong>100MB</strong> per file limit. Create a <strong>private Gist</strong> with a file named <code>hedgie.json</code> and initial content <code>{"_hedgie":true,"version":0}</code>. Generate a <strong>classic</strong> Personal Access Token (not fine-grained) with <code>gist</code> scope. Token and Gist must belong to the same GitHub account.</p>',
-    jsonbin:'<p class="provider-note">Free at <strong>jsonbin.io</strong> — <strong>100KB</strong> payload limit. Create an account, make a new Bin, copy the Bin ID and Master Key below. Both users enter the same credentials plus the shared key above.</p>',
-    self:'<p class="provider-note">Any endpoint that accepts <strong>GET</strong> (returns JSON) and <strong>PUT</strong> (saves JSON). Works great on a homelab. Add a bearer token for auth. Set a custom payload limit below.</p>',
-    dropbox:'<p class="provider-note">Create an app at <strong>dropbox.com/developers/apps/create</strong> — choose <strong>Scoped access</strong> and <strong>Full Dropbox</strong>. Under <strong>Permissions</strong>, enable <code>files.content.read</code> and <code>files.content.write</code>. Under <strong>Settings → OAuth 2</strong>, click Generate to create a long-lived access token. Data saves as <code>/hedgie/data.json</code> in your Dropbox — <strong>2GB</strong> file limit.</p>'
-  };
-  const fields={
-    none:'',
-    gist:`<div class="drawer-field"><label>Gist ID</label><input type="text" placeholder="abc123..." value="${esc(settings.gistId)}" oninput="settings.gistId=this.value.trim();saveSettings()"></div>
-          <div class="drawer-field"><label>Personal Access Token (classic)</label><input type="text" placeholder="ghp_..." value="${esc(settings.gistToken)}" oninput="settings.gistToken=this.value.trim();saveSettings()"></div>`,
-    jsonbin:`<div class="drawer-field"><label>Bin ID</label><input type="text" placeholder="67a3b..." value="${esc(settings.jsonbinId)}" oninput="settings.jsonbinId=this.value.trim();saveSettings()"></div>
-             <div class="drawer-field"><label>Master Key</label><input type="text" placeholder="$2a$10$..." value="${esc(settings.jsonbinKey)}" oninput="settings.jsonbinKey=this.value.trim();saveSettings()"></div>`,
-    self:`<div class="drawer-field"><label>Endpoint URL</label><input type="text" placeholder="https://myserver.local/hedgie/data" value="${esc(settings.selfUrl)}" oninput="settings.selfUrl=this.value.trim();saveSettings()"></div>
-          <div class="drawer-field"><label>Bearer Token (optional)</label><input type="text" placeholder="optional secret" value="${esc(settings.selfToken)}" oninput="settings.selfToken=this.value.trim();saveSettings()"></div>
-          <div class="drawer-field"><label>Payload size limit (KB) <span style="color:var(--text-faint);font-weight:400">default 10240 = 10MB</span></label><input type="number" placeholder="10240" min="1" value="${esc(settings.selfPayloadKB||'')}" oninput="settings.selfPayloadKB=this.value;saveSettings();renderHealthPanel()"></div>`,
-    dropbox:`<div class="drawer-field"><label>Access Token</label><input type="text" placeholder="sl...." value="${esc(settings.dropboxToken)}" oninput="settings.dropboxToken=this.value.trim();saveSettings()"></div>`
-  };
-  el.innerHTML=p==='none'?'':`<div class="provider-fields">${notes[p]||''}${fields[p]||''}</div>`;
-  renderHealthPanel();
-}
-
-// ── SYNC STATUS ───────────────────────────────
-function updateSyncStatus(state,msg){
-  const dot=document.getElementById('sync-dot'),txt=document.getElementById('sync-status-txt'),gdot=document.getElementById('gear-dot');
-  if(!dot||!txt)return;
-  const map={idle:['',settings.provider==='none'?(totalIncome()>0||totalExpMo()>0||receipts.length>0?'Not backed up':'No data yet \u2014 add income and expenses to get started'):'Ready \u00b7 use Push to sync'],busy:['busy','Syncing\u2026'],ok:['ok',msg||'Sync successful'],err:['err',msg||'Sync failed'],conflict:['err','Conflict — action required']};
-  const[cls,label]=map[state]||map.idle;
-  dot.className='sync-dot'+(cls?' '+cls:'');
-  txt.textContent=label+(syncMeta.lastEditedAt?' · Last push '+fmtAgo(syncMeta.lastEditedAt)+(syncMeta.lastEditedBy?' by '+syncMeta.lastEditedBy:''):'');
-  if(gdot)gdot.classList.toggle('show',state==='conflict'||state==='err');
-}
 function fmtAgo(iso){const d=(Date.now()-new Date(iso).getTime())/1000;if(d<60)return'just now';if(d<3600)return Math.round(d/60)+'m ago';if(d<86400)return Math.round(d/3600)+'h ago';return Math.round(d/86400)+'d ago';}
-
-function showBanner(id,type,msg,autohide=true){
-  const el=document.getElementById(id);if(!el)return;
-  el.className='sync-banner show '+type;el.textContent=msg;
-  if(autohide&&(type==='ok'||type==='info'))setTimeout(()=>{el.className='sync-banner';},4000);
-}
 
 // ── QUICK SYNC ────────────────────────────────
 async function quickSync(){
-  if(settings.provider==='none'){setGSB('warn','No sync provider configured — open Settings','',false);return;}
+  if(settings.provider==='none'){setGSB('warn','No sync provider configured','',false);return;}
   const btn=document.getElementById('gsb-sync-btn');
   if(btn){btn.style.opacity='0.5';btn.style.pointerEvents='none';}
   setGSB('saving','Syncing…','');
@@ -1102,7 +793,7 @@ async function quickSync(){
       const cloud=await fetchFromCloud();
       if(cloud&&(cloud._hedgie||cloud.data)){
         const vr=await verifyPayload(cloud);
-        if(vr.ok){await applyPayloadAsync(cloud);syncMeta.lastPulledAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','Pulled from cloud','v'+(cloud.version||'?')+' by '+(cloud.lastEditedBy||'cloud'));renderSyncTimestamps();}
+        if(vr.ok){await applyPayloadAsync(cloud);syncMeta.lastPulledAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','Pulled from cloud','v'+(cloud.version||'?')+' by '+(cloud.lastEditedBy||'cloud'));}
         else{setGSB('err','Signature mismatch — check shared key','',false);}
       }else{setGSB('warn','Nothing in cloud yet — add data and Push to start','',false);}
     }catch(e){setGSB('err','Pull failed: '+e.message,'',false);}
@@ -1134,7 +825,7 @@ async function quickSync(){
       let plainCloud;try{plainCloud=await toPlainPayload(cloudCheck);}catch(e){setGSB('err',e.message,'',false);if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}return;}
       const localSnap={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
       if(budgetChanged(localSnap,plainCloud)){
-        pendingCloudData=plainCloud;showConflictModal(plainCloud);updateSyncStatus('conflict');
+        pendingCloudData=plainCloud;showConflictModal(plainCloud);
         if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}
         return;
       }
@@ -1143,7 +834,7 @@ async function quickSync(){
       await pushToCloud(merged);
       await applyPayloadAsync(merged);
       syncMeta.lastPushedAt=new Date().toISOString();syncMeta.lastSyncedAt=new Date().toISOString();saveSyncMeta();
-      setGSB('cloud','First sync — cloud merged with local entries','just now');renderSyncTimestamps();
+      setGSB('cloud','First sync — cloud merged with local entries','just now');
       if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}
       return;
     }
@@ -1163,14 +854,14 @@ async function quickSync(){
       const payload=await buildPayload();
       await pushToCloud(payload);
       await applyPayloadAsync(payload);
-      syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Pushed to cloud — first sync','just now');renderSyncTimestamps();
+      syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Pushed to cloud — first sync','just now');
       if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}
       return;
     }
 
     // Step 2 — verify signature
     const vr=await verifyPayload(cloud);
-    if(!vr.ok){setGSB('err','Signature mismatch — check shared key in Settings','',true);if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}return;}
+    if(!vr.ok){setGSB('err','Signature mismatch — check your shared key','',true);if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}return;}
 
     // Step 3 - decrypt + decide direction
     cloud=await toPlainPayload(cloud);
@@ -1182,7 +873,6 @@ async function quickSync(){
       // Budget conflict — need user input
       pendingCloudData=cloud;
       showConflictModal(cloud);
-      updateSyncStatus('conflict');
       if(btn){btn.style.opacity='1';btn.style.pointerEvents='';}
       return;
     } else if(cloudAhead){
@@ -1210,8 +900,7 @@ async function quickSync(){
     syncMeta.lastEditedAt=resolved.lastEditedAt;
     syncMeta.lastPulledVersion=resolved.version;
     saveSyncMeta();
-    updateSyncStatus('ok','Synced');
-    syncMeta.lastSyncedAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','Synced ↑↓','just now');renderSyncTimestamps();
+    syncMeta.lastSyncedAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','Synced ↑↓','just now');
   } catch(e){
     setGSB('err','Sync failed: '+e.message,'',false);
   }
@@ -1281,13 +970,12 @@ function triggerAutosave(source){
       }
       try{
         await cloudPushSilent();
-        syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Synced to cloud','just now');saveSyncMeta();buildNotifications();renderSyncTimestamps();
+        syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Synced to cloud','just now');saveSyncMeta();buildNotifications();
       }catch(e){
         setGSB('warn','Saved locally only — cloud unreachable','');
       }
     }else{
       setGSB('warn','Not backed up — export a backup to keep your data','');
-      updateSyncStatus('idle');
     }
   },2000);
 }
@@ -1316,7 +1004,7 @@ async function applyPayloadAsync(payload){
   let d;
   if(payload.encrypted){
     if(!settings.sharedKey){
-      setGSB('err','Cloud payload is encrypted — add your shared key in Settings → Identity','',false);
+      setGSB('err','Cloud payload is encrypted — a shared key is required','',false);
       throw new Error('No key to decrypt payload');
     }
     try{
@@ -1378,9 +1066,6 @@ function _applyData(d,payload){
   if(payload.encrypted&&!settings.encryptSync){
     settings.encryptSync=true;
     saveSettings();
-    const cb=document.getElementById('cfg-encrypt');
-    if(cb)cb.checked=true;
-    renderEncryptStatus();
   }
   syncMeta.version=payload.version||0;
   syncMeta.lastEditedBy=payload.lastEditedBy||'';
@@ -1390,14 +1075,21 @@ function _applyData(d,payload){
   refreshAll();
 }
 
+function mergeReceipts(localReceipts,cloudReceipts,idOrder='local'){
+  const first=idOrder==='cloud'?cloudReceipts:localReceipts;
+  const second=idOrder==='cloud'?localReceipts:cloudReceipts;
+  const allIds=new Set([...first,...second].map(r=>r.id));
+  const cloudById=Object.fromEntries(cloudReceipts.map(r=>[r.id,r]));
+  const localById=Object.fromEntries(localReceipts.map(r=>[r.id,r]));
+  const merged=Array.from(allIds).map(id=>cloudById[id]||localById[id]);
+  merged.sort((a,b)=>b.date.localeCompare(a.date));
+  return merged;
+}
+
 function mergePayloads(local,cloud){
   // cloud must already be a decrypted plain-data payload
   const cd=cloud.data||{};
-  const allIds=new Set([...(local.data.receipts||[]).map(r=>r.id),...(cd.receipts||[]).map(r=>r.id)]);
-  const cb=Object.fromEntries((cd.receipts||[]).map(r=>[r.id,r]));
-  const lb=Object.fromEntries((local.data.receipts||[]).map(r=>[r.id,r]));
-  const merged=Array.from(allIds).map(id=>cb[id]||lb[id]);
-  merged.sort((a,b)=>b.date.localeCompare(a.date));
+  const merged=mergeReceipts(local.data.receipts||[],cd.receipts||[]);
   const mergedArc={...((local.data&&local.data.archives)||{}),...(cd.archives||{})};
   const mergedCats=cd.categories||local.data.categories||DEFAULT_CATS;
   return {...local,version:Math.max(local.version,cloud.version)+1,lastEditedBy:settings.username||'Unknown',lastEditedAt:new Date().toISOString(),data:{...local.data,receipts:merged,vendors:{...(cd.vendors||{}),...(local.data.vendors||{})},archives:mergedArc,categories:mergedCats}};
@@ -1431,11 +1123,7 @@ function firstSyncMerge(local,cloud){
   // local session from overwriting cloud's recurringBills, financing, savingsGoals,
   // investments, and budget with blank values.
   const cd=cloud.data||{};
-  const allIds=new Set([...(cd.receipts||[]).map(r=>r.id),...(local.data.receipts||[]).map(r=>r.id)]);
-  const cb=Object.fromEntries((cd.receipts||[]).map(r=>[r.id,r]));
-  const lb=Object.fromEntries((local.data.receipts||[]).map(r=>[r.id,r]));
-  const merged=Array.from(allIds).map(id=>cb[id]||lb[id]);
-  merged.sort((a,b)=>b.date.localeCompare(a.date));
+  const merged=mergeReceipts(local.data.receipts||[],cd.receipts||[],'cloud');
   return {
     ...cloud,
     version:(cloud.version||0)+1,
@@ -1459,7 +1147,7 @@ function budgetChanged(local,cloud){
 async function toPlainPayload(payload){
   if(!payload)return null;
   if(payload.encrypted){
-    if(!settings.sharedKey)throw new Error('Payload is encrypted — add your shared key in Settings → Identity');
+    if(!settings.sharedKey)throw new Error('Payload is encrypted — a shared key is required');
     try{
       const d=await decryptData(payload.ciphertext,payload.iv,settings.sharedKey);
       return {...payload,encrypted:false,data:d};
@@ -1512,17 +1200,16 @@ async function cloudPushSilent(){
 
 async function cloudPull(){
   if(settings.provider==='none'){alert('No sync provider configured.');return;}
-  updateSyncStatus('busy');
   try{
     const cloud=await fetchFromCloud();
     if(!cloud||!cloud._hedgie){
-      updateSyncStatus('err','Invalid payload');return;
+      return;
     }
     const vr=await verifyPayload(cloud);
-    if(!vr.ok){updateSyncStatus('err','Signature mismatch — wrong shared key?');setGSB('err','Signature invalid — check shared key in Settings','',true);return;}
+    if(!vr.ok){setGSB('err','Signature invalid — check your shared key','',true);return;}
     if(vr.unsigned&&settings.sharedKey){setGSB('warn','Cloud payload has no signature — push to sign it','');}
         // Decrypt before any .data access
-    let plainCloud;try{plainCloud=await toPlainPayload(cloud);}catch(e){updateSyncStatus('err',e.message);setGSB('err',e.message,'',true);return;}
+    let plainCloud;try{plainCloud=await toPlainPayload(cloud);}catch(e){setGSB('err',e.message,'',true);return;}
     const localPayload={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
     const cloudVer=plainCloud.version||0;
     const isFirstSync=syncMeta.lastPulledVersion===0&&syncMeta.version===0;
@@ -1533,49 +1220,46 @@ async function cloudPull(){
         const localSnap={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
         const payloadToApply=(receipts&&receipts.length>0)?firstSyncMerge(localSnap,plainCloud):plainCloud;
         await applyPayloadAsync(payloadToApply);
-        updateSyncStatus('ok','First sync complete · '+fmtAgo(cloud.lastEditedAt));
-        syncMeta.lastPulledAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','First sync complete','by '+(cloud.lastEditedBy||'someone'));renderSyncTimestamps();
+        syncMeta.lastPulledAt=new Date().toISOString();saveSyncMeta();setGSB('cloud','First sync complete','by '+(cloud.lastEditedBy||'someone'));
       } else if(budgetChanged(localPayload,plainCloud)){
-        pendingCloudData=plainCloud;showConflictModal(plainCloud);updateSyncStatus('conflict');
+        pendingCloudData=plainCloud;showConflictModal(plainCloud);
       }else{
         const merged=mergePayloads(localPayload,plainCloud);
-        await applyPayloadAsync(merged);updateSyncStatus('ok','Merged · '+fmtAgo(cloud.lastEditedAt)+' by '+(cloud.lastEditedBy||'someone'));
+        await applyPayloadAsync(merged);
         setGSB('cloud','Receipts merged from cloud','by '+(cloud.lastEditedBy||'someone'));
       }
-    }else{updateSyncStatus('ok','Already up to date');setGSB('saved','Already up to date','');}
-  }catch(e){updateSyncStatus('err',e.message);setGSB('err','Sync failed: '+e.message,'');}
+    }else{setGSB('saved','Already up to date','');}
+  }catch(e){setGSB('err','Sync failed: '+e.message,'');}
 }
 
 async function cloudPush(){
   if(settings.provider==='none'){alert('No sync provider configured.');return;}
-  updateSyncStatus('busy');
   try{
     let cloud=null;try{cloud=await fetchFromCloud();}catch(e){}
     if(cloud&&cloud._hedgie){
       const vr=await verifyPayload(cloud);
-      if(!vr.ok){updateSyncStatus('err','Remote signature mismatch — wrong shared key?');setGSB('err','Remote signature invalid — check shared key','',true);return;}
+      if(!vr.ok){setGSB('err','Remote signature invalid — check shared key','',true);return;}
       if(vr.unsigned&&settings.sharedKey){setGSB('warn','Remote payload unsigned — will be signed on push','');}
       if((cloud.version||0)>syncMeta.lastPulledVersion){
         const localPayload={version:syncMeta.version,data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
-        let plainCloud2;try{plainCloud2=await toPlainPayload(cloud);}catch(e){updateSyncStatus('err',e.message);setGSB('err',e.message,'',true);return;}
-        if(budgetChanged(localPayload,plainCloud2)){pendingCloudData=plainCloud2;showConflictModal(plainCloud2);updateSyncStatus('conflict');return;}
+        let plainCloud2;try{plainCloud2=await toPlainPayload(cloud);}catch(e){setGSB('err',e.message,'',true);return;}
+        if(budgetChanged(localPayload,plainCloud2)){pendingCloudData=plainCloud2;showConflictModal(plainCloud2);return;}
         const neverSyncedPush=syncMeta.lastPulledVersion===0&&syncMeta.version===0;
         const merged=neverSyncedPush?firstSyncMerge(localPayload,plainCloud2):mergePayloads(localPayload,plainCloud2);
-        await pushToCloud(merged);await applyPayloadAsync(merged);updateSyncStatus('ok','Merged and pushed');setGSB('cloud','Synced to cloud — receipts merged','');return;
+        await pushToCloud(merged);await applyPayloadAsync(merged);setGSB('cloud','Synced to cloud — receipts merged','');return;
       }
     }
     // Block plain push if local looks blank and cloud had a real hedgie payload — local
     // may be an accidentally-empty session that would overwrite real cloud data.
     if(cloud&&cloud._hedgie&&localLooksBlank()){
-      updateSyncStatus('warn','Local data looks blank');
       setGSB('warn','No budget data — pull from cloud to verify before pushing','',false);
       return;
     }
     const payload=await buildPayload();
     await pushToCloud(payload);
     syncMeta.version=payload.version;syncMeta.lastEditedBy=payload.lastEditedBy;syncMeta.lastEditedAt=payload.lastEditedAt;syncMeta.lastPulledVersion=payload.version;
-    syncMeta.lastPushedAt=new Date().toISOString();updateSyncStatus('ok','Pushed · just now');setGSB('cloud','Pushed to cloud','just now by '+(settings.username||''));saveSyncMeta();renderSyncTimestamps();
-  }catch(e){updateSyncStatus('err',e.message);setGSB('err','Push failed: '+e.message,'');}
+    syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Pushed to cloud','just now by '+(settings.username||''));saveSyncMeta();
+  }catch(e){setGSB('err','Push failed: '+e.message,'');}
 }
 
 // ── CONFLICT MODAL ────────────────────────────
@@ -1589,35 +1273,13 @@ async function resolveConflict(choice){
   const cloud=pendingCloudData;if(!cloud)return;
   const local={version:syncMeta.version,lastEditedBy:settings.username,lastEditedAt:new Date().toISOString(),data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
   let resolved=mergePayloads(local,cloud);
-  if(choice==="theirs"){const cd2=cloud.data||{};resolved.data.income=cd2.income||income;resolved.data.expenses=cd2.expenses||expenses;resolved.data.bufferPct=cd2.bufferPct;}
+  if(choice==="theirs"){const cd2=cloud.data||{};resolved.data.income=cd2.income||income;resolved.data.expenses=cd2.expenses||expenses;}
   resolved.signature=await signPayload(resolved);
   await applyPayloadAsync(resolved);
-  try{await pushToCloud(resolved);syncMeta.lastPushedAt=new Date().toISOString();updateSyncStatus('ok','Conflict resolved');renderSyncTimestamps();setGSB('cloud','Conflict resolved — synced ↑↓','just now');}
-  catch(e){updateSyncStatus('err','Resolved locally, push failed: '+e.message);setGSB('err','Resolved locally — push failed','');}
+  try{await pushToCloud(resolved);syncMeta.lastPushedAt=new Date().toISOString();setGSB('cloud','Conflict resolved — synced ↑↓','just now');}
+  catch(e){setGSB('err','Resolved locally — push failed','');}
   pendingCloudData=null;
 }
-
-// ── CATEGORY MANAGEMENT ──────────────────────
-function getCatColor(name){return catColor(name);}
-
-function resetCatsToDefault(){
-  if(!confirm('Remove all custom categories and restore default colors? Your income, expenses, and receipts are untouched.'))return;
-  const defaultNames=DEFAULT_CATS.map(c=>c.name);
-  receipts.forEach(r=>{if(!defaultNames.includes(r.cat))r.cat='Other';});
-  // Restore locked cats to default colors, remove extras
-  categories=DEFAULT_CATS.map(c=>({...c}));
-  expenses={};
-  CATS().forEach(name=>{expenses[name]=DEF[name]?JSON.parse(JSON.stringify(DEF[name])):[];});
-  if(!defaultNames.includes(planFilterCat))planFilterCat='all';
-  if(!defaultNames.includes(rcptFilterCat))rcptFilterCat='all';
-  rebuildCatUI();
-  renderCatManager();
-  document.getElementById('cat-count-lbl')&&(document.getElementById('cat-count-lbl').textContent=CATS().length+' categories');
-  updatePlanner();
-  refreshAll();
-  triggerAutosave('pl');
-}
-
 
 // ── CUSTOM NOTIFICATIONS ENGINE ──────────────────────────────
 const CN_FIELDS=[
@@ -1745,208 +1407,6 @@ function describeRule(rule){
   }).join(rule.conditionJoin==='or'?' OR ':' AND ');
 }
 
-// ── CUSTOM NOTIF UI ───────────────────────────
-let editingCustomId=null;
-
-function renderCustomNotifList(){
-  const el=document.getElementById('custom-notif-list');
-  if(!el)return;
-  if(!settings.customNotifs)settings.customNotifs=[];
-  const rules=settings.customNotifs;
-  if(!rules.length&&editingCustomId!=='__new__'){
-    el.innerHTML='<div style="font-size:12px;color:var(--text-faint);padding:6px 0">No custom notifications yet.</div>';
-    return;
-  }
-  let html='';
-  rules.forEach(rule=>{
-    if(editingCustomId===rule.id){html+=renderCustomNotifForm(rule);return;}
-    const urgColor={high:'var(--red)',med:'var(--amber)',low:'var(--text-soft)'}[rule.urgency]||'var(--text-soft)';
-    html+='<div style="background:var(--parchment);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:6px">'
-      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
-      +'<span style="font-size:11px;font-weight:600;color:'+urgColor+';flex:1">'+esc(rule.label||'Unnamed')+'</span>'
-      +'<label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-soft);cursor:pointer">'
-      +'<input type="checkbox" '+(rule.enabled?'checked':'')+' onchange="toggleCustomNotif(\''+rule.id+'\',this.checked)" style="cursor:pointer"> On</label>'
-      +'<button class="del-btn" style="width:20px;height:20px;font-size:12px" onclick="editCustomNotif(\''+rule.id+'\')">&#9998;</button>'
-      +'<button class="del-btn" style="width:20px;height:20px;font-size:12px;color:var(--red);border-color:var(--red)" onclick="deleteCustomNotif(\''+rule.id+'\')">&#215;</button>'
-      +'</div>'
-      +'<div style="font-size:11px;color:var(--text-soft)">'+esc(describeRule(rule))+'</div>'
-      +'</div>';
-  });
-  if(editingCustomId==='__new__')html+=renderCustomNotifForm(null);
-  el.innerHTML=html;
-}
-
-function renderCustomNotifForm(rule){
-  const id=rule?rule.id:'__new__';
-  const conds=(rule&&rule.conditions)||[{field:'month.total',op:'gt',value:'',cat:''}];
-  const join=(rule&&rule.conditionJoin)||'and';
-  const urgency=(rule&&rule.urgency)||'low';
-  const label=(rule&&rule.label)||'';
-  const cats=CATS();
-  let html='<div style="background:var(--warm-white);border:1px solid var(--brown-light);border-radius:var(--radius-sm);padding:10px;margin-bottom:6px">';
-  html+='<div class="drawer-field"><label>Notification label</label><input type="text" id="cn-label-'+id+'" value="'+esc(label)+'" placeholder="例如：休闲支出超过 ¥100"></div>';
-  html+='<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap">';
-  html+='<span style="font-size:12px;color:var(--text-mid);font-weight:500">Urgency:</span>';
-  html+='<select id="cn-urgency-'+id+'" style="height:28px;font-size:12px;width:auto">';
-  ['low','med','high'].forEach(function(u){html+='<option value="'+u+'"'+(urgency===u?' selected':'')+'>'+(u==='med'?'Medium':u.charAt(0).toUpperCase()+u.slice(1))+'</option>';});
-  html+='</select>';
-  html+='<span style="font-size:12px;color:var(--text-mid);font-weight:500;margin-left:8px">Conditions join:</span>';
-  html+='<select id="cn-join-'+id+'" style="height:28px;font-size:12px;width:auto">';
-  html+='<option value="and"'+(join==='and'?' selected':'')+'>AND (all must match)</option>';
-  html+='<option value="or"'+(join==='or'?' selected':'')+'>OR (any must match)</option>';
-  html+='</select></div>';
-  html+='<div id="cn-conds-'+id+'">';
-  conds.slice(0,3).forEach(function(c,i){html+=renderCondRow(id,i,c,cats);});
-  html+='</div>';
-  if(conds.length<3)html+='<button class="add-exp-btn" onclick="addCondRow(\''+id+'\')">+ Add condition</button>';
-  html+='<div class="notif-rule-btns" style="display:flex;gap:8px;margin-top:10px">';
-  html+='<button class="btn primary" style="font-size:12px;padding:5px 12px" onclick="saveCustomNotif(\''+id+'\')">Save</button>';
-  html+='<button class="btn" style="font-size:12px;padding:5px 12px" onclick="cancelCustomNotif()">Cancel</button>';
-  html+='</div></div>';
-  return html;
-}
-
-function renderCondRow(ruleId,idx,cond,cats){
-  const f=CN_FIELDS.find(function(x){return x.key===cond.field;})||CN_FIELDS[5];
-  const ops=CN_OPS[f.type]||CN_OPS.num;
-  const needsCat=f.type==='catnum';
-  const needsNote=f.type==='notenum';
-  let html='<div id="cn-row-'+ruleId+'-'+idx+'" style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">';
-  html+='<select style="flex:2;min-width:120px;height:28px;font-size:11px" onchange="onCondFieldChange(\''+ruleId+'\','+idx+',this.value)">';
-  CN_FIELDS.forEach(function(fi){html+='<option value="'+fi.key+'"'+(fi.key===cond.field?' selected':'')+'>'+fi.label+'</option>';});
-  html+='</select>';
-  html+='<select id="cn-op-'+ruleId+'-'+idx+'" style="flex:1;min-width:80px;height:28px;font-size:11px">';
-  ops.forEach(function(o){html+='<option value="'+o.key+'"'+(o.key===cond.op?' selected':'')+'>'+o.label+'</option>';});
-  html+='</select>';
-  if(needsNote){
-    html+='<input type="text" id="cn-note-'+ruleId+'-'+idx+'" value="'+esc(cond.noteText||'')+'" placeholder="keyword" style="flex:1;min-width:70px;height:28px;font-size:11px;padding:2px 6px">';
-    html+='<input type="number" id="cn-val-'+ruleId+'-'+idx+'" value="'+esc(cond.value||'')+'" placeholder="¥" style="flex:1;min-width:60px;height:28px;font-size:11px;padding:2px 6px">';
-  }else if(f.type==='cat'){
-    html+='<select id="cn-val-'+ruleId+'-'+idx+'" style="flex:1;min-width:80px;height:28px;font-size:11px">';
-    cats.forEach(function(c){html+='<option value="'+esc(c)+'"'+(c===cond.value?' selected':'')+'>'+esc(c)+'</option>';});
-    html+='</select>';
-  }else{
-    html+='<input type="'+(f.type==='num'||f.type==='catnum'?'number':'text')+'" id="cn-val-'+ruleId+'-'+idx+'" value="'+esc(cond.value||'')+'" placeholder="value" style="flex:1;min-width:60px;height:28px;font-size:11px;padding:2px 6px">';
-  }
-  if(needsCat){
-    html+='<select id="cn-cat-'+ruleId+'-'+idx+'" style="flex:1;min-width:80px;height:28px;font-size:11px">';
-    cats.forEach(function(c){html+='<option value="'+esc(c)+'"'+(c===cond.cat?' selected':'')+'>'+esc(c)+'</option>';});
-    html+='</select>';
-  }
-  html+='</div>';
-  return html;
-}
-
-function onCondFieldChange(ruleId,idx,newField){
-  const f=CN_FIELDS.find(function(x){return x.key===newField;})||CN_FIELDS[5];
-  const ops=CN_OPS[f.type]||CN_OPS.num;
-  const row=document.getElementById('cn-row-'+ruleId+'-'+idx);
-  if(!row)return;
-  const newCond={field:newField,op:ops[0].key,value:'',cat:CATS()[0]||'',noteText:''};
-  row.outerHTML=renderCondRow(ruleId,idx,newCond,CATS());
-}
-
-function addCondRow(ruleId){
-  const container=document.getElementById('cn-conds-'+ruleId);
-  if(!container)return;
-  const idx=container.children.length;
-  if(idx>=3)return;
-  container.insertAdjacentHTML('beforeend',renderCondRow(ruleId,idx,{field:'month.total',op:'gt',value:'',cat:''},CATS()));
-  if(idx+1>=3){const btn=container.nextElementSibling;if(btn&&btn.classList.contains('add-exp-btn'))btn.style.display='none';}
-}
-
-function gatherConditions(ruleId){
-  const container=document.getElementById('cn-conds-'+ruleId);
-  if(!container)return[];
-  const conds=[];
-  for(let i=0;i<container.children.length;i++){
-    const field=container.children[i].querySelector('select')?.value;
-    if(!field)continue;
-    const op=document.getElementById('cn-op-'+ruleId+'-'+i)?.value||'gt';
-    const val=document.getElementById('cn-val-'+ruleId+'-'+i)?.value||'';
-    const cat=document.getElementById('cn-cat-'+ruleId+'-'+i)?.value||'';
-    const noteText=document.getElementById('cn-note-'+ruleId+'-'+i)?.value||'';
-    conds.push({field,op,value:val,cat,noteText});
-  }
-  return conds;
-}
-
-function saveCustomNotif(formId){
-  const label=(document.getElementById('cn-label-'+formId)?.value||'').trim()||'Custom alert';
-  const urgency=document.getElementById('cn-urgency-'+formId)?.value||'low';
-  const join=document.getElementById('cn-join-'+formId)?.value||'and';
-  const conditions=gatherConditions(formId);
-  if(!conditions.length){alert('Add at least one condition.');return;}
-  if(!settings.customNotifs)settings.customNotifs=[];
-  if(formId==='__new__'){
-    settings.customNotifs.push({id:uid(),label,urgency,conditionJoin:join,conditions,enabled:true});
-  }else{
-    const idx=settings.customNotifs.findIndex(function(r){return r.id===formId;});
-    if(idx>=0)settings.customNotifs[idx]=Object.assign({},settings.customNotifs[idx],{label,urgency,conditionJoin:join,conditions});
-  }
-  editingCustomId=null;
-  saveSettings();buildNotifications();renderCustomNotifList();
-}
-
-function cancelCustomNotif(){editingCustomId=null;renderCustomNotifList();}
-
-function addCustomNotif(){
-  if((settings.customNotifs||[]).length>=10){alert('Maximum 10 custom notifications.');return;}
-  editingCustomId='__new__';
-  renderCustomNotifList();
-}
-
-function editCustomNotif(id){editingCustomId=id;renderCustomNotifList();}
-
-function deleteCustomNotif(id){
-  if(!confirm('Delete this custom notification?'))return;
-  settings.customNotifs=(settings.customNotifs||[]).filter(function(r){return r.id!==id;});
-  saveSettings();buildNotifications();renderCustomNotifList();
-}
-
-function toggleCustomNotif(id,enabled){
-  const rule=(settings.customNotifs||[]).find(function(r){return r.id===id;});
-  if(rule)rule.enabled=enabled;
-  saveSettings();buildNotifications();
-}
-
-function renderNotifToggles(){
-  const el=document.getElementById('notif-toggles');
-  if(!el)return;
-  if(!settings.notifs)settings.notifs={bills:true,budget:true,yearly:true,sync:true,nudge:true};
-  const types=[
-    {key:'bills',label:'Upcoming recurring bills',icon:'&#128197;'},
-    {key:'budget',label:'Budget warnings (80%+ spent)',icon:'&#128308;'},
-    {key:'sync',label:'Cloud sync staleness',icon:'&#9729;'},
-    {key:'firstSync',label:'Sync prompt on empty session',icon:'&#8681;'},
-    {key:'localSave',label:'Monthly local backup reminder',icon:'&#128190;'},
-    {key:'nudge',label:'Monthly logging reminder',icon:'&#9997;'},
-  ];
-  el.innerHTML=types.map(t=>`
-    <label style="display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;border-bottom:1px solid var(--border-light)">
-      <span style="font-size:14px">${t.icon}</span>
-      <span style="flex:1;font-size:13px;color:var(--text)">${t.label}</span>
-      <input type="checkbox" ${settings.notifs[t.key]!==false?'checked':''} 
-        onchange="settings.notifs['${t.key}']=this.checked;saveSettings();buildNotifications()"
-        style="width:16px;height:16px;cursor:pointer;accent-color:var(--brown)">
-    </label>`).join('');
-  // Also sync reminder days dropdown
-  const rd=document.getElementById('cfg-reminder-days-2');
-  if(rd)rd.value=settings.reminderDays||7;
-  const py=document.getElementById('cfg-prune-years');
-  if(py)py.value=settings.pruneYears||0;
-}
-
-function toggleCatManager(){
-  const body=document.getElementById('cat-manager-body');
-  const arrow=document.getElementById('cat-mgr-arrow');
-  if(!body)return;
-  const open=body.style.display!=='none';
-  body.style.display=open?'none':'block';
-  if(arrow)arrow.textContent=open?'▶':'▼';
-  if(!open)renderCatManager();
-}
-
 function rebuildCatUI(){
   // Rebuild log-cat dropdown
   const logCat=document.getElementById('log-cat');
@@ -1961,147 +1421,6 @@ function rebuildCatUI(){
       +'<button class="pill on" data-rc="all" onclick="setRcptFilter(\'all\',this)">All</button>'
       +CATS().map(n=>`<button class="pill" data-rc="${esc(n)}" onclick="setRcptFilter('${esc(n)}',this)">${esc(n)}</button>`).join('');
   }
-  // Rebuild planner filter pills
-  const pp=document.getElementById('plan-pills');
-  if(pp){
-    const curF=planFilterCat;const curFP=planFilterPri;
-    pp.innerHTML='<span class="pill-label">Category:</span>'
-      +`<button class="pill${curF==='all'?' on':''}" data-f="all" onclick="setPlanFilter('cat','all',this)">All</button>`
-      +CATS().map(n=>`<button class="pill${curF===n?' on':''}" data-f="${esc(n)}" onclick="setPlanFilter('cat','${esc(n)}',this)">${esc(n)}</button>`).join('')
-      +'<span class="pill-label" style="margin-left:4px">Priority:</span>'
-      +`<button class="pill${planFilterPri==='H'?' on':''}" data-fp="H" onclick="setPlanFilter('pri','H',this)">High</button>`
-      +`<button class="pill${planFilterPri==='M'?' on':''}" data-fp="M" onclick="setPlanFilter('pri','M',this)">Medium</button>`
-      +`<button class="pill${planFilterPri==='L'?' on':''}" data-fp="L" onclick="setPlanFilter('pri','L',this)">Low</button>`;
-  }
-}
-
-function addCategory(){
-  const name=prompt('New category name:');
-  if(!name||!name.trim())return;
-  const trimmed=name.trim();
-  if(CATS().includes(trimmed)){alert('A category with that name already exists.');return;}
-  categories.push({name:trimmed,color:'#888888'});
-  expenses[trimmed]=[];
-  initExpenses();
-  rebuildCatUI();
-  updatePlanner();
-  triggerAutosave('pl');
-}
-
-function removeCategory(name){
-  const hasExpenses=expenses[name]&&expenses[name].length>0;
-  const hasReceipts=receipts.some(r=>r.cat===name);
-  let msg=`Remove category "${name}"?`;
-  if(hasExpenses||hasReceipts){
-    msg+=`
-
-Note: ${hasExpenses?expenses[name].length+' expense line(s) will be deleted. ':''}${hasReceipts?'Receipts logged under this category will be moved to "Other".':''}`;
-  }
-  if(!confirm(msg))return;
-  // Move orphaned receipts
-  receipts.forEach(r=>{if(r.cat===name)r.cat='Other';});
-  // Remove from categories and expenses
-  categories=categories.filter(c=>c.name!==name);
-  delete expenses[name];
-  // Reset filter if it was on this cat
-  if(planFilterCat===name)planFilterCat='all';
-  if(rcptFilterCat===name)rcptFilterCat='all';
-  rebuildCatUI();
-  updatePlanner();
-  refreshAll();
-  triggerAutosave('pl');
-}
-
-function moveCat(name,dir){
-  if(isLocked(name))return;
-  const extras=categories.filter(c=>!isLocked(c.name));
-  const lockedCount=categories.length-extras.length;
-  const extIdx=extras.findIndex(c=>c.name===name);
-  if(extIdx<0)return;
-  const newExtIdx=extIdx+dir;
-  if(newExtIdx<0||newExtIdx>=extras.length)return;
-  const tmp=extras[extIdx];extras[extIdx]=extras[newExtIdx];extras[newExtIdx]=tmp;
-  // Rebuild categories: locked first, then extras in new order
-  categories=[...categories.filter(c=>isLocked(c.name)),...extras];
-  rebuildCatUI();
-  renderCatManager();
-  updatePlanner();
-  triggerAutosave('pl');
-}
-
-function updateCatColor(name,color){
-  const cat=categories.find(c=>c.name===name);
-  if(cat)cat.color=color;
-  rebuildCatUI();
-  renderCatManager();
-  renderExpenses();
-  triggerAutosave('pl');
-}
-
-function updateCatName(oldName,newName){
-  newName=newName.trim();
-  if(!newName||newName===oldName)return;
-  if(isLocked(oldName)){renderCatManager();return;}
-  if(CATS().includes(newName)){alert('That name is already in use.');return;}
-  const cat=categories.find(c=>c.name===oldName);
-  if(cat)cat.name=newName;
-  // Update expenses key
-  if(expenses[oldName]){expenses[newName]=expenses[oldName];delete expenses[oldName];}
-  // Update receipts
-  receipts.forEach(r=>{if(r.cat===oldName)r.cat=newName;});
-  // Update filters
-  if(planFilterCat===oldName)planFilterCat=newName;
-  if(rcptFilterCat===oldName)rcptFilterCat=newName;
-  rebuildCatUI();
-  renderCatManager();
-  updatePlanner();
-  triggerAutosave('pl');
-}
-
-const LOCKED_CATS=DEFAULT_CATS.map(c=>c.name);
-function isLocked(name){return LOCKED_CATS.includes(name);}
-
-function renderCatManager(){
-  const el=document.getElementById('cat-manager-rows');
-  if(!el)return;
-  const extras=categories.filter(c=>!isLocked(c.name));
-  const locked=categories.filter(c=>isLocked(c.name));
-  let html='';
-  // Locked section
-  html+=`<div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.4px;margin-bottom:4px">Default categories</div>`;
-  html+=locked.map(cat=>`
-    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-light)">
-      <input type="color" value="${cat.color}" title="Pick color"
-        style="width:26px;height:26px;padding:1px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:transparent;flex-shrink:0"
-        onchange="updateCatColor('${esc(cat.name)}',this.value)">
-      <span style="flex:1;font-size:13px;color:var(--text-mid);font-weight:500">${esc(cat.name)}</span>
-      ${settings.denPreview?`<select style="font-size:11px;padding:2px 4px;height:24px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text-soft)" onchange="updateCatType('${esc(cat.name)}',this.value)"><option value="expense"${(!cat.type||cat.type==='expense')?' selected':''}>Expense</option><option value="savings"${cat.type==='savings'?' selected':''}>Savings</option><option value="investment"${cat.type==='investment'?' selected':''}>Investment</option></select>`:''}
-      <span style="font-size:10px;color:var(--text-faint);padding:2px 7px;border:1px solid var(--border-light);border-radius:8px">locked</span>
-    </div>`).join('');
-  // Extras section
-  if(extras.length){
-    html+=`<div style="font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:0.4px;margin:10px 0 4px">Custom categories</div>`;
-    html+=extras.map((cat,i)=>{
-      const globalIdx=categories.findIndex(c=>c.name===cat.name);
-      const isFirst=i===0;const isLast=i===extras.length-1;
-      return`<div class="cat-edit-row" style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-light)">
-        <input type="color" value="${cat.color}" title="Pick color"
-          style="width:26px;height:26px;padding:1px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;background:transparent;flex-shrink:0"
-          onchange="updateCatColor('${esc(cat.name)}',this.value)">
-        <input type="text" value="${esc(cat.name)}"
-          style="flex:1;font-size:13px;padding:3px 8px;height:26px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text)"
-          onblur="updateCatName('${esc(cat.name)}',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
-        ${settings.denPreview?`<select style="font-size:11px;padding:2px 4px;height:26px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text-soft)" onchange="updateCatType('${esc(cat.name)}',this.value)"><option value="expense"${(!cat.type||cat.type==='expense')?' selected':''}>Expense</option><option value="savings"${cat.type==='savings'?' selected':''}>Savings</option><option value="investment"${cat.type==='investment'?' selected':''}>Investment</option></select>`:''}
-        <div style="display:flex;gap:3px;flex-shrink:0">
-          <button class="del-btn" title="Move up" onclick="moveCat('${esc(cat.name)}',-1)" ${isFirst?'disabled style="opacity:0.3"':''}>&#8679;</button>
-          <button class="del-btn" title="Move down" onclick="moveCat('${esc(cat.name)}',1)" ${isLast?'disabled style="opacity:0.3"':''}>&#8681;</button>
-          <button class="del-btn" title="Remove" onclick="removeCategory('${esc(cat.name)}')" style="color:var(--red);border-color:var(--red)">&#215;</button>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  el.innerHTML=html;
 }
 
 // ── NOTIFICATIONS ─────────────────────────────
@@ -2314,22 +1633,6 @@ function buildNotifications(){
       });
     }
   });
-
-  // ── 7. Local save reminder — 1st of month, local-only mode ──
-  if(settings.notifs?.localSave!==false&&dayOfMonth===1){
-    const hasBudgetData=totalIncome()>0||totalExpMo()>0||receipts.length>0;
-    if(hasBudgetData){
-      const id='local-save-'+thisMonth;
-      if(!dismissedNotifs.has(id)){
-        notifs.push({
-          id,type:'localSave',icon:'&#128190;',
-          title:'Save a local backup',
-          desc:'Start of the month — use Save local in Budget planner to back up your data',
-          urgency:'info'
-        });
-      }
-    }
-  }
 
   // Sort: high → med → low → info
   const urgOrder={high:0,med:1,low:2,info:3};
@@ -2955,199 +2258,11 @@ function deleteRecurringBill(billId){
 
 function deleteReceipt(id){receipts=receipts.filter(r=>r.id!==id);renderLogMetrics();renderReceiptList();triggerAutosave('log');}
 
-function exportReceiptsCSV(){
-  const ym=document.getElementById('log-month-sel')?.value||currentMonth();
-  let csv='Date,Category,Vendor,Amount,Note,LoggedBy\n';
-  receiptsForMonth(ym).forEach(r=>csv+=`${r.date},${r.cat},"${r.vendor||''}",${r.amt.toFixed(2)},"${r.note||''}","${r.by||''}"\n`);
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`hedgie-receipts-${ym}.csv`;a.click();
-}
-
-// ── PLANNER ───────────────────────────────────
-let plannerDebounce=null;
-function plannerChanged(){clearTimeout(plannerDebounce);plannerDebounce=setTimeout(()=>triggerAutosave('pl'),2000);}
-
-function updatePlanner(){
-  if(!document.getElementById('pl-metrics'))return;
-  const inc=totalIncome(),exp=totalExpMo(),net=inc-exp,pct=inc>0?Math.min(200,Math.round(exp/inc*100)):0,surplus=Math.max(0,net);
-  document.getElementById('pl-metrics').innerHTML=`<div class="metric"><div class="metric-label">Income / mo</div><div class="metric-val">${fmt(inc)}</div></div><div class="metric"><div class="metric-label">Expenses / mo</div><div class="metric-val">${fmt(exp)}</div></div><div class="metric"><div class="metric-label">Net cash flow</div><div class="metric-val ${net>=0?'pos':'neg'}">${net<0?'-':''}${fmt(net)}</div></div><div class="metric"><div class="metric-label">Rainy day buffer</div><div class="metric-val" id="pl-buf-total">¥0</div></div>`;
-  document.getElementById('pl-pct-lbl').textContent=pct+'%';
-  const ff=document.getElementById('pl-flow-fill');ff.style.width=Math.min(100,pct)+'%';ff.className='progress-fill'+(pct>90&&pct<=100?' warn':pct>100?' over':'');
-  const {alloc,catScore:_cs}=calcBufferAlloc(surplus);
-  let tb=0;CATS().forEach(c=>{const a=alloc[c]||0;tb+=a;const el=document.getElementById('bv-'+c);if(el)el.textContent=fmt(a);const bar=document.getElementById('bv-bar-'+c);if(bar){const max=Math.max(...Object.values(alloc),1);bar.style.width=Math.round(a/max*100)+'%';}});
-  const bt=document.getElementById('pl-buf-total');if(bt)bt.textContent=fmt(tb);
-  const btAmt=document.getElementById('buf-total-amt');if(btAmt)btAmt.textContent=fmt(tb);
-  document.getElementById('buf-avail').textContent='Surplus: '+fmt(surplus);
-  renderIncome();renderExpenses();
-}
-
-function renderIncome(){
-  const el=document.getElementById('income-list');if(!el)return;el.innerHTML='';
-  income.forEach((r,i)=>{const d=document.createElement('div');d.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:6px';
-    d.innerHTML=`<input type="text" style="flex:1" value="${esc(r.n)}" placeholder="Source name" onchange="income[${i}].n=this.value">
-    <input type="number" style="width:130px" value="${r.a||''}" placeholder="0" min="0" step="1" onchange="income[${i}].a=parseFloat(this.value)||0;updatePlanner()">
-    <button class="del-btn" onclick="income.splice(${i},1);renderIncome();updatePlanner()">&#215;</button>`;
-    el.appendChild(d);});
-}
-function addIncome(){income.push({n:'',a:0});renderIncome();updatePlanner();}
-
-function renderExpenses(){
-  const sec=document.getElementById('expense-sections');if(!sec)return;sec.innerHTML='';
-  CATS().forEach(c=>{
-    if(planFilterCat!=='all'&&planFilterCat!==c)return;
-    const visRows=planFilterPri==='all'?expenses[c]:expenses[c].filter(r=>r.p===planFilterPri);
-    const ct=catMo(c),hasYr=expenses[c].some(r=>r.f==='Y'||r.f==='C');
-    const committedMo=recurringBills.filter(b=>b.cat===c).reduce((s,b)=>{
-      if(b.freq==='monthly')return s+b.amt;
-      if(b.freq==='yearly')return s+b.amt/12;
-      if(b.freq==='interval')return s+b.amt/(parseInt(b.intervalMonths)||2);
-      return s;
-    },0);
-    const covered=committedMo<=ct;
-    const committedRow=committedMo>0?`<div style="border-top:1px solid var(--border-light);margin-top:2px;padding:5px 0;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-soft)">&#8635; Recurring bills</span><span style="font-size:12px;font-weight:500;color:${covered?'var(--green)':'var(--amber)'}">${fmt(committedMo)}/mo ${covered?'&#10003;':fmt(committedMo-ct)+' over'}</span></div>`:'';
-    const wrap=document.createElement('div');wrap.className='card';
-    wrap.innerHTML=`<div class="card-hdr"><span class="card-title" style="color:${catColor(c)}">${esc(c)}${hasYr?' <span style="font-size:11px;color:var(--text-faint);font-weight:400">· interval items</span>':''}</span><span class="card-sub">${fmt(ct)}/mo &middot; ${fmt(ct*12)}/yr</span></div>
-    <div class="exp-grid" style="margin-bottom:4px"><span class="col-hdr">${isExpenseCat(c)?'Expense':'Contribution'}</span><span class="col-hdr r">Amount</span><span class="col-hdr c">Freq</span><span class="col-hdr">Priority</span><span class="col-hdr r yr-col">Mo equiv</span><span></span></div>
-    <div id="erows-${c}"></div>${committedRow}<button class="add-exp-btn" onclick="addExpense('${c}')">${isExpenseCat(c)?'+ Add expense':'+ Add contribution'}</button>`;
-    sec.appendChild(wrap);
-    const rc=document.getElementById('erows-'+c);
-    visRows.forEach(r=>{const ri=expenses[c].indexOf(r),mo=moAmt(r);
-      const rd=document.createElement('div');rd.className='exp-grid';rd.style.cssText='padding:4px 0;border-top:1px solid var(--border-light)';
-      rd.innerHTML=`<input class="exp-inp-name" type="text" value="${esc(r.n)}" placeholder="${isExpenseCat(c)?'Expense name':'Contribution name'}" onchange="expenses['${c}'][${ri}].n=this.value;plannerChanged()">
-      <input class="exp-inp-amt" type="number" value="${r.a||''}" placeholder="0" min="0" step="1" onchange="expenses['${c}'][${ri}].a=parseFloat(this.value)||0;updatePlanner()">
-      <div><div class="freq-tog"><button class="${r.f==='M'?'on':''}" onclick="expenses['${c}'][${ri}].f='M';updatePlanner()">Mo</button><button class="${r.f==='Y'?'on':''}" onclick="expenses['${c}'][${ri}].f='Y';updatePlanner()">Yr</button><button class="${r.f==='C'?'on':''}" onclick="expenses['${c}'][${ri}].f='C';if(!expenses['${c}'][${ri}].every)expenses['${c}'][${ri}].every=3;updatePlanner()" title="Every N months — N is the number of months between payments">N</button></div></div>
-      <select class="exp-sel" onchange="expenses['${c}'][${ri}].p=this.value;plannerChanged()"><option value="H"${r.p==='H'?' selected':''}>High</option><option value="M"${r.p==='M'?' selected':''}>Med</option><option value="L"${r.p==='L'?' selected':''}>Low</option></select>
-      <span class="yr-note yr-col">${r.f!=='M'?fmt(mo)+'/mo':''}</span>
-      <button class="del-btn" onclick="expenses['${c}'].splice(${ri},1);updatePlanner()">&#215;</button>`;
-      rc.appendChild(rd);
-      if(r.f==='C'){const nr=document.createElement('div');nr.style.cssText='display:flex;align-items:center;gap:6px;padding:3px 0 4px;font-size:12px;color:var(--text-soft);border-top:none';nr.innerHTML=`Every <input type="number" value="${r.every||3}" min="2" max="24" style="width:48px;height:24px;text-align:center;font-size:12px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--parchment);color:var(--text);padding:0 4px" onchange="expenses['${c}'][${ri}].every=Math.max(2,parseInt(this.value)||3);updatePlanner()"> months`;rc.appendChild(nr);}
-      if(r.f==='Y'||r.f==='C'){const sr=document.createElement('div');sr.style.cssText='display:flex;align-items:center;gap:6px;padding:2px 0 4px;border-top:none';sr.innerHTML=`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text-soft)"><input type="checkbox"${r.setAside!==false?' checked':''} style="width:13px;height:13px;cursor:pointer;accent-color:var(--brown)" onchange="expenses['${c}'][${ri}].setAside=this.checked;updatePlanner()">Set aside monthly towards this expense</label>`;rc.appendChild(sr);}});
-  });
-}
-function addExpense(c){if(expenses[c].length>=LIMITS.expPerCat){return;}expenses[c].push({n:'',a:0,p:'M',f:'M'});updatePlanner();}
-
-function calcBufferAlloc(surplus){
-  // Score each category by weighted monthly cost of its expense lines
-  // H lines count at 3x, M at 2x, L at 1x — then allocate surplus proportionally
-  const catPriority={};
-  const catScore={};
-  CATS().forEach(c=>{
-    const lines=expenses[c];
-    let score=0;
-    let dominantPri='L';
-    let hCost=0,mCost=0,lCost=0;
-    lines.forEach(l=>{
-      const mo=moAmt(l);
-      if(l.p==='H'){score+=mo*3;hCost+=mo;}
-      else if(l.p==='M'){score+=mo*2;mCost+=mo;}
-      else{score+=mo*1;lCost+=mo;}
-    });
-    // dominant priority = highest-cost tier
-    if(hCost>0) dominantPri='H';
-    else if(mCost>0) dominantPri='M';
-    catPriority[c]=dominantPri;
-    // minimum score of 1 so empty categories still show up
-    catScore[c]=Math.max(score,1);
-  });
-  const totalScore=Object.values(catScore).reduce((a,b)=>a+b,0)||1;
-  const alloc={};
-  CATS().forEach(c=>{alloc[c]=surplus*(catScore[c]/totalScore);});
-  return{alloc,catPriority,catScore};
-}
-
-function renderBuffers(){
-  const el=document.getElementById('buffer-list');if(!el)return;el.innerHTML='';
-  const surplus=Math.max(0,totalIncome()-totalExpMo());
-  const {alloc,catPriority,catScore}=calcBufferAlloc(surplus);
-  const maxAlloc=Math.max(...Object.values(alloc),1);
-  const priLabel={H:'High priority',M:'Medium priority',L:'Low priority'};
-  CATS().forEach(c=>{
-    const a=alloc[c],pri=catPriority[c];
-    const barPct=maxAlloc>0?Math.round(a/maxAlloc*100):0;
-    const d=document.createElement('div');d.className='buf-card';
-    const score=catScore[c]||0;
-    const scoreLabel=score>0?`weighted score: ${Math.round(score)}`:'no expenses set';
-    d.innerHTML=`
-      <div style="min-width:70px">
-        <span style="font-size:13px;font-weight:600;color:${catColor(c)}">${esc(c)}</span>
-        <div style="font-size:10px;color:var(--text-faint);margin-top:1px">${scoreLabel}</div>
-      </div>
-      <div class="buf-card-bar"><div class="buf-card-fill" id="bv-bar-${c}" style="width:${barPct}%;background:${catColor(c)};opacity:0.7"></div></div>
-      <span class="buf-pri-badge buf-pri-${pri}" title="${priLabel[pri]}">${priLabel[pri].split(' ')[0]}</span>
-      <span style="font-size:13px;font-weight:600;min-width:60px;text-align:right" id="bv-${c}">${fmt(a)}</span>`;
-    el.appendChild(d);
-  });
-}
-
-function setPlanFilter(type,val,btn){
-  if(type==='cat'){planFilterCat=val;document.querySelectorAll('#plan-pills .pill[data-f]').forEach(b=>b.classList.toggle('on',b.dataset.f===val));}
-  else{planFilterPri=planFilterPri===val?'all':val;document.querySelectorAll('#plan-pills .pill[data-fp]').forEach(b=>b.classList.toggle('on',b.dataset.fp===planFilterPri));}
-  renderExpenses();
-}
-
-// ── SAVE / RESTORE ────────────────────────────
-async function getFullState(){
-  const p={_hedgie:true,version:syncMeta.version,lastEditedBy:settings.username||'',lastEditedAt:new Date().toISOString(),data:{categories,income,expenses,receipts,vendors,archives,recurringBills,financing,savingsGoals,investments}};
-  p.signature=await signPayload(p);return p;
-}
-
-function saveJSON(){
-  getFullState().then(state=>{
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));
-    const d=new Date();a.download=`hedgie-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;a.click();
-  });
-}
-
-function restoreJSON(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=async e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(settings.sharedKey&&data.signature){
-        const vr=await verifyPayload(data);
-        if(!vr.ok&&!confirm('Signature mismatch — this backup may be from a different household. Load anyway?'))return;
-      }
-      await applyPayloadAsync(data);input.value='';
-    }catch(e){alert('Could not read this file.');}
-  };
-  reader.readAsText(file);
-}
-
 // ── DARK MODE ──────────────────────────────
 function applyDarkMode(){
   document.body.classList.toggle('dark',!!settings.darkMode);
   const btn=document.getElementById('dark-mode-btn');
   if(btn)btn.textContent=settings.darkMode?'\u2600':'\u263E'; // sun / crescent
-  const cb=document.getElementById('cfg-dark-mode');
-  if(cb)cb.checked=!!settings.darkMode;
-}
-function applyDarkModeBtn(){
-  const show=settings.showDarkModeBtn!==false;
-  const btn=document.getElementById('dark-mode-btn');
-  if(btn)btn.style.display=show?'':'none';
-  const cb=document.getElementById('cfg-show-darkmode-btn');
-  if(cb)cb.checked=show;
-}
-function applyLeftHandMode(){
-  document.body.classList.toggle('left-hand',!!settings.leftHandMode);
-  const cb=document.getElementById('cfg-left-hand');
-  if(cb)cb.checked=!!settings.leftHandMode;
-}
-function applyReducedMotion(){
-  document.body.classList.toggle('reduced-motion',!!settings.reducedMotion);
-  const cb=document.getElementById('cfg-reduced-motion');
-  if(cb)cb.checked=!!settings.reducedMotion;
-}
-function applyLargeText(){
-  document.body.classList.toggle('large-text',!!settings.largeText);
-  const cb=document.getElementById('cfg-large-text');
-  if(cb)cb.checked=!!settings.largeText;
-}
-function applyHighContrast(){
-  document.body.classList.toggle('high-contrast',!!settings.highContrast);
-  const cb=document.getElementById('cfg-high-contrast');
-  if(cb)cb.checked=!!settings.highContrast;
 }
 function toggleDarkMode(){
   settings.darkMode=!settings.darkMode;
@@ -3194,22 +2309,6 @@ function dismissNewUserBanner(){
   localStorage.setItem('hedgie_new_user_dismissed','1');
 }
 
-// -- SYNC TIMESTAMPS ----------------------------------------
-function renderSyncTimestamps(){
-  const el=document.getElementById('sync-timestamps');
-  if(!el)return;
-  function fmt(iso){
-    if(!iso)return '<span style="color:var(--text-faint)">&#8212;</span>';
-    const diff=Date.now()-new Date(iso).getTime();
-    const label=diff<86400000?fmtAgo(iso):(()=>{
-      const d=new Date(iso);
-      return d.toLocaleDateString('zh-CN',{month:'short',day:'numeric'})+' 于 '+d.toLocaleTimeString('zh-CN',{hour:'numeric',minute:'2-digit'});
-    })();
-    return '<span style="color:var(--text-soft)">'+label+'</span>';
-  }
-  el.innerHTML='<div>Last push: '+fmt(syncMeta.lastPushedAt)+'</div>'+'<div>Last pull: '+fmt(syncMeta.lastPulledAt)+'</div>'+'<div>Last sync: '+fmt(syncMeta.lastSyncedAt)+'</div>';
-}
-
 function dismissIosBanner(){
   const banner=document.getElementById('ios-install-banner');
   if(banner)banner.style.display='none';
@@ -3252,7 +2351,6 @@ function renderDonateBtns(){
 }
 
 // ── DEN PREVIEW ──────────────────────────────
-function toggleDenPreview(on){settings.denPreview=!!on;saveSettings();applyDenPreview();}
 
 function applyDenPreview(){
   const on=!!settings.denPreview;
@@ -3269,7 +2367,6 @@ function applyDenPreview(){
     if(wasCurrent||currentTabIdx>=TAB_ORDER.length){currentTabIdx=0;switchTab('log');}
   }
   populateDenLogFields();
-  applyPriceProvider();
   if(on)renderDen();
 }
 
@@ -3285,9 +2382,6 @@ function updateDenLogFieldVisibility(){
     if(!pos||pos.type==='cd')unitsInp.value='';
   }
 }
-
-function renderDenAccordion(){populateDenLogFields();}
-
 
 function populateDenLogFields(){
   const fSel=document.getElementById('log-finance-id');
@@ -3313,10 +2407,6 @@ function updateFinancingAcct(id,field,value){
   if(field==='name')populateDenLogFields();
 }
 
-function updateCatType(name,type){
-  const cat=categories.find(c=>c.name===name);if(!cat)return;
-  cat.type=type;triggerAutosave('den');
-}
 function getFinancingName(id){const f=financing.find(f=>f.id===id);return f?f.name:'';}
 function getInvestmentName(id){const v=investments.find(v=>v.id===id);return v?v.name||(v.symbol||''):''}
 function buildLinkedByPos(){
@@ -3946,7 +3036,7 @@ function renderDenWallet(){
     <input class="den-inp" type="text" value="${esc(walletAddress)}" placeholder="0x wallet address" style="flex:1;min-width:180px;font-family:monospace;font-size:12px" onblur="saveWalletAddress(this.value);renderDenWallet()">
     ${canConnect?`<button class="btn" style="font-size:12px" onclick="connectWallet()">Connect</button>`:''}
   </div>
-  ${!ethKey?'<div style="font-size:11px;color:var(--text-faint);margin-bottom:10px">Transaction import: add an Etherscan API key in <strong>Settings → Wallet</strong>, then tap ↺ Refresh.</div>':''}
+  ${!ethKey?'<div style="font-size:11px;color:var(--text-faint);margin-bottom:10px">Transaction import requires an Etherscan API key before refreshing.</div>':''}
 `;
   if(!hasAddr){
     html+='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:6px 0">Enter or connect a wallet address above, then tap Refresh.</div>';
@@ -4036,42 +3126,6 @@ function renderDenWallet(){
 }
 
 // ── PRICE FEED ───────────────────────────────
-
-function applyPriceProvider(){
-  const prov=settings.priceProvider||'none';
-  const sel=document.getElementById('cfg-price-provider');if(sel)sel.value=prov;
-  const keyRow=document.getElementById('cfg-price-key-row');
-  if(keyRow)keyRow.style.display=prov!=='none'?'flex':'none';
-  const keyInp=document.getElementById('cfg-price-apikey');
-  if(keyInp){
-    keyInp.value=prov==='coingecko'?(settings.cgApiKey||''):(settings.priceApiKey||'');
-    keyInp.placeholder=prov==='coingecko'?'Optional demo key (free at coingecko.com)':'Paste API key';
-  }
-  const keyLbl=document.getElementById('cfg-price-key-lbl');
-  if(keyLbl)keyLbl.textContent=prov==='coingecko'?'Demo key':'API key';
-  const notes=document.getElementById('cfg-price-notes');
-  if(notes){
-    const msgs={none:'',coingecko:'Supports crypto only. No key required, but a free demo key (coingecko.com/en/api) improves reliability on mobile networks where shared IPs hit the unauthenticated rate limit.',finnhub:'Free tier: 60 requests/min. Supports US stocks, ETFs, and crypto. Get a key at finnhub.io.',twelvedata:'Free tier: 800 requests/day. Supports global stocks, ETFs, and crypto. Get a key at twelvedata.com.',alphavantage:'Free tier: 25 requests/day. Supports US stocks, ETFs, and major crypto. Get a key at alphavantage.co.'};
-    notes.textContent=msgs[prov]||'';
-  }
-  renderDenPortfolioActions();
-}
-
-function updatePriceProvider(prov){
-  settings.priceProvider=prov;
-  saveSettings();triggerAutosave('settings');
-  applyPriceProvider();
-  invalidateDenChartCache();
-  renderDenPortfolio();
-  renderDenChartCard();
-}
-
-function savePriceApiKey(key){
-  const prov=settings.priceProvider||'none';
-  if(prov==='coingecko')settings.cgApiKey=key.trim();
-  else settings.priceApiKey=key.trim();
-  saveSettings();triggerAutosave('settings');
-}
 
 function renderDenPortfolioActions(){
   const el=document.getElementById('den-portfolio-actions');if(!el)return;
@@ -4218,7 +3272,7 @@ async function loadDenChart(){
   const prov=settings.priceProvider||'none';
   const eligible=investments.filter(v=>v.type!=='cd'&&(parseFloat(v.units)||0)>0&&(v.priceId||v.symbol));
   if(!eligible.length){area.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:24px 0">Add a stock, ETF, or crypto position to see performance.</div>';return;}
-  if(prov==='none'){area.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:24px 0">Configure a price feed in Settings → Den Preview to load historical data.</div>';if(status)status.textContent='';return;}
+  if(prov==='none'){area.innerHTML='<div style="font-size:12px;color:var(--text-faint);text-align:center;padding:24px 0">Configure a price feed to load historical data.</div>';if(status)status.textContent='';return;}
   const posKey=eligible.map(v=>v.id+':'+(v.priceId||v.symbol)).join('|');
   if(denChartRange==='1D'){
     const cv=denChartCacheIntraday&&denChartCacheIntraday.provider===prov&&denChartCacheIntraday.posKey===posKey;
@@ -4503,101 +3557,17 @@ function updateSavingsGoal(id,field,value){
 
 function refreshAll(){runAutoArchive();if(runAutoPrune())triggerAutosave('prune');initExpenses();rebuildCatUI();processRecurringBills();buildNotifications();populateMonthSelects();renderLogMetrics();renderReceiptList();if(document.getElementById('panel-report').classList.contains('active'))renderReport();applyDenPreview();if(document.getElementById('panel-den')?.classList.contains('active'))renderDen();}
 
-function gatherRows(){
-  let rows=[];
-  income.forEach(r=>rows.push({type:'Income',cat:'',name:r.n,pri:'',freq:'Monthly',amount:r.a,monthly:r.a,annual:(r.a*12).toFixed(2)}));
-  CATS().forEach(c=>expenses[c].forEach(r=>{const mo=moAmt(r);rows.push({type:'Expense',cat:c,name:r.n,pri:PRIS[r.p],freq:r.f==='Y'?'Yearly':'Monthly',amount:r.a||0,monthly:mo.toFixed(2),annual:(mo*12).toFixed(2)});}));
-  return rows;
-}
-function exportCSV(){
-  let csv='Type,Category,Name,Priority,Frequency,Amount,Monthly Equiv,Annual Equiv\n';
-  gatherRows().forEach(r=>csv+=`${r.type},${r.cat},"${r.name}",${r.pri},${r.freq},${r.amount},${r.monthly},${r.annual}\n`);
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='hedgie-budget.csv';a.click();
-}
-function copySheets(){
-  let txt='Type\tCategory\tName\tPriority\tFrequency\tAmount\tMonthly Equiv\tAnnual Equiv\n';
-  gatherRows().forEach(r=>txt+=`${r.type}\t${r.cat}\t${r.name}\t${r.pri}\t${r.freq}\t${r.amount}\t${r.monthly}\t${r.annual}\n`);
-  navigator.clipboard.writeText(txt).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy for Sheets',1500);});
-}
-function exportArchiveCSV(){
-  const allArc=Object.values(archives).flat().sort((a,b)=>b.date.localeCompare(a.date));
-  if(!allArc.length){alert('No archived receipts yet.');return;}
-  let csv='Date,Category,Vendor,Amount,Note,LoggedBy\n';
-  allArc.forEach(r=>csv+=`${r.date},${r.cat},"${r.vendor||''}",${r.amt.toFixed(2)},"${r.note||''}","${r.by||''}"\n`);
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='hedgie-archived-receipts.csv';a.click();
-}
-function clearReceiptsAndArchives(){
-  if(!confirm('Remove all receipts and archived data? Budget structure is kept.'))return;
-  receipts=[];archives={};
-  syncMeta={...syncMeta,version:0,lastEditedBy:'',lastEditedAt:'',lastPulledVersion:0,lastPushedAt:'',lastPulledAt:'',lastSyncedAt:''};
-  localStorage.removeItem('hedgie_syncmeta');
-  refreshAll();
-  setGSB('info','Receipts and archives cleared','');
-}
-function clearVendorMemory(){
-  if(!confirm('Remove all saved vendor suggestions?'))return;
-  vendors={};
-  setGSB('info','Vendor memory cleared','');
-}
-function clearDenData(){
-  if(!confirm('Remove all Den data — portfolio positions, liabilities, savings goals, and wallet data?'))return;
-  financing=[];investments=[];savingsGoals=[];walletAddress='';walletChains=['ethereum','arbitrum','base','polygon'];walletAssets=[];walletPendingTxs=[];walletImportingTxId=null;
-  refreshAll();
-  setGSB('info','Den data cleared','');
-}
-function resetIdentity(){
-  if(!confirm('Erase your display name, shared key, and all cloud sync credentials? Your budget and receipts are untouched.'))return;
-  settings.username='';
-  settings.provider='none';
-  settings.jsonbinId='';settings.jsonbinKey='';
-  settings.gistId='';settings.gistToken='';
-  settings.selfUrl='';settings.selfToken='';
-  settings.dropboxToken='';
-  settings.sharedKey='';
-  saveSettings();
-  document.getElementById('cfg-username').value='';
-  document.getElementById('cfg-provider').value='none';
-  onProviderChange(true);
-  renderKeyDisplay();
-  updateSyncStatus('idle');
-  updateSyncButton();
-  setGSB('info','Identity and sync credentials cleared','');
-}
-
-function resetBudgetAndReceipts(){
-  if(!confirm('Erase all income, budget lines, receipts, vendors, and archives? Your identity and sync settings are untouched.'))return;
-  income=[{n:'主职收入',a:0},{n:'其他收入',a:0}];
-  categories=DEFAULT_CATS.map(c=>({...c}));
-  expenses={};initExpenses();
-  bufferPct={};
-  receipts=[];
-  vendors={};
-  recurringBills=[];financing=[];savingsGoals=[];investments=[];walletAddress='';walletChains=['ethereum','arbitrum','base','polygon'];walletAssets=[];walletPendingTxs=[];walletImportingTxId=null;
-  archives={};
-  syncMeta={version:0,lastEditedBy:'',lastEditedAt:'',lastPulledVersion:0,lastPushedAt:'',lastPulledAt:'',lastSyncedAt:''};
-  localStorage.removeItem('hedgie_syncmeta');
-  refreshAll();
-  setGSB('info','Budget and receipts cleared','');
-}
-
-function resetAll(){if(!confirm('Erase ALL data including identity, sync credentials, budget, and receipts? This cannot be undone.'))return;income=[{n:'主职收入',a:0},{n:'其他收入',a:0}];categories=DEFAULT_CATS.map(c=>({...c}));expenses={};initExpenses();bufferPct={};receipts=[];vendors={};recurringBills=[];financing=[];savingsGoals=[];investments=[];archives={};syncMeta={version:0,lastEditedBy:'',lastEditedAt:'',lastPulledVersion:0,lastPushedAt:'',lastPulledAt:'',lastSyncedAt:''};localStorage.removeItem('hedgie_syncmeta');settings={username:'',provider:'none',jsonbinId:'',jsonbinKey:'',gistId:'',gistToken:'',selfUrl:'',selfToken:'',dropboxToken:'',sharedKey:'',reminderDays:7,notifs:{bills:true,budget:true,yearly:true,sync:true,nudge:true},customNotifs:[]};saveSettings();document.getElementById('cfg-username').value='';document.getElementById('cfg-provider').value='none';onProviderChange(true);renderKeyDisplay();updateSyncStatus('idle');updateSyncButton();refreshAll();}
-
 // ── INIT ──────────────────────────────────────
 initExpenses();
 updateDateLabel();
 rebuildCatUI();
-setGSB('idle','',''); // status bar seeded by updateSyncStatus below
+setGSB('idle','','');
 updateSyncButton();
 populateMonthSelects();
 renderLogMetrics();
 renderReceiptList();
 loadSettings();
 applyDarkMode();
-applyDarkModeBtn();
-applyLeftHandMode();
-applyReducedMotion();
-applyLargeText();
-applyHighContrast();
 applyDenPreview();
 checkIosInstallBanner(); // show iOS install banner if on iOS Safari without standalone mode
 loadSyncMeta();
@@ -4608,20 +3578,18 @@ loadSyncMeta();
     const cloud=await fetchFromCloud();
     if(!cloud||!cloud._hedgie)return;
     const vr=await verifyPayload(cloud);
-    if(!vr.ok){setGSB('warn','Cloud signature mismatch — check shared key in Settings','',false);return;}
+    if(!vr.ok){setGSB('warn','Cloud signature mismatch — check your shared key','',false);return;}
     let plain;try{plain=await toPlainPayload(cloud);}catch(e){setGSB('warn','Could not decrypt cloud data on startup','',false);return;}
     await applyPayloadAsync(plain);
     syncMeta.lastPulledAt=new Date().toISOString();
     syncMeta.lastPulledVersion=plain.version||0;
     saveSyncMeta();
     setGSB('cloud','Restored from cloud','v'+(plain.version||'?'));
-    renderSyncTimestamps();
   }catch(e){
     setGSB('warn','Could not reach cloud on startup','');
   }
 })();
 processRecurringBills();
-updateSyncStatus('idle'); // seed GSB with correct local/cloud state
 buildNotifications(); // runs after settings and syncMeta loaded
 renderDonateBtns();
 // Refresh notifications every 5 minutes while app is open
@@ -4638,7 +3606,7 @@ window.addEventListener('beforeunload',e=>{
 // user-facing text in the DOM and browser dialogs.
 const ZH_TRANSLATIONS={
   'Hedge Your Spending':'守护你的支出','Open · v2.5.9':'开放版 · v2.5.9',
-  'Log receipt':'记账','Monthly report':'月报','Budget planner':'预算规划','Add to home screen':'添加到主屏幕',
+  'Log receipt':'记账','Monthly report':'月报','Add to home screen':'添加到主屏幕',
   'Toggle dark mode':'切换深色模式','Notifications':'通知','Dismiss all':'全部忽略','Sync with cloud':'与云端同步','Sync':'同步',
   'To install: tap':'安装：点击','Share':'分享','Add to Home Screen':'添加到主屏幕',
   'New to Open Hedgie? Read the wiki to get the most out of the app.':'第一次使用 Open Hedgie？阅读使用说明，了解如何充分使用本应用。',
@@ -4654,32 +3622,7 @@ const ZH_TRANSLATIONS={
   'Performance':'走势','Stock / ETF':'股票 / ETF','Crypto':'加密货币','CD / Savings':'定期存款 / 储蓄','Wallet':'钱包',
   'Refresh':'刷新','Liabilities':'负债','Add':'添加','Savings goals':'储蓄目标','Add goal':'添加目标',
   'Budget vs. actual spending':'预算与实际支出','Active':'当前','Hibernate':'冬眠视图',
-  'Budget planner':'预算规划','Monthly targets · yearly items shown as monthly equivalent':'每月目标 · 年度项目按月均值显示',
-  'Expenses as % of income':'支出占收入比例','Income sources':'收入来源','Add source':'添加来源','Manage categories':'管理类别',
-  'Add category':'添加类别','Reset to defaults':'恢复默认','Category:':'类别：','Priority:':'优先级：','High':'高','Medium':'中','Low':'低',
-  'Rainy day buffer':'应急储备','Surplus:':'结余：','Export & backup':'导出与备份','Settings':'设置','Wiki':'使用说明',
-  'Identity':'身份','Display name':'显示名称','(stamps your receipts)':'（显示在记录旁）','Signature color':'签名颜色',
-  '(your name next to receipts)':'（记录旁显示你的名称）','Shared secret key':'共享密钥','(signs sync payloads)':'（用于签名同步数据）',
-  'No key generated':'尚未生成密钥','Generate':'生成','Copy':'复制','Paste':'粘贴','Encrypt sync payload':'加密同步数据',
-  'Data':'数据','BACKUP & RESTORE':'备份与恢复','Save local':'保存到本地','Restore local':'从本地恢复','EXPORT':'导出',
-  'Export receipts CSV':'导出记录 CSV','Export budget CSV':'导出预算 CSV','Copy for Sheets':'复制到表格','Export archived receipts':'导出归档记录',
-  'RETENTION':'保留期限','Receipt data retention':'记录数据保留期限','Keep forever':'永久保留','1 year':'1 年','2 years':'2 年',
-  '3 years':'3 年','5 years':'5 年','7 years':'7 年','10 years':'10 年',
-  'Archived data outside this window is permanently deleted on the next sync or app open.':'超出此期限的归档数据将在下次同步或打开应用时永久删除。',
-  'Not configured':'未配置','Sync provider':'同步服务','None (local only)':'无（仅本地）','GitHub Gist (private)':'GitHub Gist（私有）',
-  'Self-hosted endpoint':'自托管端点','Pull':'拉取','Push':'推送','Force refresh':'强制刷新','Clears cached version and reloads the app':'清除缓存版本并重新加载应用',
-  'Unlocks the Den tab for tracking loans, investments, and savings goals. Receipts can be tagged to financing accounts in the log form.':'开启“长期资产”页，用于记录贷款、投资和储蓄目标。你可以在记账表单中将记录关联到融资账户。',
-  'Enable Den Preview features':'启用长期资产预览功能','Manage accounts, investments, and goals in the Den tab. Receipt tagging is available in the log form above.':'在“长期资产”页管理账户、投资和目标。你可以在上方记账表单中关联记录。',
-  'Price Feed':'价格数据源','Fetch live stock and crypto prices. All providers offer a free tier.':'获取股票和加密货币实时价格。所有服务都提供免费额度。',
-  'Provider':'服务商','None — manual only':'无——仅手动输入','crypto, free (optional key)':'加密货币，免费（可选密钥）',
-  'stocks + crypto, free key':'股票 + 加密货币，需免费密钥','API key':'API 密钥','Paste API key':'粘贴 API 密钥',
-  'Transaction import settings for the Den Wallet card. Requires Den Preview to be enabled.':'“长期资产”页钱包卡片的交易导入设置，需要先启用长期资产预览。',
-  'Etherscan API key':'Etherscan API 密钥','(free at etherscan.io/apis — covers all chains)':'（可在 etherscan.io/apis 免费获取，支持所有链）',
-  'Import options':'导入选项','Direction':'方向','Outgoing only':'仅转出','Incoming only':'仅转入','Both':'全部',
-  'Auto-import on sync':'同步时自动导入','Include gas fees':'包含 Gas 费','Networks':'网络','Ethereum':'以太坊','Arbitrum':'Arbitrum','Base':'Base','Polygon':'Polygon',
-  'Choose which notifications appear in the bell menu.':'选择在铃铛菜单中显示哪些通知。','Bill reminder window':'账单提醒时间','1 week out':'提前 1 周','2 weeks out':'提前 2 周',
-  'Custom notifications':'自定义通知','Dark mode':'深色模式','Show dark mode button in tab bar':'在标签栏显示深色模式按钮',
-  'Left-hand mode':'左手模式','Reduce motion':'减少动画','Large text':'大号文字','Appearance':'外观',
+  'No sync provider configured.':'尚未配置同步服务。',
   'All clear — nothing needs attention':'一切正常——没有需要处理的事项','Last push:':'上次推送：','Last pull:':'上次拉取：','Last sync:':'上次同步：',
   'No accounts yet. Add a loan, credit line, or lease.':'还没有账户。添加贷款、信用额度或租赁账户。','No positions yet. Add a stock, ETF, or crypto holding.':'还没有持仓。添加股票、ETF 或加密货币。',
   'No goals yet. Add a savings target.':'还没有目标。添加一个储蓄目标。','Saved so far':'当前已存','Target':'目标','Remaining':'剩余','Budget line':'预算项目',
@@ -4698,8 +3641,6 @@ const ZH_TRANSLATIONS={
   'Error:':'错误：','Saved locally':'已保存到本地','Saved locally only':'仅已保存到本地','Synced to cloud':'已同步到云端','Pushed to cloud':'已推送到云端',
   'Pulled from cloud':'已从云端拉取','Already up to date':'已经是最新','Syncing…':'同步中…','Saving…':'保存中…','Could not reach cloud':'无法连接云端',
   'Signature mismatch':'签名不匹配','Signature invalid':'签名无效','Sync failed':'同步失败','Push failed':'推送失败','Pull failed':'拉取失败',
-  'New key generated':'新密钥已生成','Key copied to clipboard':'密钥已复制到剪贴板','Key saved':'密钥已保存','No key — generate one below':'还没有密钥——请在下方生成',
-  'Off — sync payloads are plain JSON.':'关闭——同步数据为普通 JSON。','Requires a shared key':'需要共享密钥','Requires HTTPS to function.':'需要 HTTPS 才能使用。',
   'Could not load chart data':'无法加载图表数据','Check symbol and API key, or wait a moment and try again.':'请检查代码和 API 密钥，或稍后重试。',
   'Not enough data for this range.':'此时间范围内数据不足。','Not enough data points for this range.':'此时间范围内数据点不足。',
   'Enter a principal amount to see projected growth.':'请输入本金金额以查看预计增长。',
@@ -4707,29 +3648,16 @@ const ZH_TRANSLATIONS={
   'Pick color':'选择颜色','Move up':'上移','Move down':'下移','Remove':'删除','Edit':'编辑','Tap to expand':'点击展开',
   'Den':'资产','Open Hedgie':'开放版 Hedgie','Welcome to Hedgie':'欢迎使用 Hedgie','Your first name':'你的名字',
   'Set your display name to get started. This stamps your receipts and sync activity so your household knows who made each change.':'设置显示名称即可开始使用。它会显示在记录和同步活动旁，方便家庭成员知道是谁做了修改。',
-  'Read the wiki before you begin':'开始前阅读使用说明','Income / mo':'收入 / 月','Expenses / mo':'支出 / 月','Net cash flow':'净现金流',
-  'Source name':'收入来源名称','Expense name':'支出名称','Contribution name':'储蓄名称','Amount':'金额','Freq':'频率','Mo equiv':'月均',
-  'Expense':'支出','Contribution':'储蓄','Med':'中','Every N months — N is the number of months between payments':'每 N 个月一次——N 为两次付款之间的月数',
-  'Every':'每隔','Set aside monthly towards this expense':'每月为此项目预留金额','Recurring bills':'周期性账单','interval items':'周期项目',
-  'weighted score:':'加权分数：','no expenses set':'尚未设置支出','High priority':'高优先级','Medium priority':'中优先级','Low priority':'低优先级',
-  'No limit':'无上限','Payload size':'数据大小','Active receipts:':'当前记录：','Archived:':'已归档：','Vendors:':'商家：','Retention:':'保留期限：',
-  'Forever':'永久','yr':'年','Free with GitHub':'GitHub 免费提供','private Gist':'私有 Gist','Access Token':'访问令牌','Bearer Token (optional)':'Bearer 令牌（可选）',
-  'Gist ID':'Gist ID','Personal Access Token (classic)':'个人访问令牌（classic）','Bin ID':'Bin ID','Master Key':'主密钥','Endpoint URL':'端点 URL',
-  'Payload size limit (KB)':'数据大小上限（KB）','default 10240 = 10MB':'默认 10240 = 10MB','No sync provider configured.':'尚未配置同步服务。',
-  'Generate a key first.':'请先生成密钥。','Paste the shared key:':'粘贴共享密钥：',"That doesn't look like a valid Hedgie key.":'这看起来不是有效的 Hedgie 密钥。',
-  'Key copied to clipboard — share via AirDrop or iMessage.':'密钥已复制到剪贴板——请通过隔空投送或信息发送。','Key saved. Make sure both users have the same key before syncing.':'密钥已保存。同步前请确保双方使用同一个密钥。',
-  'A shared key is required to enable encryption. Generate one in the Identity section first.':'启用加密需要共享密钥。请先在“身份”部分生成密钥。','Encryption requires HTTPS. Load Hedgie over https:// to enable this feature.':'加密需要 HTTPS。请通过 https:// 加载 Hedgie 以启用此功能。',
-  '✓ Enabled — payloads encrypted with AES-256-GCM. Both household members need the same shared key.':'✓ 已启用——数据已使用 AES-256-GCM 加密。家庭成员必须使用同一个共享密钥。',
   'Cloud already has data':'云端已有数据','by':'由','someone':'某人','Yours:':'你的数据：','last pushed':'上次推送','never':'从未','will merge automatically':'将自动合并','Differences detected':'检测到差异',
   'Conflict — action required':'发生冲突——需要处理','Sync conflict detected':'检测到同步冲突','The cloud has changes you haven\'t seen. Receipts will be merged automatically. The budget plan has differences — choose how to handle them:':'云端有你尚未查看的更改。记录将自动合并。预算方案存在差异，请选择处理方式：',
   'Take cloud version':'采用云端版本','Keep my budget':'保留我的预算','Merge receipts, keep my budget':'合并记录，保留我的预算',
   'New to Open Hedgie?':'第一次使用 Open Hedgie？','No data yet — add income and expenses to get started':'还没有数据——添加收入和支出即可开始','Ready · use Push to sync':'准备就绪·点击“推送”同步','Sync successful':'同步成功',
   'Saved':'已保存','Saving…':'保存中…','Synced to cloud':'已同步到云端','First sync':'首次同步','First sync complete':'首次同步完成','First sync — cloud merged with local entries':'首次同步——云端数据已与本地记录合并',
   'Nothing in cloud yet — add data and Push to start':'云端还没有数据——添加数据后点击“推送”开始同步','No budget data — pull from cloud to verify before pushing':'没有预算数据——推送前请先从云端拉取并确认',
-  'Cloud signature mismatch — check shared key in Settings':'云端签名不匹配——请在“设置”中检查共享密钥','Could not decrypt cloud data on startup':'启动时无法解密云端数据','Could not reach cloud on startup':'启动时无法连接云端',
+  'Cloud signature mismatch — check your shared key':'云端签名不匹配——请检查共享密钥','Could not decrypt cloud data on startup':'启动时无法解密云端数据','Could not reach cloud on startup':'启动时无法连接云端',
   'Pull failed:':'拉取失败：','Push failed:':'推送失败：','Sync failed:':'同步失败：','Resolved locally — push failed':'本地已解决——推送失败','Resolved locally, push failed:':'本地已解决，推送失败：',
-  'Custom alert':'自定义提醒','Maximum 10 custom notifications.':'最多只能添加 10 条自定义通知。','Add at least one condition.':'请至少添加一个条件。','Delete this custom notification?':'删除这条自定义通知？',
-  'Upcoming recurring bills':'即将到期的周期性账单','Budget warnings (80%+ spent)':'预算提醒（已使用 80% 以上）','Cloud sync staleness':'云端同步过期提醒','Sync prompt on empty session':'空白会话同步提示','Monthly local backup reminder':'每月本地备份提醒','Monthly logging reminder':'每月记账提醒',
+  'Custom alert':'自定义提醒',
+  'Upcoming recurring bills':'即将到期的周期性账单','Budget warnings (80%+ spent)':'预算提醒（已使用 80% 以上）','Cloud sync staleness':'云端同步过期提醒','Sync prompt on empty session':'空白会话同步提示','Monthly logging reminder':'每月记账提醒',
   'Urgent':'紧急','Heads up':'提醒','Info':'信息','No custom notifications yet.':'还没有自定义通知。','Dismiss':'忽略',
   'due':'到期','today':'今天','tomorrow':'明天','in ':'还有 ',' days':' 天','day ':'第 ',' of every month':'（每月）','every ':'每隔 ',' set aside ':'，每月预留 ',' over budget':'超出预算','near budget limit':'接近预算上限','spent of':'已支出 / 预算','Last synced':'上次同步','tap Sync to update':'点击“同步”更新',
   "It's the ":'今天是本月第 ',' — add some purchases to track your spending':'——添加几笔支出以开始跟踪消费',
@@ -4738,16 +3666,13 @@ const ZH_TRANSLATIONS={
   'Full year at a glance — like a hedgehog seeing the whole winter ahead':'全年概览——像刺猬一样看清整个冬季','Hibernation View':'冬眠视图','Bars show monthly spending. Dashed line = monthly budget. Shaded bars = future months.':'柱状图显示每月支出。虚线表示月度预算，阴影柱表示未来月份。',
   'Monthly budget':'月度预算','Annual income':'年度收入','Annual budget':'年度预算','Total spent':'总支出','Year by category':'按类别统计全年数据',
   'Source':'来源','Actual spending':'实际支出','Monthly surplus earmarked per category — weighted by the cost of High/Medium/Low expenses in each. Think of it as a per-category rainy day reserve funded by your leftover income.':'按类别预留每月结余，并根据高、中、低优先级支出的成本加权。可以把它理解为由剩余收入建立的分类应急储备。',
-  'Clear receipts & archives':'清除记录和归档','Removes all logged receipts and historical archives. Budget structure is kept.':'删除所有记账记录和历史归档，预算结构会保留。','Clear vendor memory':'清除商家记忆','Removes all saved vendor suggestions used for autofill.':'删除用于自动填充的所有商家建议。','Clear Den data':'清除资产数据','Removes portfolio positions, liabilities, savings goals, and wallet data.':'删除投资持仓、负债、储蓄目标和钱包数据。','Clear':'清除','Danger zone':'危险操作','TARGETED':'按项目清除','FULL RESET':'完整重置',
-  'Erase identity & sync':'清除身份和同步设置','Clears display name, shared key, and all cloud sync credentials. Budget and receipts are untouched.':'清除显示名称、共享密钥和所有云端同步凭据，预算和记录不受影响。','Erase budget & receipts':'清除预算和记录','Clears income, categories, expense lines, and all receipts. Identity and sync settings are untouched.':'清除收入、类别、支出项目和所有记录，身份和同步设置不受影响。','Erase everything':'清除全部数据','Removes all data including identity, sync, budget, and receipts. Cannot be undone.':'删除包括身份、同步、预算和记录在内的全部数据，且无法撤销。','Erase':'清除',
   'Remove all receipts and archived data? Budget structure is kept.':'删除所有记录和归档数据？预算结构会保留。','Remove all saved vendor suggestions?':'删除所有已保存的商家建议？','Remove all Den data — portfolio positions, liabilities, savings goals, and wallet data?':'删除所有资产数据——投资持仓、负债、储蓄目标和钱包数据？','Erase your display name, shared key, and all cloud sync credentials? Your budget and receipts are untouched.':'清除显示名称、共享密钥和所有云端同步凭据？你的预算和记录不会改变。','Erase all income, budget lines, receipts, vendors, and archives? Your identity and sync settings are untouched.':'清除所有收入、预算项目、记录、商家和归档？你的身份和同步设置不会改变。','Erase ALL data including identity, sync credentials, budget, and receipts? This cannot be undone.':'清除包括身份、同步凭据、预算和记录在内的全部数据？此操作无法撤销。',
-  'Receipts and archives cleared':'记录和归档已清除','Vendor memory cleared':'商家记忆已清除','Den data cleared':'资产数据已清除','Identity and sync credentials cleared':'身份和同步凭据已清除','Budget and receipts cleared':'预算和记录已清除',
-  'No archived receipts yet.':'还没有归档记录。','Clear saved vendors':'清除已保存的商家','Save':'保存','Save local':'保存到本地','Restore local':'从本地恢复','Export':'导出','Restore':'恢复',
+  'Save':'保存',
   'Past receipts are kept.':'过去的记录会保留。','Future':'未来','will no longer auto-log it':'将不再自动记账','yearly':'每年','every ':'每隔 ','-month intervals':'个月间隔','recurring':'周期性',
   'Vendor memory full':'商家记忆已满','oldest vendors no longer saved':'最早的商家将不再保存','Vendor memory filling up':'商家记忆即将满','expense lines':'条支出项目','limit':'上限','Payload is':'数据大小为','at or over sync provider limit':'已达到或超过同步服务上限','nearing sync limit':'接近同步上限',
   'Not enough data for this range.':'此时间范围内数据不足。','Not enough data points for this range.':'此时间范围内数据点不足。','Loading…':'加载中…','Fetching balances…':'正在获取余额…','Fetching transaction history…':'正在获取交易记录…','Fetching prices…':'正在获取价格…','Error:':'错误：','Enter a valid 0x wallet address first.':'请先输入有效的 0x 钱包地址。','Enter or connect a wallet address above, then tap Refresh.':'请在上方输入或连接钱包地址，然后点击“刷新”。',
   'in your browser toolbar, then':'在浏览器工具栏中，然后','in the import queue for review.':'出现在导入队列中等待审核。','When on, new transactions are logged as uncategorized receipts immediately. When off, they appear in the import queue for review.':'开启时，新交易会立即作为未分类记录记入；关闭时，交易会出现在导入队列中等待审核。','Logs a separate ETH Gas receipt for each transaction\'s network fee.':'为每笔交易的网络费用单独记录 ETH Gas 支出。','High contrast':'高对比度','Free tier':'免费额度','All providers offer a free tier.':'所有服务商都提供免费额度。','e.g.':'例如：','Optional':'可选','required':'必填','on':'开启','off':'关闭',
-  'Updated':'已更新','position':'个持仓','positions':'个持仓','Price fetch failed:':'获取价格失败：','Could not load chart data':'无法加载图表数据','Configure a price feed in Settings → Den Preview to load historical data.':'请在“设置 → 资产预览”中配置价格数据源，以加载历史数据。',
+  'Updated':'已更新','position':'个持仓','positions':'个持仓','Price fetch failed:':'获取价格失败：','Could not load chart data':'无法加载图表数据',
   'No positions yet. Add a stock, ETF, or crypto holding.':'还没有持仓。添加股票、ETF 或加密货币。','No goals yet. Add a savings target.':'还没有目标。添加一个储蓄目标。','No accounts yet. Add a loan, credit line, or lease.':'还没有账户。添加贷款、信用额度或租赁账户。','No payments recorded':'还没有付款记录','original':'原始','paid':'已支付','equity':'净值','value':'价值','Est. payoff:':'预计还清时间：','payment':'笔付款','payments':'笔付款','tagged in receipts':'已关联到记录',
   'Asset value':'资产价值','Home, vehicle, etc.':'房屋、车辆等','Original balance':'原始余额','Current balance':'当前余额','Interest rate':'利率','% APR':'% 年利率','Term':'期限','Start date':'开始日期','Enter current market value for equity-building debts (mortgage, auto). Leave blank for pure liabilities (student loan, personal loan).':'请输入可形成资产的负债（如房贷、车贷）的当前市场价值。纯负债（如助学贷款、个人贷款）可留空。','Est. payoff':'预计还清','Current value':'当前价值','Portfolio Mix':'投资组合构成','Stocks':'股票','ETFs':'ETF','Stablecoins':'稳定币','Wallet crypto':'钱包加密货币','Savings Goals':'储蓄目标',
   'Stock':'股票','ETF':'ETF','CD':'定期存款','Other':'其他','Name':'名称','SYM':'代码','Ticker / slug':'代码 / slug','Symbol':'代码','Price ID':'价格 ID','CoinGecko ID':'CoinGecko ID','Finnhub symbol':'Finnhub 代码',
@@ -4758,13 +3683,10 @@ const ZH_TRANSLATIONS={
   'No receipts logged':'还没有记账记录','Use the form above to log your first purchase':'使用上方表单记录第一笔支出','Vendor':'商家','Units purchased':'购买数量','Due day (recurring bill)':'到期日（周期性账单）',
   'Yearly bill — saving updates amount, category, vendor, and due date for all future auto-logs.':'年度账单——保存后会更新未来自动记账的金额、类别、商家和到期日。','Every N-month bill — saving updates amount, category, vendor, and interval for all future auto-logs.':'每 N 个月一次的账单——保存后会更新未来自动记账的金额、类别、商家和周期。','Recurring bill — saving updates amount, category, vendor, and due day for all future auto-logs.':'周期性账单——保存后会更新未来自动记账的金额、类别、商家和到期日。','This was a recurring receipt but the bill template is missing — only this receipt will be updated.':'这是一条周期性记录，但账单模板已不存在——只会更新当前记录。','Delete recurring bill':'删除周期性账单',
   'Use the form above':'使用上方表单','log your first purchase':'记录第一笔支出','Source name':'收入来源名称','Current value':'当前价值','Original balance':'原始余额','Current balance':'当前余额',
-  'Save local':'保存到本地','Restore local':'从本地恢复','Export receipts CSV':'导出记录 CSV','Export budget CSV':'导出预算 CSV','Copy for Sheets':'复制到表格','Export archived receipts':'导出归档记录',
   'No data yet':'暂无数据','No data yet — add income and expenses to get started':'还没有数据——添加收入和支出即可开始','No budget data':'没有预算数据','Ready':'准备就绪','Sync successful':'同步成功',
-  'Cloud payload is encrypted — add your shared key in Settings → Identity':'云端数据已加密——请在“设置 → 身份”中添加共享密钥','Decryption failed — wrong shared key?':'解密失败——共享密钥是否错误？','Encryption failed:':'加密失败：','Decryption failed:':'解密失败：','No key to decrypt payload':'没有用于解密数据的密钥',
+  'Decryption failed — wrong shared key?':'解密失败——共享密钥是否错误？','Encryption failed:':'加密失败：','Decryption failed:':'解密失败：','No key to decrypt payload':'没有用于解密数据的密钥',
   'Free at':'可免费获取：','Create an account':'创建账户','Both users enter the same credentials plus the shared key above.':'双方输入相同的凭据和上方的共享密钥。','Create a private Gist':'创建私有 Gist','with a file named':'文件名为','initial content':'初始内容','Token and Gist must belong to the same GitHub account.':'令牌和 Gist 必须属于同一个 GitHub 账户。',
-  'Cloud sync':'云端同步','Data saves as':'数据保存为','in your Dropbox':'在你的 Dropbox 中','2GB file limit':'文件上限 2GB','Scoped access':'限定范围访问','Full Dropbox':'完整 Dropbox','Permissions':'权限','Settings → OAuth 2':'设置 → OAuth 2',
   'is':'是','is not':'不是','contains':'包含','exceeds':'超过','is under':'低于','Notification label':'通知名称','e.g. Leisure over $100':'例如：休闲支出超过 ¥100','placeholder':'占位符',
-  'Reminder':'提醒','Choose which notifications appear in the bell menu.':'选择在铃铛菜单中显示哪些通知。','Hides the ☾ toggle from the tab bar. Dark mode can still be toggled here in Settings.':'隐藏标签栏中的 ☾ 开关。你仍然可以在“设置”中切换深色模式。','Mirrors the tab bar and card action buttons so controls sit on the left.':'将标签栏和卡片操作按钮镜像显示，让控件位于左侧。','Disables slide animations and transitions. Recommended for motion sensitivity or vestibular disorders.':'关闭滑动动画和过渡效果，适合对运动敏感或有前庭障碍的用户。','Increases font size on buttons, form fields, card titles, and settings. Helps with low vision or small screens.':'增大按钮、表单、卡片标题和设置中的文字，适合低视力或小屏幕使用。','Strengthens text, border, and status colors for improved readability. Works in both light and dark mode.':'增强文字、边框和状态颜色，提高可读性。亮色和深色模式均适用。',
   'Not updated today':'今天尚未更新','Updated ${updated}':'已更新 ${updated}','Current price':'当前价格','Annual due date':'年度到期日','Every how many months?':'每隔几个月？','Optional note':'可选备注','0x wallet address':'0x 钱包地址','Paste API key':'粘贴 API 密钥','e.g. 4.50':'例如 4.50','e.g. 6.5':'例如 6.5','e.g. 60':'例如 60','e.g. bitcoin':'例如 bitcoin','e.g. AAPL or BTC':'例如 AAPL 或 BTC','e.g. AAPL or BINANCE:BTCUSDT':'例如 AAPL 或 BINANCE:BTCUSDT','e.g. AAPL or BTC/USD':'例如 AAPL 或 BTC/USD',
   'Annual budget':'年度预算','Annual income':'年度收入','Total assets':'总资产','Total debt':'总负债','Net worth':'净资产','Portfolio G/L':'投资组合收益 / 损失','Portfolio':'投资组合','Savings goals':'储蓄目标','Long-term assets':'长期资产','long-term assets':'长期资产',
   'Interest earned':'已赚利息','Saved so far':'当前已存','Target':'目标','Remaining':'剩余','Budget line':'预算项目','Additional basis (¥)':'追加成本（¥）','Additional units':'追加数量','Units / shares':'数量 / 股数',

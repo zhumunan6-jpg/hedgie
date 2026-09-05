@@ -1,10 +1,10 @@
 # Open Hedgie
 
-**Hedgie is a household budget planner that belongs entirely to you.**
+**Hedgie is a private household receipt log and spending report.**
 
 No account. No subscription. No company holding your data. Just a single file you open in a browser — on any device, any time, fully offline if you want it to be.
 
-When you're ready for more, Hedgie connects to free services you already trust: GitHub, Dropbox, and others for cloud sync; CoinGecko, Finnhub, and more for live prices. Nothing proprietary, nothing locked in. Every feature is built on open tools that stay free.
+The current interface is intentionally compact: record purchases, review monthly or yearly spending, and keep the app available offline. Existing local data and compatible sync payloads remain readable.
 
 **Stable:** [hedgie.pages.dev](https://hedgie.pages.dev) — Cloudflare Pages, fully tested releases<br>
 **Pilot:** [lancebramsay.github.io/hedgie](https://lancebramsay.github.io/hedgie) — GitHub Pages, latest updates<br>
@@ -12,36 +12,39 @@ When you're ready for more, Hedgie connects to free services you already trust: 
 
 ---
 
-## Features
+## Current features
 
-### Budgeting
-- Receipt logging with vendor memory and recurring bill auto-logging — monthly, yearly, or every N months
-- Monthly budget vs. actual tracking per category
+### Receipt logging
+- Record category, amount, vendor, note, date, and recurring schedule
+- Vendor memory with suggestions and automatic pruning
+- Edit and delete receipts, filter by category, and review a selected month
+- Existing recurring bills continue to auto-log when their saved data is present
+
+### Reports
+- Monthly income, budget, actual spending, and remaining income metrics
+- Spending breakdown by category with progress indicators
+- Monthly transactions with user attribution
 - Yearly spending overview (Hibernation View)
-- Budget planner with monthly, yearly, and custom-interval expense frequencies — all reduce to a monthly equivalent automatically
-- Per-category recurring bill coverage indicator — flags underfunded categories
-- Bill set-aside metric — total monthly provision needed across non-monthly expenses; color-coded against income remaining (green ≥ 120%, amber 100–120%, red < 100%)
-- Custom categories — add, rename, reorder, color, remove; assign type (Expense, Savings, Investment)
-- Income remaining excludes savings contributions — savings receipts stay liquid; investment receipts still count against it
-- Rainy day buffer distribution weighted by category priority
 
 ### Insights and notifications
-- Built-in notifications: upcoming bills, budget warnings, sync staleness, monthly logging nudge, first-session sync prompt, monthly backup reminder
+- Built-in notifications: upcoming bills, budget warnings, sync staleness, monthly logging nudge, and first-session sync prompt
 - Four urgency tiers: high (red), med (amber), low (green), info (blue)
 - Bell badge color reflects the highest-priority active notification
-- Custom notification rule builder: 12 queryable fields, AND/OR logic, up to 3 conditions per rule
+- Existing custom notification rules remain evaluable from compatible saved data
 
-### Sync and data
-- Cloud providers: GitHub Gist, Dropbox, JSONBin.io, self-hosted endpoint
+### Local data and compatibility
+- Core receipt and report data stays in the browser and works offline
+- Existing sync payloads support GitHub Gist, Dropbox, JSONBin.io, and self-hosted endpoints
 - HMAC-SHA256 signed payloads with a shared secret key
 - Optional AES-256-GCM payload encryption (derived from shared key via PBKDF2)
 - Conflict resolution modal and automatic receipt merging
 - Auto-archive moves receipts older than the prior calendar year to a read-only archive; configurable retention window (1–10 years, or keep forever)
-- Local backup (save/restore JSON), decrypted export, CSV export, Copy for Sheets, archived receipt export
+
+The current interface does not expose the old provider-configuration, backup, or settings panels. Previously saved credentials and compatible payload fields are retained for migration and sync compatibility.
 
 ### Den (Preview)
 
-Enable via **Settings → Den** to unlock a fourth tab for tracking long-term assets and liabilities alongside your monthly budget. All Den data is stored in the shared sync payload immediately — ready for native Den features in future phases.
+Den is hidden by default. If an existing local profile has the Den preview enabled, the tab remains available for tracking long-term assets and liabilities. Den data remains part of the shared sync payload.
 
 - **Net worth metrics** — net worth, total assets, total debt, portfolio G/L at the top of the tab
 - **Net Worth chart** — donut pie chart showing equity, stocks, ETFs, crypto, CD/savings, and savings goals
@@ -55,11 +58,10 @@ Enable via **Settings → Den** to unlock a fourth tab for tracking long-term as
 - **Transaction import** — Etherscan API key optional; fetches transaction history across all enabled chains into a review queue before logging as receipts; auto-import mode available
 
 ### App and device
-- Dark mode — toggle in Settings or the tab bar; synced across devices
+- Dark mode — toggle from the tab bar
 - Installable PWA: 📲 button on Android/desktop; Share → Add to Home Screen on iOS/iPadOS
 - Swipe left/right between tabs on any touch screen
-- Left-hand mode — mirrors the tab bar layout for left-handed use (Settings → Appearance)
-- Multi-user receipt attribution — each entry stamped with the logger's display name; signature color customizable per user
+- Multi-user receipt attribution — existing display names are retained in saved receipts
 
 ---
 
@@ -67,43 +69,18 @@ Enable via **Settings → Den** to unlock a fourth tab for tracking long-term as
 
 1. Download `index.html` from the [releases page](https://github.com/lancebramsay/hedgie/releases) or open the [hosted version](https://hedgie.pages.dev)
 2. Open in Chrome, Safari, Firefox, or Brave
-3. Enter your display name when prompted
-4. Set up your budget in **Budget planner**
-5. Log purchases in **Log receipt** as you spend
+3. Log purchases in **Log receipt** as you spend
+4. Review **Monthly report** for current and yearly totals
 
 Works fully offline. No internet required for core features.
 
 ---
 
-## Cloud sync (optional)
+## Sync compatibility
 
-### GitHub Gist (recommended)
+The current interface has no provider setup panel. Existing `hedgie_settings` values are still loaded, so profiles configured by an earlier compatible version can continue to use their saved provider and credentials.
 
-1. Create a private Gist at [gist.github.com](https://gist.github.com), name the file `hedgie.json`, set the initial content to `{"_hedgie":true,"version":0}`
-2. Generate a **classic** Personal Access Token at github.com/settings/tokens with the `gist` scope — fine-grained tokens do not support Gist access
-3. Settings → Sync → GitHub Gist → paste Gist ID and token → **Push**
-
-100 MB per-file limit — effectively unlimited for household budget data.
-
-### Dropbox
-
-1. Create an app at [dropbox.com/developers/apps/create](https://www.dropbox.com/developers/apps/create) — choose **Scoped access** and **Full Dropbox**
-2. Go to **Permissions** and enable `files.content.read` and `files.content.write`
-3. Go to **Settings → OAuth 2** and click **Generate** to create a long-lived access token
-4. Settings → Sync → Dropbox → paste the token → **Push**
-
-Data saves as `/hedgie/data.json` in your Dropbox root.
-
-### JSONBin.io
-
-1. Create a free account at [jsonbin.io](https://jsonbin.io)
-2. Create a bin — initialize with `{"_hedgie":true,"version":0}`
-3. Copy the Bin ID and Master Key
-4. Settings → Sync → JSONBin → paste both → **Push**
-
-100 KB payload limit — suitable for the first several months of typical use.
-
-### Self-hosted
+### Self-hosted endpoint
 
 Expects GET (returns JSON) and PUT (stores JSON) on one URL. Optional Bearer token auth.
 
@@ -114,28 +91,11 @@ HEDGIE_TOKEN=secret node server.js
 
 ---
 
-## Settings
+## Security and compatibility
 
-Settings are accessed via the **gear icon** in the bottom corner. They are organized into sections:
-
-| Section | Contents |
-|---|---|
-| **Identity** | Display name, signature color, shared key, encryption |
-| **Data** | Backup, restore, receipts CSV, budget CSV, archived receipt export, data retention |
-| **Sync** | Cloud provider, credentials, pull/push/force refresh, payload health |
-| **Den** | Den Preview toggle, price feed, API keys |
-| **Wallet** | Etherscan key, transaction import direction, auto-import, gas fees |
-| **Notifications** | Built-in notification toggles, custom rule builder |
-| **Appearance** | Dark mode, dark mode button visibility, left-hand mode |
-| **Danger zone** | Targeted clears (receipts, vendor memory, Den data) and full resets |
-
----
-
-## Security
-
-- Shared secret key (Settings → Identity) — generates a random 128-bit key; copy and share via AirDrop or iMessage
+- Shared secret keys, provider credentials, and encryption preferences from compatible saved profiles remain local to the browser
 - HMAC-SHA256 payload signing — sync rejected on key mismatch
-- Optional AES-256-GCM encryption — toggle in Settings → Identity; requires HTTPS
+- Optional AES-256-GCM payload encryption — requires HTTPS
 - Key derivation: `PBKDF2(sharedSecret, salt='hedgie-aes-v1', 100,000 iterations) → AES-256 key`
 - API keys (price feeds, Etherscan) are stored only in `localStorage` on-device and are never included in sync payloads
 
@@ -145,7 +105,7 @@ Settings are accessed via the **gear icon** in the bottom corner. They are organ
 
 - **Empty session → always pulls.** A blank session cannot push to the cloud, even if preferences like dark mode were changed.
 - **First sync with local data → user confirms.** Hedgie fetches the cloud version and shows a pull-or-push dialog before touching anything.
-- **Conflict resolution.** If both users changed the budget plan since last sync, a modal lets you choose which plan to keep. Receipts are always merged automatically.
+- **Conflict resolution.** If compatible saved budget data differs between users, a modal lets you choose which plan to keep. Receipts are always merged automatically.
 
 ---
 
@@ -166,11 +126,6 @@ Once installed as a PWA, the button and banner hide automatically.
 | Resource | Warning at | Hard limit |
 |---|---|---|
 | Vendor memory | 160 | 200 (auto-prunes oldest) |
-| Expense lines per category | — | 25 |
-| Sync payload (JSONBin) | 80 KB | 100 KB |
-| Sync payload (GitHub Gist) | 80 MB | 100 MB |
-| Sync payload (Dropbox) | 1.6 GB | 2 GB |
-| Sync payload (self-hosted) | 80% of configured limit | User-defined |
 
 ---
 
@@ -200,7 +155,7 @@ Once installed as a PWA, the button and banner hide automatically.
 
 ### Phase 1 — Now: Open Hedgie
 
-The free, open-source web edition. A complete household budgeting tool with Den Preview available today — liabilities, portfolio, savings goals, net worth chart, live prices, and wallet balances.
+The free, open-source web edition. The current release focuses on receipt logging and monthly/yearly reports, with compatible Den data and features retained for existing profiles.
 
 ### Phase 2 — Next: NFT ecosystem
 
