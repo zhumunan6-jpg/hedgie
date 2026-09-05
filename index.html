@@ -68,6 +68,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .progress-wrap{height:8px;border-radius:4px;background:var(--parchment);overflow:hidden;margin-top:5px}
 .progress-fill{height:100%;border-radius:4px;background:var(--green);transition:width 0.4s}
 .progress-fill.warn{background:var(--amber)}.progress-fill.over{background:var(--red)}
+.report-target-metric .progress-wrap{margin-top:8px}
+.report-target-meta{display:flex;justify-content:space-between;gap:8px;margin-top:4px;font-size:10px;color:var(--text-soft)}
+.report-target-meta .pos{color:var(--green)}.report-target-meta .neg{color:var(--red)}
 .btn{font-size:13px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--warm-white);color:var(--text-mid);cursor:pointer;white-space:nowrap;font-family:inherit;font-weight:500;transition:all 0.15s}
 .btn:hover{background:var(--parchment);border-color:var(--brown-light)}
 .btn.primary{background:var(--brown);color:var(--warm-white);border-color:var(--brown)}.btn.primary:hover{background:var(--brown-dark)}
@@ -585,7 +588,7 @@ let denOpenItems=new Set(); // tracks which Den liability body IDs are expanded
 let currentRecurring='none';
 let currentIncomeRecurring='none';
 let settings={username:'',provider:'none',jsonbinId:'',jsonbinKey:'',gistId:'',gistToken:'',selfUrl:'',selfToken:'',selfPayloadKB:'',dropboxToken:'',sharedKey:'',encryptSync:false,darkMode:false,pwaInstalled:false,pruneYears:0,denPreview:false,userColor:'',priceProvider:'none',priceApiKey:'',cgApiKey:'',etherscanApiKey:'',walletAutoImport:false,walletTxDir:'out',walletGasFees:false};
-let rcptFilterCat='all',rptFilterCat='all';
+let rcptFilterCat='all';
 let reportView='monthly';
 let pendingCloudData=null;
 let autosaveTimer=null;
@@ -616,11 +619,15 @@ const receiptsForYear=yr=>receipts.filter(r=>r.date&&r.date.startsWith(yr));
 
 function allMonths(){
   const keys=new Set(receipts.map(r=>monthKey(r.date)));
+  income.forEach(r=>{if(r.date)keys.add(monthKey(r.date));});
+  Object.keys(savingsTargets).forEach(month=>keys.add(month));
   keys.add(currentMonth());
   return Array.from(keys).sort().reverse();
 }
 function allYears(){
   const keys=new Set(receipts.map(r=>r.date?r.date.slice(0,4):''));
+  income.forEach(r=>{if(r.date)keys.add(r.date.slice(0,4));});
+  Object.keys(archives||{}).forEach(year=>keys.add(year));
   keys.add(currentYear());
   return Array.from(keys).filter(Boolean).sort().reverse();
 }
@@ -1546,18 +1553,24 @@ function renderMonthlyReport(){
   const ym=document.getElementById('rpt-month-sel')?.value||currentMonth();
   const recs=receiptsForMonth(ym);
   const spent=recs.reduce((s,r)=>s+r.amt,0);
-  const inc=totalIncome();
-  const rem=inc-recs.reduce((s,r)=>s+r.amt,0);
-  const visRecs=rptFilterCat==='all'?recs:recs.filter(r=>r.cat===rptFilterCat);
-  const rptTotal=visRecs.reduce((s,r)=>s+r.amt,0);
-  const rptPills='<div class="pills" id="rpt-filters" style="margin:4px 0 8px">'+['all',...CATS()].map(c=>`<button class="pill${(c==='all'?rptFilterCat==='all':rptFilterCat===c)?' on':''}" data-rp="${esc(c)}" onclick="setRptFilter(this.dataset.rp)">${c==='all'?'All':esc(c)}</button>`).join('')+'</div>';
+  const inc=incomeAmountForMonth(ym);
+  const savings=inc-spent;
+  const target=getSavingsTarget(ym);
+  const hasTarget=target!==null&&target>0;
+  const pct=hasTarget?Math.round(savings/target*100):null;
+  const barPct=hasTarget?Math.max(0,Math.min(100,pct)):0;
+  const savingsStatus=savings<0?'neg':hasTarget&&pct>=100?'pos':'';
+  const targetProgress=hasTarget
+    ? `<div class="progress-wrap" aria-label="${pct}% savings target progress"><div class="progress-fill ${savings<0?'over':''}" style="width:${barPct}%"></div></div><div class="report-target-meta"><span>${signedAmount(savings)}</span><span class="${savingsStatus}">${pct}%${pct>=100?' · achieved':''}</span></div>`
+    : `<div class="report-target-meta"><span>${target===null?'No target set':'Target must be above zero'}</span><span>${signedAmount(savings)}</span></div>`;
   const body=document.getElementById('report-body');
   body.innerHTML=`
-    <div class="metrics-row">
+    <div class="metrics-row report-metrics">
       <div class="metric"><div class="metric-label">Monthly income</div><div class="metric-val">${fmt(inc)}</div></div>
-       <div class="metric"><div class="metric-label">Actually spent</div><div class="metric-val">${fmt(spent)}</div></div>
-       <div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(rem)}</div></div>
-     </div>
+      <div class="metric"><div class="metric-label">Actually spent</div><div class="metric-val">${fmt(spent)}</div></div>
+      <div class="metric"><div class="metric-label">Monthly savings</div><div class="metric-val ${savings>=0?'pos':'neg'}">${signedAmount(savings)}</div></div>
+      <div class="metric report-target-metric"><div class="metric-label">Monthly savings target</div><div class="metric-val">${target===null?'—':fmt(target)}</div>${targetProgress}</div>
+    </div>
     <div class="card">
       <div class="card-hdr"><span class="card-title">Spending by category</span><span class="card-sub">${fmt(spent)}</span></div>
       ${CATS().map(c=>{
@@ -1573,12 +1586,6 @@ function renderMonthlyReport(){
           ${renderUserBreakdown(catRecs)}
         </div>`;
       }).join('')}
-    </div>
-    <div class="card">
-      <div class="card-hdr"><span class="card-title">Transactions</span><span class="card-sub">${rptFilterCat==='all'?recs.length:visRecs.length+'/'+recs.length} transaction${recs.length!==1?'s':''}</span></div>
-      ${rptPills}
-      ${renderUserBreakdown(visRecs)}
-      ${visRecs.length?visRecs.map(r=>`<div class="receipt-row"><div class="cat-dot" style="background:${catColor(r.cat)}"></div><div class="receipt-info"><div class="receipt-store" style="display:flex;align-items:center;gap:5px">${esc(r.vendor||r.cat)}${recurBadge(r)}</div><div class="receipt-meta">${esc(r.cat)} &middot; ${fmtDate(r.date)}</div>${r.note?`<div class="receipt-note" onclick="toggleNoteExpand(event,this)" title="Tap to expand">${esc(r.note)}</div>`:``}${r.financeId&&getFinancingName(r.financeId)?`<div class="receipt-note" style="color:var(--text-soft)">&#9670; ${esc(getFinancingName(r.financeId))}</div>`:''}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><div class="receipt-amt">${fmtDec(r.amt)}</div>${r.by?`<div class="receipt-by" style="color:${getUserColor(r.by)}">${esc(r.by)}</div>`:''}</div></div>`).join('')+`<div class="receipt-total"><span>${visRecs.length} item${visRecs.length!==1?'s':''}</span><span>${fmtDec(rptTotal)}</span></div>`:`<div class="empty-state"><div style="font-size:24px;margin-bottom:6px">&#128467;</div><div>No transactions${rptFilterCat!=='all'?' for '+rptFilterCat:' for '+monthLabel(ym)}</div></div>`}
     </div>`;
 }
 
@@ -1590,18 +1597,17 @@ function renderYearlyReport(){
   const recs=[...receiptsForYear(yr),...archiveRecs.filter(a=>!activeIds.has(a.id))];
   const totalSpent=recs.reduce((s,r)=>s+r.amt,0);
   const annualBudget=totalExpMo()*12;
-  const inc=totalIncome()*12;
-  const rem=inc-recs.reduce((s,r)=>s+r.amt,0);
+  const inc=income.filter(r=>r.date&&r.date.startsWith(yr)).reduce((s,r)=>s+(parseFloat(r.a)||0),0);
+  const rem=inc-totalSpent;
   const nowYr=new Date().getFullYear().toString();
   const nowMo=new Date().getMonth();
   const isCurrentYear=(yr===nowYr);
   const monthlyBudget=totalExpMo();
   const monthTotals=Array.from({length:12},(_,i)=>{
     const ym=yr+'-'+String(i+1).padStart(2,'0');
-    return receiptsForMonth(ym).reduce((s,r)=>s+r.amt,0);
+    return recs.filter(r=>monthKey(r.date)===ym).reduce((s,r)=>s+r.amt,0);
   });
   const maxMonth=Math.max(...monthTotals,monthlyBudget,1);
-  const refPct=Math.round((monthlyBudget/maxMonth)*100);
   const stars=Array.from({length:20},()=>`<circle cx="${Math.random()*100}%" cy="${Math.random()*100}%" r="${Math.random()*1.2+0.3}" fill="white" opacity="${Math.random()*0.5+0.2}"/>`).join('');
   const body=document.getElementById('report-body');
   const barArea=56;
@@ -1639,11 +1645,11 @@ function renderYearlyReport(){
       <div class="metric"><div class="metric-label">Annual income</div><div class="metric-val">${fmt(inc)}</div></div>
       <div class="metric"><div class="metric-label">Annual budget</div><div class="metric-val">${fmt(annualBudget)}</div></div>
       <div class="metric"><div class="metric-label">Total spent ${yr}</div><div class="metric-val ${totalSpent>annualBudget?'neg':''}">${fmt(totalSpent)}</div></div>
-      <div class="metric"><div class="metric-label">Income remaining</div><div class="metric-val ${rem>=0?'pos':'neg'}">${rem<0?'-':''}${fmt(rem)}</div></div>
+      <div class="metric"><div class="metric-label">Annual savings</div><div class="metric-val ${rem>=0?'pos':'neg'}">${signedAmount(rem)}</div></div>
     </div>
     ${renderUserBreakdown(recs)}
     <div class="card">
-      <div class="card-hdr"><span class="card-title">Year by category</span><span class="card-sub">${recs.length} transactions</span></div>
+      <div class="card-hdr"><span class="card-title">Year by category</span><span class="card-sub">${yr}</span></div>
       <div style="display:flex;gap:12px;font-size:10px;color:var(--text-soft);margin-bottom:8px;flex-wrap:wrap">
         <span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:8px;height:8px;outline:1.5px dashed #4a7c59;outline-offset:1px"></span>Under budget</span>
         <span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:8px;height:8px;outline:1.5px dashed #b87820;outline-offset:1px"></span>Near limit</span>
@@ -1947,8 +1953,6 @@ function deleteRecurringIncome(templateId){
 }
 
 function setRcptFilter(cat,btn){rcptFilterCat=cat;document.querySelectorAll('#rcpt-filters .pill').forEach(b=>b.classList.toggle('on',b.dataset.rc===cat));renderReceiptList();}
-function setRptFilter(cat){rptFilterCat=cat;renderMonthlyReport();}
-
 function renderLogMetrics(){
   const el=document.getElementById('log-metrics');if(!el)return;
   const totalInc=totalIncome(),totalSpent=totalExpenses(),totalSaved=totalInc-totalSpent;
@@ -3495,9 +3499,9 @@ const ZH_TRANSLATIONS={
   'Goal name':'目标名称','% of goal':'目标的','target':'目标','No balances yet — tap ↺ Refresh to load.':'还没有余额——点击“刷新”加载。',
   'Enter or connect a wallet address above, then tap Refresh.':'请在上方输入或连接钱包地址，然后点击“刷新”。','Import queue':'导入队列','pending':'待处理',
   'Cancel':'取消','Import':'导入','Dismiss':'忽略','Gas:':'Gas：','Log receipt':'记录','Uncategorized':'未分类','Optional note':'可选备注',
-  'Also log gas fee':'同时将 Gas 费记录为单独支出','No transactions':'没有交易记录','item':'项','items':'项','Budget':'预算','Actual':'实际',
+  'Also log gas fee':'同时将 Gas 费记录为单独支出','item':'项','items':'项','Budget':'预算','Actual':'实际',
   'Spent':'支出','Balance':'余额','Income':'收入','Expenses':'支出','Savings rate':'储蓄率',
-  'under budget':'低于预算','over budget':'超出预算','No transactions yet.':'还没有交易记录。','No archived receipts yet.':'还没有归档记录。',
+  'under budget':'低于预算','over budget':'超出预算',
   'Clear saved vendors':'清除已保存的商家','Pick color':'选择颜色','Move up':'上移','Move down':'下移','Remove':'删除',
   'just now':'刚刚','Never':'从未','Updated':'已更新','Loading…':'加载中…','Fetching…':'获取中…','Refresh prices':'刷新价格',
   'Error:':'错误：','Saved locally':'已保存到本地','Saved locally only':'仅已保存到本地','Synced to cloud':'已同步到云端','Pushed to cloud':'已推送到云端',
@@ -3519,8 +3523,8 @@ const ZH_TRANSLATIONS={
   'Cloud signature mismatch — check your shared key':'云端签名不匹配——请检查共享密钥','Could not decrypt cloud data on startup':'启动时无法解密云端数据','Could not reach cloud on startup':'启动时无法连接云端',
   'Pull failed:':'拉取失败：','Push failed:':'推送失败：','Sync failed:':'同步失败：','Resolved locally — push failed':'本地已解决——推送失败','Resolved locally, push failed:':'本地已解决，推送失败：',
   'due':'到期','today':'今天','tomorrow':'明天','in ':'还有 ',' days':' 天','day ':'第 ',' of every month':'（每月）','every ':'每隔 ',' set aside ':'，每月预留 ',' over budget':'超出预算','near budget limit':'接近预算上限','spent of':'已支出 / 预算','Last synced':'上次同步','tap Sync to update':'点击“同步”更新',
-  'Monthly income':'月收入','Actually spent':'实际支出','Income remaining':'剩余收入',
-  'Spending by category':'按类别统计支出','of spending':'占支出','recorded':'已记录','Transactions':'交易记录','transaction':'笔交易','transactions':'笔交易',
+  'Monthly income':'月收入','Actually spent':'实际支出','Monthly savings':'本月存款','Monthly savings target':'本月存款目标','Annual savings':'年度存款','No target set':'尚未设置目标','Target must be above zero':'目标需大于零',
+  'Spending by category':'按类别统计支出','of spending':'占支出','recorded':'已记录',
   'Full year at a glance — like a hedgehog seeing the whole winter ahead':'全年概览——像刺猬一样看清整个冬季','Hibernation View':'冬眠视图','Bars show monthly spending. Dashed line = monthly budget. Shaded bars = future months.':'柱状图显示每月支出。虚线表示月度预算，阴影柱表示未来月份。',
   'Monthly budget':'月度预算','Annual income':'年度收入','Annual budget':'年度预算','Total spent':'总支出','Year by category':'按类别统计全年数据',
   'Source':'来源','Actual spending':'实际支出','Monthly surplus earmarked per category — weighted by the cost of High/Medium/Low expenses in each. Think of it as a per-category rainy day reserve funded by your leftover income.':'按类别预留每月结余，并根据高、中、低优先级支出的成本加权。可以把它理解为由剩余收入建立的分类应急储备。',
